@@ -7,7 +7,7 @@ import { Home, About, Adopt, Contact } from './components/DetailPage/navigation'
 function App() {
     return (
 		//
-		<div className="App" style={{padding : 20}}>
+		<div className="App" style={{padding : 20, width : 100}}>
 			<Router>
 				<MainHeaders />
 				<Routes>

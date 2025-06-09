@@ -6,8 +6,6 @@ import { Home, About, Adopt, Contact } from './components/DetailPage/navigation'
 
 function App() {
     return (
-	    //
-		//
 		//
 		<div className="App" style={{padding : 20}}>
 			<Router>

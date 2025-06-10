@@ -43,6 +43,26 @@
   font-size: 14px;
 }
 
+.message.options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.message.options button {
+  padding: 6px 12px;
+  background-color: #e6f7ff;
+  border: 1px solid #00aaff;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.message.options button:hover {
+  background-color: #b3e5ff;
+}
+
 .user {
   background: #cce7ff;
   align-self: flex-end;

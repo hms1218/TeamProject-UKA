@@ -1,8 +1,15 @@
 import { Outlet, NavLink, useLocation } from 'react-router-dom';
 import './CustomerLayout.css';
+import Chatbot from './Chatbot';
+import { useState } from 'react';
 
-const CustomerLayout = () => {
+const CustomerLayout = ({children}) => {
   const location = useLocation();
+  const [showChatbot, setShowChatbot] = useState(false);
+
+  const toggleChatbot = () => {
+    setShowChatbot((prev) => !prev);
+  };
 
   return (
     <div className="customer-layout">
@@ -22,8 +29,17 @@ const CustomerLayout = () => {
           </button>
         </div>
         <div className="customer-header-right">
-          <button className="customer-chat-button">💬 채팅 상담하기</button>
+          <button
+            className="customer-chat-button"
+            onClick={toggleChatbot}
+          >
+            💬 채팅 상담하기
+          </button>
         </div>
+        {children}
+
+        {/* 🔽 조건부로 챗봇 표시 */}
+        {showChatbot && <Chatbot />}
       </div>
 
       {/* 탭 메뉴 */}

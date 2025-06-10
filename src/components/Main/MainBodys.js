@@ -17,14 +17,14 @@ function importAll(r) {
     return r
         .keys()
         .sort((a, b) => {
-            const getNum = str => parseInt(str.match(/dogrun(\d+)\.jpg$/)?.[1] ?? 0);
+            const getNum = str => parseInt(str.match(/catrun(\d+)\.jpg$/)?.[1] ?? 0);
             return getNum(a) - getNum(b);
         })
         .map(r);
 }
 
 const loadingFrames = importAll(
-    require.context("../../assets/DogRun", false, /DogRun\d+\.jpg$/)
+    require.context("../../assets/CatRun", false, /CatRun\d+\.jpg$/)
 );
 
 const MainBodys = () => {
@@ -59,7 +59,7 @@ const MainBodys = () => {
 
         const interval = setInterval(() => {
             setLoadingImageIndex(prev => (prev + 1) % loadingFrames.length);
-        }, 150);
+        }, 50);
 
         return () => clearInterval(interval);
     }, [loading]);

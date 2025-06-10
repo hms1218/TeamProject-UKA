@@ -7,12 +7,27 @@ const CustomerLayout = () => {
   return (
     <div className="customer-layout">
       {/* 헤더 */}
-      <header className="customer-header">
-        <h1 className="logo">고객센터</h1>
-      </header>
+      <div className="customer-header-container">
+        <div className="customer-header-left">
+          <h1 className="customer-title">고객센터</h1>
+        </div>
+        <div className="customer-header-center">
+          <input
+            className="customer-search-input"
+            type="text"
+            placeholder="자주 묻는 질문 검색"
+          />
+          <button className="customer-search-button">
+            🔍
+          </button>
+        </div>
+        <div className="customer-header-right">
+          <button className="customer-chat-button">💬 채팅 상담하기</button>
+        </div>
+      </div>
 
-      {/* 탭바 */}
-      <nav className="tab-menu">
+      {/* 탭 메뉴 */}
+      <nav className="mini-tab-bar">
         <NavLink
           to="/customer/faq"
           className={({ isActive }) => isActive ? 'active' : ''}
@@ -33,7 +48,7 @@ const CustomerLayout = () => {
         </NavLink>
       </nav>
 
-      {/* 라우트 */}
+      {/* 라우트 출력 영역 */}
       <main className="customer-content">
         <Outlet />
       </main>

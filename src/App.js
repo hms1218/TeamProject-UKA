@@ -15,7 +15,7 @@ import AdoptionInquiry from "./components/Borders/Pages/AdoptionInquiry";
 
 function App() {
   return (
-    <div className="App" style={{ padding: 20 }}>
+    <div className="App" style={{ marginLeft : 300, marginRight: 300, marginTop:20 }}>
       <Router>
         <MainHeaders />
         <Routes>

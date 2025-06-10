@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import { useState } from 'react';
+import './FAQList.css';
 
 const dummyFaqs = [
   { id: 1, question: '입양 절차는 어떻게 되나요?', answer: '입양 절차는 상담 → 서류 작성 → 방문 순입니다.' },
@@ -7,34 +8,37 @@ const dummyFaqs = [
 ];
 
 const FAQList = () => {
-  const [faqs, setFaqs] = useState([]);
-  const [openId, setOpenId] = useState(null); // 드롭다운 상태 관리
+  const [openId, setOpenId] = useState(null);
 
-  useEffect(() => {
-    setFaqs(dummyFaqs);
-  }, []);
-
-  const toggleFAQ = (id) => {
+  const toggle = (id) => {
     setOpenId(prev => (prev === id ? null : id));
   };
 
   return (
     <div className="faq-list">
-      <h2>자주 묻는 질문 (FAQ)</h2>
-      <ul style={{ listStyle: 'none', paddingLeft: 0 }}>
-        {faqs.map((faq) => (
-          <li key={faq.id} className="faq-item" style={{ marginBottom: '12px', cursor: 'pointer' }}>
-            <div onClick={() => toggleFAQ(faq.id)} style={{ fontWeight: 'bold' }}>
-              Q. {faq.question}
+      {dummyFaqs.map((faq) => (
+        <div key={faq.id} className="faq-item">
+          <div className="faq-question" onClick={() => toggle(faq.id)}>
+            <div className="faq-question-left">
+              <span className="faq-label">Q</span>
+              <span className="faq-text">{faq.question}</span>
             </div>
-            {openId === faq.id && (
-              <p style={{ marginTop: '8px', paddingLeft: '12px' }}>
-                A. {faq.answer}
-              </p>
-            )}
-          </li>
-        ))}
-      </ul>
+            <button
+              className={`faq-toggle-button ${openId === faq.id ? 'open' : ''}`}
+              aria-label="토글"
+            >
+              {openId === faq.id ? '▲' : '▼'}
+            </button>
+          </div>
+
+          {openId === faq.id && (
+            <div className="faq-answer">
+              <span className="faq-label">A</span>
+              <span className="faq-text">{faq.answer}</span>
+            </div>
+          )}
+        </div>
+      ))}
     </div>
   );
 };

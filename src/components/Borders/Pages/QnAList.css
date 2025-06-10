@@ -1,0 +1,97 @@
+/* 🔷 전체 컨테이너 */
+.qna-container {
+  position: relative;
+  padding: 20px;
+  min-width: 1350px;
+}
+
+.qna-header {
+  margin-bottom: 20px;
+}
+
+.qna-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* 🔹 QnA 항목 박스 */
+.qna-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background-color: white;
+  border: 2px solid #00aaff;
+  border-radius: 12px;
+  padding: 16px 24px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  min-width: 1350px;
+}
+
+/* 🔒 자물쇠 */
+.lock-wrapper {
+  width: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.lock-icon {
+  font-size: 18px;
+  color: #00aaff;
+}
+
+.lock-placeholder {
+  visibility: hidden;
+}
+
+
+
+
+/* 👤 작성자 */
+.qna-author {
+  font-size: 14px;
+  color: #555;
+  white-space: nowrap;
+}
+
+/* 🖊 글쓰기 버튼 */
+.qna-write-button {
+  position: fixed;
+  bottom: 40px;
+  right: 40px;
+  background-color: #00aaff;
+  color: white;
+  border: none;
+  border-radius: 24px;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.qna-write-button:hover {
+  background-color: #0094dd;
+}
+
+/* 📝 제목 전체 영역: 텍스트 정렬만 담당 (hover X) */
+.qna-title-link {
+  flex: 1;
+  font-size: 18px;
+  font-weight: bold;
+  color: inherit;
+}
+
+/* 📝 제목 (클릭 가능) */
+.qna-title-text {
+  color: #00aaff;
+  cursor: pointer;
+}
+/* hover 효과 */
+.qna-title-text:hover {
+  text-decoration: underline;
+}

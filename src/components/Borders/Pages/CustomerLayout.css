@@ -19,6 +19,10 @@
   font-size: 18px;
 }
 
+.mini-tab-bar a:hover {
+  color: #00aaff;
+}
+
 .mini-tab-bar a.active {
   color: #00aaff;
   font-weight: bold;

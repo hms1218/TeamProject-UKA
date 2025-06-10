@@ -39,7 +39,7 @@ const CustomerLayout = ({children}) => {
         {children}
 
         {/* 🔽 조건부로 챗봇 표시 */}
-        {showChatbot && <Chatbot />}
+        {showChatbot && <Chatbot onClose={() => setShowChatbot(false)} />}
       </div>
 
       {/* 탭 메뉴 */}

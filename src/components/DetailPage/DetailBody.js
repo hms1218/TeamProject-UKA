@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react"
+import img from "../../assets/test1.jpg"
+import KoreaMapSection from "../Map/KoreaMapSection";
 import './DetailBody.css'
 
 export const DetailBody = () => {
@@ -19,7 +21,13 @@ export const DetailBody = () => {
         <div className="container">
             <div className="top">
                 <div className="map">
-                    
+                    {/* <KoreaMapSection 
+                                    // onRegionSelect={handleRegionSelect}
+                                    //  selectedRegionId={selectedRegionId}
+                                    //  tooltipContent={tooltipContent}
+                                    //  setTooltipContent={setTooltipContent}
+                                    //  regionInfo={regionInfo}
+                    /> */}
                 </div>
 
                 <div className="combobox">
@@ -40,20 +48,18 @@ export const DetailBody = () => {
                         <option value=''></option>
                     </select>
                 </div>
-            </div>
+            </div>{/* end top */}
 
             <div className="bottom">
                 {/* 상세정보 하나 들어가는 박스 */}
                 <div className="detail">
-                    {/* 이미지 */}
-                    <div>   
-                        <input type="image" />
-                    </div>
-
-                    {/* 간략한 정보(하이퍼 링크) */}
-                    <div>
-                        <h3><a href="/">간략한 정보(하이버링크)</a></h3>
-                    </div>
+                {/* 이미지 */}
+                <img src={img} alt="테스트 이미지"/>
+                
+                <hr/>
+                {/* 간략한 정보(하이퍼 링크) */}
+                <h3><a href="/">간략한 정보(하이퍼링크)</a></h3>
+                    
                 </div>
             </div> 
 

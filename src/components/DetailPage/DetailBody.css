@@ -4,25 +4,56 @@
 
 /* 메인컨테이너 */
 .container {
+    border: 1px solid #cceeff;
+    border-radius: 10px;
+
+    
+    flex-direction: column;
+    margin-top: 20px;
     width: 100px;
-    height: 900px;
+    height: 1800px;
     min-width: 1415px;
     display: flex;
 }
 
+
 /* 본문 위쪽 */
 .top{
+    border: 1px solid #cceeff;
+    border-radius: 10px;
+
+    height : 50%;
+    
 
 }
 
+/* 본문 위쪽 지도 */
+.map{
+    border: 1px solid #cceeff;
+    border-radius: 10px;
+
+    height:100%;
+    display: flex;
+
+}
+
+
 /* 위쪽 지역 선택 콤보 박스 */
 .combobox{
+    display: flex;
+    border: 1px solid #cceeff;
+    border-radius: 10px;
+
     background-color:#00aaff;
 }
 
 /* 본문 아래쪽 */
 .bottom{
+    border: 1px solid #cceeff;
+    border-radius: 10px;
 
+    height : 50%;
+    margin-top: 20px;
 }
 
 
@@ -30,10 +61,33 @@
 
 /* 상세정보 담는 박스 */
 .detail{
+    border: 1px solid #cceeff;
+    border-radius: 10px;
 
+    background-color: #eafaff;
+    width:20%;
+    height:20%;
+    margin : 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;    
+
+}
+
+.detail img{
+    padding : 10px;
+    height:70%;
+    width: 70%;
+}
+
+.detail hr{
+    margin : 10px 0;
+    border-color:#cceeff;
 }
 
 .detail a{
     text-decoration: none;
 }
+
+
 

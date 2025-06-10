@@ -1,0 +1,39 @@
+/* div{
+    border: 1px solid black;
+} */
+
+/* 메인컨테이너 */
+.container {
+    width: 100px;
+    height: 900px;
+    min-width: 1415px;
+    display: flex;
+}
+
+/* 본문 위쪽 */
+.top{
+
+}
+
+/* 위쪽 지역 선택 콤보 박스 */
+.combobox{
+    background-color:#00aaff;
+}
+
+/* 본문 아래쪽 */
+.bottom{
+
+}
+
+
+
+
+/* 상세정보 담는 박스 */
+.detail{
+
+}
+
+.detail a{
+    text-decoration: none;
+}
+

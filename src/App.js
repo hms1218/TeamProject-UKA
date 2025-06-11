@@ -5,15 +5,15 @@ import MainFooter from './components/HeaderFooter/MainFooter';
 import { Home } from './components/DetailPage/navigation';
 
 // 고객센터 관련
-import CustomerLayout from './components/Borders/Pages/CustomerLayout';
-import FAQList from "./components/Borders/Pages/FAQList";
-import FAQForm from "./components/Borders/Pages/FAQForm";
-import QnAList from "./components/Borders/Pages/QnAList";
-import QnAForm from "./components/Borders/Pages/QnAForm";
-import QnADetail from "./components/Borders/Pages/QnADetail";
-import QnAEdit from "./components/Borders/Pages/QnAEdit";
-import AdoptionInquiry from "./components/Borders/Pages/AdoptionInquiry";
-import { QnAProvider } from './components/Borders/Context/QnAContext';
+import CustomerLayout from './components/Customers/Pages/CustomerLayout';
+import FAQList from "./components/Customers/Pages/FAQList";
+import FAQForm from "./components/Customers/Pages/FAQForm";
+import QnAList from "./components/Customers/Pages/QnAList";
+import QnAForm from "./components/Customers/Pages/QnAForm";
+import QnADetail from "./components/Customers/Pages/QnADetail";
+import QnAEdit from "./components/Customers/Pages/QnAEdit";
+import AdoptionInquiry from "./components/Customers/Pages/AdoptionInquiry";
+import { QnAProvider } from './components/Customers/Context/QnAContext';
 
 function App() {
   return (

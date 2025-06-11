@@ -50,7 +50,7 @@ const AdoptionInquiry = () => {
 
       <div className="adoption-buttons">
         <a
-          href="/files/동물입양신청서.pdf"
+          href="/Files/동물입양신청서.pdf"
           className="adopt-button"
           download="동물입양신청서.pdf"
         >

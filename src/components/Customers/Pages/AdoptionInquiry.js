@@ -12,6 +12,7 @@ const AdoptionInquiry = () => {
           <div className="step-label">입양 절차 안내</div>
           <div className="step-description">
             <ul>
+              <li>입양 환경 자체 점검</li>
               <li>보호소 방문 및 상담</li>
               <li>입양 희망 동물 선택</li>
               <li>입양 신청서 작성</li>
@@ -42,7 +43,7 @@ const AdoptionInquiry = () => {
             <ul>
               <li>전화 및 온라인 상담 예약 가능</li>
               <li>운영 시간: 평일 10:00~17:00</li>
-              <li>사전 예약 필수</li>
+              <li><strong>사전 예약 필수</strong></li>
             </ul>
           </div>
         </div>

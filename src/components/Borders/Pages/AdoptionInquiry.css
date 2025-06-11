@@ -1,0 +1,80 @@
+.adoption-inquiry {
+  padding: 40px;
+  min-width: 1350px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.steps-grid {
+  display: flex;
+  justify-content: space-between;
+  margin: 50px 0;
+  gap: 20px;
+}
+
+.step-item {
+  width: 30%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.step-circle {
+  width: 200px;
+  height: 200px;
+  background-color: #00aaff;
+  color: white;
+  font-size: 26px;
+  font-weight: bold;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.step-label {
+  margin-top: 10px;
+  font-size: 25px;
+  font-weight: bold;
+  color: #333;
+}
+
+.step-description {
+  margin-top: 14px;
+  background-color: #f9f9f9;
+  padding: 16px;
+  border-radius: 8px;
+  text-align: left;
+}
+
+.step-description ul {
+  list-style: disc;
+  padding-left: 20px;
+  font-size: 18px;
+}
+
+.adoption-buttons {
+  margin-top: 40px;
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+
+.adopt-button {
+  background-color: white;
+  color: black;
+  font-weight: bold;
+  font-size: 24px;
+  padding: 12px 20px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.adopt-button:hover {
+  background-color: #e0f7ff;
+  color: #00aaff;
+  border-color: #00aaff;
+}

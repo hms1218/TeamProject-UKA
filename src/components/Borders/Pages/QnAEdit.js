@@ -1,22 +1,28 @@
-// src/components/Borders/Pages/QnAForm.js
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import './WriteButton.css';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
-const QnAForm = () => {
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
+const QnAEdit = () => {
+  const { id } = useParams();
+  const { state } = useLocation(); // QnADetail에서 전달한 데이터
   const navigate = useNavigate();
+
+  // 상태 초기화 (state가 없을 경우 빈 문자열로 방어 처리)
+  const [title, setTitle] = useState(state?.title || '');
+  const [content, setContent] = useState(state?.content || '');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('QnA 작성됨:', { title, content });
-    navigate('/customer/qna');
+
+    // 여기에 실제 API 요청(예: PUT /qna/:id) 들어가야 함
+    alert('수정이 완료되었습니다.');
+
+    // 수정된 글 상세페이지로 이동
+    navigate(`/customer/qna/${id}`);
   };
 
   return (
     <div className="faq-form">
-      <h2>QnA 글쓰기</h2>
+      <h2>QnA 수정하기</h2>
       <form onSubmit={handleSubmit}>
         <div>
           <label>제목</label><br />
@@ -38,10 +44,10 @@ const QnAForm = () => {
             style={{ width: '100%', padding: '10px' }}
           />
         </div>
-        <button type="submit" className="write-button">등록</button>
+        <button type="submit" className="write-button">✅ 수정 완료</button>
       </form>
     </div>
   );
 };
 
-export default QnAForm;
+export default QnAEdit;

@@ -11,7 +11,9 @@ import FAQForm from "./components/Borders/Pages/FAQForm";
 import QnAList from "./components/Borders/Pages/QnAList";
 import QnAForm from "./components/Borders/Pages/QnAForm";
 import QnADetail from "./components/Borders/Pages/QnADetail";
+import QnAEdit from "./components/Borders/Pages/QnAEdit";
 import AdoptionInquiry from "./components/Borders/Pages/AdoptionInquiry";
+import { QnAProvider } from './components/Borders/Context/QnAContext';
 
 function App() {
   return (
@@ -28,15 +30,19 @@ function App() {
           } />
 
           {/* 고객센터 전체 (MainBodys 제외) */}
-          <Route path="/customer/*" element={<CustomerLayout />}>
-            <Route index element={<FAQList />} />
-            <Route path="faq" element={<FAQList />} />
-            <Route path="faq/new" element={<FAQForm />} />
-            <Route path="qna" element={<QnAList />} />
-            <Route path="qna/new" element={<QnAForm />} />
-            <Route path="qna/:id" element={<QnADetail />} />
-            <Route path="adoption" element={<AdoptionInquiry />} />
-          </Route>
+            <Route path="/customer/*" element={
+              <QnAProvider>
+                <CustomerLayout />
+              </QnAProvider>}>
+              <Route index element={<FAQList />} />
+              <Route path="faq" element={<FAQList />} />
+              <Route path="faq/new" element={<FAQForm />} />
+              <Route path="qna" element={<QnAList />} />
+              <Route path="qna/new" element={<QnAForm />} />
+              <Route path="qna/:id" element={<QnADetail />} />
+              <Route path="qna/:id/edit" element={<QnAEdit />} />
+              <Route path="adoption" element={<AdoptionInquiry />} />
+            </Route>
         </Routes>
         <MainFooter />
       </Router>

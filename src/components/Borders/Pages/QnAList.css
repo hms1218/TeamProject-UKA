@@ -91,11 +91,14 @@
 
 /* 📝 제목 (클릭 가능) */
 .qna-title-text {
-  color: #00aaff;
+  color: black;
   cursor: pointer;
+  transition: color 0.2s ease;
 }
+
 /* hover 효과 */
 .qna-title-text:hover {
+  color: #00aaff; /* 조금 더 진한 파란색으로 */
   text-decoration: underline;
 }
 
@@ -131,4 +134,25 @@
 
 .qna-password-box button:hover {
   background-color: #0094dd;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.pagination button {
+  margin: 0 4px;
+  padding: 6px 12px;
+  border: none;
+  background-color: #eee;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.pagination button.active {
+  background-color: #00aaff;
+  color: white;
+  font-weight: bold;
 }

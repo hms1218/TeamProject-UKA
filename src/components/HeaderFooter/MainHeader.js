@@ -10,8 +10,11 @@ const MainHeaders = () => {
     return (
         <header className="main-header">
             <div className="left-section" style={{cursor : "pointer"}}>
-                <Link to="/"><img src={MainLogo} alt="Logo" className="logo" /></Link>
-                
+
+                <Link to="/">
+                    <img src={MainLogo} alt="Logo" className="logo" />
+                </Link>
+
             </div>
 
             <div className="right-section">
@@ -29,7 +32,7 @@ const MainHeaders = () => {
 
                             <Link to="/board">게시판 </Link>
 
-                            <Link to="/">게시판 </Link>
+                            //<Link to="/">게시판 </Link>
 
                             <span className="arrow">▼</span>
                         </span>

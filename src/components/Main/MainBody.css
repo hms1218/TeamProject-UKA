@@ -200,3 +200,22 @@ path:hover {
   color: #00aaff;
   margin-left: 10px;
 }
+
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #fffdf9;
+    color: #333;
+    font-size: 1.1rem;
+}
+
+.dog-runner {
+    width: 160px;
+    height: auto;
+    margin-bottom: 16px;
+    image-rendering: pixelated;
+    transition: opacity 0.2s ease-in-out;
+}

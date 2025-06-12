@@ -1,4 +1,3 @@
-import React from 'react';
 import { NavLink } from 'react-router-dom';
 import './TabMenu.css'; // 선택: 스타일 분리
 

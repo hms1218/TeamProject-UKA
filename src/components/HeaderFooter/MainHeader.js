@@ -10,8 +10,11 @@ const MainHeaders = () => {
     return (
         <header className="main-header">
             <div className="left-section" style={{cursor : "pointer"}}>
-                <Link to="/"><img src={MainLogo} alt="Logo" className="logo" /></Link>
-                
+
+                <Link to="/">
+                    <img src={MainLogo} alt="Logo" className="logo" />
+                </Link>
+
             </div>
 
             <div className="right-section">
@@ -26,26 +29,15 @@ const MainHeaders = () => {
                          onMouseLeave={() => setBoardDropdown(false)}
                     >
                         <span className="dropdown-title">
-
                             <Link to="/board">게시판 </Link>
-
-                            <Link to="/">게시판 </Link>
-
                             <span className="arrow">▼</span>
                         </span>
                         {boardDropdown && (
                             <div className="dropdown-menu">
-
                                 <Link to="/board/chat">잡담</Link>
                                 <Link to="/board/adoptionReview">입양후기</Link>
                                 <Link to="/board/infoShare">정보공유</Link>
                                 <Link to="/board/etc">잡다한것</Link>
-
-                                <Link to="/">잡담</Link>
-                                <Link to="/">입양후기</Link>
-                                <Link to="/">정보공유</Link>
-                                <Link to="/">잡다한것</Link>
-
                             </div>
                         )}
                     </div>

@@ -16,12 +16,14 @@ import FAQForm from "./components/Customers/Pages/FAQForm";
 import QnAList from "./components/Customers/Pages/QnAList";
 import QnAForm from "./components/Customers/Pages/QnAForm";
 import QnADetail from "./components/Customers/Pages/QnADetail";
+import QnAEdit from "./components/Customers/Pages/QnAEdit";
 import AdoptionInquiry from "./components/Customers/Pages/AdoptionInquiry";
 import { QnAProvider } from './components/Customers/Context/QnAContext';
 
 function App() {
+  
   return (
-    <div className="App" style={{ padding: "20px" }}>
+    <div className="App" style={{ padding: "20px", marginLeft : 300, marginRight: 300, marginTop:20 }}>
         <Router>
             <MainHeaders />
             <Routes>

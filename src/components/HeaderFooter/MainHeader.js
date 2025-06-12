@@ -10,32 +10,45 @@ const MainHeaders = () => {
     return (
         <header className="main-header">
             <div className="left-section" style={{cursor : "pointer"}}>
+
                 <Link to="/">
                     <img src={MainLogo} alt="Logo" className="logo" />
                 </Link>
+
             </div>
 
             <div className="right-section">
                 <Link to="/" className="login-button">로그인</Link>
 
                 <nav className="nav-links">
-                    <Link to="/">입양하고싶어요(상세페이지)</Link>
-                    <Link to="/about">새로운동물소식</Link>
+                    <Link to="/about">입양하고싶어요(상세페이지)</Link>
+                    <Link to="/">새로운동물소식</Link>
 
                     <div className="dropdown"
                          onMouseEnter={() => setBoardDropdown(true)}
                          onMouseLeave={() => setBoardDropdown(false)}
                     >
                         <span className="dropdown-title">
+
                             <Link to="/board">게시판 </Link>
+
+                            //<Link to="/">게시판 </Link>
+
                             <span className="arrow">▼</span>
                         </span>
                         {boardDropdown && (
                             <div className="dropdown-menu">
+
+                                <Link to="/board/chat">잡담</Link>
+                                <Link to="/board/adoptionReview">입양후기</Link>
+                                <Link to="/board/infoShare">정보공유</Link>
+                                <Link to="/board/etc">잡다한것</Link>
+
                                 <Link to="/">잡담</Link>
                                 <Link to="/">입양후기</Link>
                                 <Link to="/">정보공유</Link>
                                 <Link to="/">잡다한것</Link>
+
                             </div>
                         )}
                     </div>

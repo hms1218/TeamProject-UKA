@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useChat } from '../Context/ChatContext';
 import './BoardList.css';
 
-const ChatList = () => {
-    const { chats, notice} = useChat(); // 전역 상태 사용
+const AdoptionReview = () => {
+    const { review, notice} = useChat(); // 전역 상태 사용
     const [currentPage, setCurrentPage] = useState(1);
     const [openId, setOpenId] = useState(null);
     const [inputPassword, setInputPassword] = useState('');
@@ -13,35 +13,35 @@ const ChatList = () => {
     const itemsPerPage = 10;
   
 	const noticedChats = [...notice].sort((a, b) => b.id - a.id);
-	const sortedChats = [...chats].sort((a, b) => b.id - a.id);
+	const sortedReview = [...review].sort((a, b) => b.id - a.id);
     const indexOfLast = currentPage * itemsPerPage;
     const indexOfFirst = indexOfLast - itemsPerPage;
-    const currentChats = sortedChats.slice(indexOfFirst, indexOfLast);
-    const totalPages = Math.ceil(chats.length / itemsPerPage);
+    const currentReview = sortedReview.slice(indexOfFirst, indexOfLast);
+    const totalPages = Math.ceil(review.length / itemsPerPage);
   
     const handleTitleClick = (chat) => {
 		if (chat.isSecret) {
 			setOpenId(openId === chat.id ? null : chat.id);
 		} else {
-			navigate(`/board/chat/${chat.id}`);
+			navigate(`/board/adoptionReview/${chat.id}`);
 		}
     };
   
     const handlePasswordConfirm = (chat) => {
 		if (inputPassword === chat.password) {
-			navigate(`/board/chat/${chat.id}`);
+			navigate(`/board/adoptionReview/${chat.id}`);
 		} else {
 			alert('비밀번호가 틀렸습니다.');
 		}
     };
   
     const handleWrite = () => {
-      	navigate('/customer/qna/new');
+      	navigate('/board/adoptionReview/new');
     };
   
     return (
       	<div className="chat-container">
-			<div className="chat-header"><h2>속닥속닥</h2></div>
+			<div className="chat-header"><h2>자유게시판</h2></div>
 	
 			<div className="chat-list">
 			{/* ✅ 공지글 상단 고정 */}
@@ -60,23 +60,23 @@ const ChatList = () => {
 			))}
 
 			{/* 일반게시글 */}
-			{currentChats.map((chat) => (
-				<div key={chat.id}>
+			{currentReview.map((review) => (
+				<div key={review.id}>
 				<div className="chat-item">
 					<div className="lock-wrapper">
-					<span className={`lock-icon ${chat.isSecret ? '' : 'lock-placeholder'}`}>🔒</span>
+					<span className={`lock-icon ${review.isSecret ? '' : 'lock-placeholder'}`}>🔒</span>
 					</div>
 	
 					<div className="chat-title-link">
-					<span className="chat-title-text" onClick={() => handleTitleClick(chat)}>
-						{chat.title}
+					<span className="chat-title-text" onClick={() => handleTitleClick(review)}>
+						{review.title}
 					</span>
 					</div>
 	
-					<span className="chat-author">작성자: {chat.author}</span>
+					<span className="chat-author">작성자: {review.author}</span>
 				</div>
 	
-				{openId === chat.id && chat.isSecret && (
+				{openId === review.id && review.isSecret && (
 					<div className="chat-password-box">
 					<input
 						type="password"
@@ -85,7 +85,7 @@ const ChatList = () => {
 						value={inputPassword}
 						onChange={(e) => setInputPassword(e.target.value)}
 					/>
-					<button onClick={() => handlePasswordConfirm(chat)}>확인</button>
+					<button onClick={() => handlePasswordConfirm(review)}>확인</button>
 					</div>
 				)}
 				</div>
@@ -112,4 +112,4 @@ const ChatList = () => {
     );
 };
 
-export default ChatList;
+export default AdoptionReview;

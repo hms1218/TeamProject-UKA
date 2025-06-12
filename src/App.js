@@ -7,6 +7,13 @@ import { Home } from './components/DetailPage/navigation';
 //게시판 관련
 import BoardLayout from './components/Board/Pages/BoardLayout';
 import ChatList from './components/Board/Pages/ChatList';
+import ChatForm from './components/Board/Pages/ChatForm';
+import ChatDetail from './components/Board/Pages/ChatDetail';
+import ChatEdit from './components/Board/Pages/ChatEdit';
+import AdoptionReview from './components/Board/Pages/AdoptionReview';
+import ReviewForm from './components/Board/Pages/ReviewForm';
+import AdoptionReviewDetail from './components/Board/Pages/AdoptionReviewDetail';
+import ReviewEdit from './components/Board/Pages/ReviewEdit';
 import { ChatProvider } from './components/Board/Context/ChatContext';
 
 // 고객센터 관련
@@ -19,6 +26,7 @@ import QnADetail from "./components/Customers/Pages/QnADetail";
 import QnAEdit from "./components/Customers/Pages/QnAEdit";
 import AdoptionInquiry from "./components/Customers/Pages/AdoptionInquiry";
 import { QnAProvider } from './components/Customers/Context/QnAContext';
+
 
 function App() {
   
@@ -45,13 +53,21 @@ function App() {
                 >
                     <Route index element={<ChatList />} />
                     <Route path="chat" element={<ChatList />} />
+                    <Route path="chat/new" element={<ChatForm />} />
+                    <Route path="chat/:id" element={<ChatDetail />} />
+                    <Route path="chat/:id/new" element={<ChatEdit />} />
+                    <Route path="adoptionReview" element={<AdoptionReview />} />
+                    <Route path="adoptionReview/new" element={<ReviewForm />} />
+                    <Route path="adoptionReview/:id" element={<AdoptionReviewDetail />} />
+                    <Route path="adoptionReview/:id/new" element={<ReviewEdit />} />
                 </Route>
 
             {/* 고객센터 전체 (MainBodys 제외) */}
                 <Route path="/customer/*" element={
                     <QnAProvider>
                         <CustomerLayout />
-                    </QnAProvider>}
+                    </QnAProvider>
+                    }
                 >
                 <Route index element={<FAQList />} />
                 <Route path="faq" element={<FAQList />} />

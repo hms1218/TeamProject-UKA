@@ -1,7 +1,6 @@
 import { Tooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
 import KoreaMap from "./koreaMap";
-import test1 from '../../assets/test1.jpg';
 
 const KoreaMapSection = ({ onRegionSelect, selectedRegionId, tooltipContent, setTooltipContent, regionInfo }) => {
     return (

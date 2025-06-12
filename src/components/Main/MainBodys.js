@@ -1,9 +1,13 @@
 import { useState, useEffect } from "react";
 import "./MainBody.css";
-import { fetchRegionData, fetchAllRegionsData } from "../../api/AnimalApiData";
+import { fetchRegionData } from "../../api/AnimalApiData";
 import KoreaMapSection from "../Map/KoreaMapSection";
 import OverviewPanel from "../Panel/OverviewPanel";
 import SliderBanner from "../../shared/SliderBanner";
+
+import DogRun from "../../assets/DogRun.gif";
+import CatRun from "../../assets/CatRun.gif";
+import BirdFly from "../../assets/BirdFly.gif";
 
 // 슬라이드 텍스트
 const slides = [
@@ -12,21 +16,6 @@ const slides = [
     "📢 센터 자원봉사자 모집 중!",
 ];
 
-// ✅ CRA (Webpack) 환경에서 이미지 자동 로드
-function importAll(r) {
-    return r
-        .keys()
-        .sort((a, b) => {
-            const getNum = str => parseInt(str.match(/catrun(\d+)\.jpg$/)?.[1] ?? 0);
-            return getNum(a) - getNum(b);
-        })
-        .map(r);
-}
-
-const loadingFrames = importAll(
-    require.context("../../assets/CatRun", false, /CatRun\d+\.jpg$/)
-);
-
 const MainBodys = () => {
     const [selectedRegionId, setSelectedRegionId] = useState(null);
     const [tooltipContent, setTooltipContent] = useState(null);
@@ -34,15 +23,15 @@ const MainBodys = () => {
     const [currentSlide, setCurrentSlide] = useState(0);
     const [isPlaying, setIsPlaying] = useState(true);
     const [allRegionData, setAllRegionData] = useState({});
+
     const [loading, setLoading] = useState(true);
-    const [loadingImageIndex, setLoadingImageIndex] = useState(0);
 
     // 전체 데이터 로드
     useEffect(() => {
         const loadData = async () => {
             try {
-                const allData = await fetchAllRegionsData();
-                setAllRegionData(allData);
+                // const allData = await fetchRegionData();
+                // setAllRegionData(allData);
             } catch (error) {
                 console.error("전체 데이터 로딩 실패:", error);
             } finally {
@@ -52,17 +41,6 @@ const MainBodys = () => {
 
         loadData();
     }, []);
-
-    // 로딩 애니메이션
-    useEffect(() => {
-        if (!loading) return;
-
-        const interval = setInterval(() => {
-            setLoadingImageIndex(prev => (prev + 1) % loadingFrames.length);
-        }, 50);
-
-        return () => clearInterval(interval);
-    }, [loading]);
 
     // 슬라이드 자동 전환
     useEffect(() => {
@@ -79,11 +57,9 @@ const MainBodys = () => {
     if (loading) {
         return (
             <div className="loading-container">
-                <img
-                    src={loadingFrames[loadingImageIndex]}
-                    alt="로딩 중"
-                    className="dog-runner"
-                />
+                <img src={DogRun} alt="로딩 중" />
+                <img style={{ width:400, marginLeft : 40 }} src={CatRun} alt="로딩 중" />
+                <img src={BirdFly} alt="로딩 중" />
                 <p>🐾 데이터 사료를 물어오는 중이에요! 조금만 기다려주세요 🐾</p>
             </div>
         );
@@ -93,7 +69,7 @@ const MainBodys = () => {
         setSelectedRegionId(id);
 
         const data = allRegionData[id] || [];
-        const centerSet = new Set(data.map(item => item.SHTER_NM));
+        const centerSet = new Set(data.map(item => item.careNm));
         const centerCount = centerSet.size;
         const animalCount = data.length;
 

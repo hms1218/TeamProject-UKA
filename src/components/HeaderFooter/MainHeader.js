@@ -27,7 +27,7 @@ const MainHeaders = () => {
                          onMouseLeave={() => setBoardDropdown(false)}
                     >
                         <span className="dropdown-title">
-                            <Link to="/">게시판 </Link>
+                            <Link to="/board">게시판 </Link>
                             <span className="arrow">▼</span>
                         </span>
                         {boardDropdown && (

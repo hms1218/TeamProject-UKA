@@ -20,13 +20,14 @@ import QnAEdit from "./components/Customers/Pages/QnAEdit";
 import AdoptionInquiry from "./components/Customers/Pages/AdoptionInquiry";
 import { QnAProvider } from './components/Customers/Context/QnAContext';
 
-
 function App() {
+
   return (
     <div className="App" style={{ marginLeft : 300, marginRight: 300, marginTop:20 }}>
       <Router>
         <MainHeaders />
         <Routes>
+
 			{/* 메인 홈 전용 레이아웃 */}
 			<Route path="/" element={
 				<>

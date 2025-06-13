@@ -1,5 +1,7 @@
 import { Tooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
+import KoreaMap from "./koreaMap";
+import test1 from '../../assets/test1.jpg';
 
 const KoreaMapSection = ({
     regionList,
@@ -12,29 +14,23 @@ const KoreaMapSection = ({
     return (
         <>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 524 631">
-                {regionList.map((city) => (
-                    <path
-                        key={city.id}
-                        className={`${city.className} ${selectedRegionId === city.id ? "selected-region" : ""}`}
-                        d={city.d}
-                        stroke="#333"
-                        strokeWidth={0.5}
-                        fill="#D1E5F4"
-                        style={{ cursor: "pointer", outline: "none" }}
-                        data-tooltip-id="region-tooltip"
-                        onClick={() => onRegionSelect(city.id)}
-                        onMouseEnter={() => {
-                            const regionData = allRegionData?.[city.orgCd] || {};
-                            setTooltipContent({
-                                name: city.orgdownNm,
-                                centerCount: regionData.centerCount || 0,
-                                animalCount: regionData.animalCount || 0,
-                                dogs: regionData.dogs || 0,
-                                cats: regionData.cats || 0,
-                                others: regionData.others || 0,
-                            });
-                        }}
-                        onMouseLeave={() => setTooltipContent(null)}
+                {KoreaMap.map((city) => (
+                    <path key={city.id}
+                          className={`${city.className} ${selectedRegionId === city.id ? "selected-region" : ""}`}
+                          d={city.d}
+                          stroke="#333"
+                          strokeWidth={0.5}
+                          fill="#D1E5F4"
+                          style={{ cursor: "pointer", outline: "none", }}
+                          data-tooltip-id="region-tooltip"
+                          onClick={() => onRegionSelect(city.id, city.koreaName)}
+                          onMouseEnter={() => {
+                              setTooltipContent({
+                                  name: city.koreaName,
+                                  centerCount:regionInfo.name === city.koreaName ? regionInfo.centerCount || 0 : 0,
+                                  animalCount:regionInfo.name === city.koreaName ? regionInfo.animalCount || 0 : 0,
+                              });
+                          }}
                     />
                 ))}
             </svg>

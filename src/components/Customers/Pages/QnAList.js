@@ -3,22 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { useQnA } from '../Context/QnAContext';
 import './QnAList.css';
 
-const dummyQnAs = [
-  { id: 1, title: '입양 문의드립니다', author: 'user1', content: '입양에 대해 궁금해요', isSecret: false },
-  { id: 2, title: '후원 관련 문의', author: 'user2', content: '입양에 대해 궁금해요', isSecret: true, password: '1234' },
-  { id: 3, title: '위치가 어디인가요?', author: 'user3', content: '입양에 대해 궁금해요', isSecret: false },
-  { id: 4, title: '입양문의는 어디인가요?', author: 'user3', content: '입양에 대해 궁금해요', isSecret: false },
-  { id: 5, title: '봉사활동 어디서 신청하죠?', author: 'user3', content: '입양에 대해 궁금해요', isSecret: false },
-  { id: 6, title: '위치가 어디인가요?', author: 'user3', content: '입양에 대해 궁금해요', isSecret: false },
-  { id: 7, title: '위치가 어디인가요?', author: 'user3', content: '입양에 대해 궁금해요', isSecret: false },
-  { id: 8, title: '위치가 어디인가요?', author: 'user3', content: '입양에 대해 궁금해요', isSecret: false },
-  { id: 9, title: '후원 관련 문의', author: 'user2', content: '입양에 대해 궁금해요', isSecret: true, password: '1234' },
-  { id: 10, title: '후원 관련 문의', author: 'user2', content: '입양에 대해 궁금해요', isSecret: true, password: '1234' },
-  { id: 11, title: '후원 관련 문의', author: 'user2', content: '입양에 대해 궁금해요', isSecret: true, password: '1234' },
-  { id: 12, title: '후원 관련 문의', author: 'user2', content: '입양에 대해 궁금해요', isSecret: true, password: '1234' },
-  { id: 13, title: '마지막 질문인가요?', author: 'user3', content: '입양에 대해 궁금해요', isSecret: false },
-];
-
 const QnAList = () => {
   const { qnas, setQnas } = useQnA(); // 전역 상태 사용
   const [currentPage, setCurrentPage] = useState(1);
@@ -30,7 +14,7 @@ const QnAList = () => {
 
   useEffect(() => {
     if (qnas.length === 0) {
-      const sorted = [...dummyQnAs].sort((a, b) => b.id - a.id);
+      const sorted = [...qnas].sort((a, b) => b.id - a.id);
       setQnas(sorted);
     }
   }, [qnas, setQnas]);
@@ -73,12 +57,23 @@ const QnAList = () => {
               </div>
 
               <div className="qna-title-link">
-                <span className="qna-title-text" onClick={() => handleTitleClick(qna)}>
-                  {qna.title}
+                <span
+                  className="qna-title-text"
+                  onClick={() => handleTitleClick(qna)}
+                >
+                  {qna.isReported ? (
+                    <span style={{ color: 'red' }}>🚨 [신고가 누적된 글입니다]</span>
+                  ) : (
+                    qna.title
+                  )}
                 </span>
               </div>
 
-              <span className="qna-author">작성자: {qna.author}</span>
+              <span>{qna.isAnswered ? '✅ 답변 완료' : '⌛ 미답변'}</span>
+              <span className="qna-author">
+                작성자: {qna.author} &nbsp;|&nbsp;
+                작성일: {new Date(qna.createdAt).toLocaleDateString()} &nbsp;|&nbsp;
+              </span>
             </div>
 
             {openId === qna.id && qna.isSecret && (

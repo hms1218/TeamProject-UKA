@@ -33,7 +33,7 @@ const MainHeaders = () => {
                         </span>
                         {boardDropdown && (
                             <div className="dropdown-menu">
-                                <Link to="/board/chat">잡담</Link>
+                                <Link to="/board/chat">속닥속닥</Link>
                                 <Link to="/board/adoptionReview">입양후기</Link>
                                 <Link to="/board/infoShare">정보공유</Link>
                                 <Link to="/board/etc">잡다한것</Link>

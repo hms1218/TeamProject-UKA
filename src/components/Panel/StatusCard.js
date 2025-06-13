@@ -1,4 +1,4 @@
-const StatusCard = ({ title, date, region, data }) => (
+const StatusCard = ({ title, date, region, data, children }) => (
     <div>
         <div className="card-box">
             <h2>{title}</h2>
@@ -10,6 +10,7 @@ const StatusCard = ({ title, date, region, data }) => (
         <p>강아지: {data.dogs ?? "-"}</p>
         <p>고양이: {data.cats ?? "-"}</p>
         <p>기타: {data.others ?? "-"}</p>
+        {children}
     </div>
 );
 

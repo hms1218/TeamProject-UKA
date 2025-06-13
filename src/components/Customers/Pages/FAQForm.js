@@ -2,20 +2,21 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './WriteButton.css';
 
-const QnAForm = () => {
+const FAQForm = () => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('QnA 작성됨:', { title, content });
-    navigate('/customer/qna');
+    // TODO: API로 저장
+    console.log('FAQ 작성됨:', { title, content });
+    navigate('/customer/faq');
   };
 
   return (
     <div className="faq-form">
-      <h2>QnA 글쓰기</h2>
+      <h2>FAQ 글쓰기</h2>
       <form onSubmit={handleSubmit}>
         <div>
           <label>제목</label><br />
@@ -43,4 +44,4 @@ const QnAForm = () => {
   );
 };
 
-export default QnAForm;
+export default FAQForm;

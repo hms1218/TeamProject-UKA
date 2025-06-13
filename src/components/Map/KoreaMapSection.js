@@ -2,12 +2,12 @@ import { Tooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
 
 const KoreaMapSection = ({
-    regionList = [], // ✅ 기본값으로 빈 배열 설정
+    regionList,
     onRegionSelect,
     selectedRegionId,
     tooltipContent,
     setTooltipContent,
-    allRegionData = {}, // ✅ 기본값으로 빈 객체 설정
+    allRegionData,
 }) => {
     return (
         <>
@@ -38,7 +38,6 @@ const KoreaMapSection = ({
                     />
                 ))}
             </svg>
-
             <Tooltip
                 id="region-tooltip"
                 render={() =>

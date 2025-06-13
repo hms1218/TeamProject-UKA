@@ -1,4 +1,3 @@
-
 // 예시: props로 sidoList, onSidoClick 받음
 export default function KoreaMap({ sidoList, onSidoClick }) {
     // 실제 지도 SVG에서 시도명을 클릭하면

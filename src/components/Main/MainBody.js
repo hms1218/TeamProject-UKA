@@ -19,8 +19,6 @@ import Loading from "../Common/Loading";
 import Error from "../Common/Error";
 import "./MainBody.css";
 
-
-
 const MainBodys = () => {
     // 현재 선택된 지역 orgCd
     const [selectedRegionId, setSelectedRegionId] = useState(null);

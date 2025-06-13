@@ -1,63 +1,74 @@
-import axios from "axios";
+const API_URL = process.env.REACT_APP_ALL_ANIMAL_API_URL;
+const API_KEY = process.env.REACT_APP_ALL_ANIMAL_API_KEY;
+const BACKEND_API_URL = "http://localhost:8888/api/animals/import";
+const PAGE_SIZE = 1000;
 
 export const fetchRegionData = async () => {
-        const API_URL = process.env.REACT_APP_ALL_ANIMAL_API_URL;
-        const API_KEY = process.env.REACT_APP_ALL_ANIMAL_API_KEY;
         
-        let pageIndex = 1;
-        const PAGE_SIZE = 1000;
-        
-        let allData = [];
+    let pageIndex = 1;
+    let allData = [];
 
-        while (true) {
-            try {
-                const params = {
-                    serviceKey: API_KEY,
-                    pageNo: pageIndex,
-                    numOfRows: PAGE_SIZE,
-                };
-                const response = await fetch (
-                    `${API_URL}?serviceKey=${params.serviceKey}&pageNo=${params.pageNo}&numOfRows=${params.numOfRows}&_type=json`
-                );
+    while (true) {
+        try {
+            const params = {
+                serviceKey: API_KEY,
+                pageNo: pageIndex,
+                numOfRows: PAGE_SIZE,
+            };
+            const response = await fetch (
+                `${API_URL}?serviceKey=${params.serviceKey}&pageNo=${params.pageNo}&numOfRows=${params.numOfRows}&_type=json`
+            );
 
-                const json = await response.json();
+            const json = await response.json();
+            const AnimalProtect = json?.response?.body?.items.item;
 
-                // 구조 분해로 item 배열 추출
-                // const items = json?.response?.body?.items?.item;
-                const AnimalProtect = json?.response?.body?.items.item;
+            // 배열이 아니면 즉 데이터가 없으면 빈 배열로 처리
+            const data = Array.isArray(AnimalProtect) &&
+                AnimalProtect.length > 1 &&
+                AnimalProtect ? AnimalProtect : [];
 
-                const data = Array.isArray(AnimalProtect) &&
-                    AnimalProtect.length > 1 &&
-                    AnimalProtect ? AnimalProtect : [];
+            if (!data.length) break;
 
-                console.log("보호 동물 리스트:", data);
-
-                if (!data.length) break;
-
-                allData = allData.concat(data);
-                pageIndex++;
-                
-            } catch (error) {
-                console.error("API 요청 실패:", error);
-                break;
-            }
+            allData = allData.concat(data);
+            pageIndex++;
+            
+        } catch (error) {
+            console.error("API 요청 실패:", error);
+            break;
         }
-        console.log(allData);
+    }
+    console.log(allData);
 
-        return allData;
+    return allData;
 };
 
-/**
- * 전체 지역 데이터를 불러오는 함수 (현재는 경기도만 대상)
- */
-// export const fetchAllRegionsData = async () => {
-//     const regionIds = ["gyeonggi"]; // 추후에 다른 지역 ID 추가 가능
-//     const result = {};
+// 2. 데이터 전체를 백엔드(Spring)로 전송
+export const sendDataToBackend = async (data) => {
+    try {
+        const res = await fetch(BACKEND_API_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+        });
+        const result = await res.json();
+        console.log("서버 응답:", result);
+        return result;
+    } catch (error) {
+        console.error("백엔드 전송 실패:", error);
+        throw error;
+    }
+};
 
-//     for (const id of regionIds) {
-//         const data = await fetchRegionData(id);
-//         result[id] = data;
-//     }
+// 3. react에서 데이터 호출할때 이걸로 호출
+export const fetchAndSendAnimals = async () => {
+    const allData = await fetchRegionData();
+    await sendDataToBackend(allData);
+};
 
-//     return result;
-// };
+// React에서 데이터 불러오기
+export const fetchSavedAnimals = async () => {
+    const res = await fetch("http://localhost:8888/api/animals/");
+    const data = await res.json();
+    console.log(data);
+    return data; // 배열 형태로 동물 데이터 반환
+};

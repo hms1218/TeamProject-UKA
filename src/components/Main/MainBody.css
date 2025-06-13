@@ -72,20 +72,7 @@
   color: #444;
 }
 
-.card-box {
-  flex: 1;
-  border: 1px solid #e0f7ff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 10px;
-  padding: 10px;
-  height: 40px;
-  background-color: white;
-  color : #555;
-  border-radius: 8px;
-  box-shadow: none;
-}
+
 
 /* 오른쪽 패널 아래 */
 .info-bottom {
@@ -199,23 +186,4 @@ path:hover {
   cursor: pointer;
   color: #00aaff;
   margin-left: 10px;
-}
-
-.loading-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    background-color: #fffdf9;
-    color: #333;
-    font-size: 1.1rem;
-}
-
-.dog-runner {
-    width: 160px;
-    height: auto;
-    margin-bottom: 16px;
-    image-rendering: pixelated;
-    transition: opacity 0.2s ease-in-out;
 }

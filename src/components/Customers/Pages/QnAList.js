@@ -57,12 +57,23 @@ const QnAList = () => {
               </div>
 
               <div className="qna-title-link">
-                <span className="qna-title-text" onClick={() => handleTitleClick(qna)}>
-                  {qna.title}
+                <span
+                  className="qna-title-text"
+                  onClick={() => handleTitleClick(qna)}
+                >
+                  {qna.isReported ? (
+                    <span style={{ color: 'red' }}>🚨 [신고가 누적된 글입니다]</span>
+                  ) : (
+                    qna.title
+                  )}
                 </span>
               </div>
 
-              <span className="qna-author">작성자: {qna.author}</span>
+              <span>{qna.isAnswered ? '✅ 답변 완료' : '⌛ 미답변'}</span>
+              <span className="qna-author">
+                작성자: {qna.author} &nbsp;|&nbsp;
+                작성일: {new Date(qna.createdAt).toLocaleDateString()} &nbsp;|&nbsp;
+              </span>
             </div>
 
             {openId === qna.id && qna.isSecret && (

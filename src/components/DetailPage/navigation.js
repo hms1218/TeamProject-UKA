@@ -9,7 +9,7 @@ const Home = () => {
 const About = () => {
     return (
         <>
-            <DetailBody />
+            
         </>
     )
 }

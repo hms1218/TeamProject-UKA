@@ -10,6 +10,7 @@ export const DetailBody = () => {
     const [gun,setGun] = useState('');
     const [gu,setGu] = useState('');
     const [center,setCenter] = useState('');
+    const [regionInfo, setRegionInfo] = useState([]);
 
     //지도 데이터 로딩용
     useEffect(()=>{
@@ -22,11 +23,11 @@ export const DetailBody = () => {
             <div className="top">
                 <div className="map">
                     <KoreaMapSection 
-                                    // onRegionSelect={handleRegionSelect}
-                                    //  selectedRegionId={selectedRegionId}
-                                    //  tooltipContent={tooltipContent}
-                                    //  setTooltipContent={setTooltipContent}
-                                    //  regionInfo={regionInfo}
+                        // onRegionSelect={handleRegionSelect}
+                        //     selectedRegionId={selectedRegionId}
+                        //     tooltipContent={tooltipContent}
+                        //     setTooltipContent={setTooltipContent}
+                            regionInfo={regionInfo}
                     />
                 </div>
 

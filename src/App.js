@@ -1,10 +1,12 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
+// 메인 관련
 import MainHeaders from './components/Header/MainHeader';
 import MainBody from './components/Main/MainBody';
 import MainFooter from './components/Footer/MainFooter';
 import { Home } from './components/DetailPage/navigation';
 
-//게시판 관련
+// 게시판 관련
 import BoardLayout from './components/Board/Pages/BoardLayout';
 import ChatList from './components/Board/Pages/ChatList';
 import { ChatProvider } from './components/Board/Context/ChatContext';
@@ -23,7 +25,7 @@ import { QnAProvider } from './components/Customers/Context/QnAContext';
 function App() {
 
     return (
-        <div className="App" style={{ padding: "20px", marginLeft: "280px", marginRight: "300px"}}>
+        <div className="App" style={{ padding: "20px"}}>
             
             <Router>
                 <MainHeaders />

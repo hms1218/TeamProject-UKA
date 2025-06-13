@@ -22,6 +22,10 @@ import QnAEdit from "./components/Customers/Pages/QnAEdit";
 import AdoptionInquiry from "./components/Customers/Pages/AdoptionInquiry";
 import { QnAProvider } from './components/Customers/Context/QnAContext';
 
+//상세보기 관련
+import { DetailBody } from './components/DetailPage/DetailBody';
+import { DetailSelect}  from './components/DetailPage/DetailSelect';
+
 function App() {
 
     return (

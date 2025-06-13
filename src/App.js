@@ -1,10 +1,12 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import MainHeaders from './components/HeaderFooter/MainHeader'; 
-import MainBodys from './components/Main/MainBodys';
-import MainFooter from './components/HeaderFooter/MainFooter';
+
+// 메인 관련
+import MainHeaders from './components/Header/MainHeader';
+import MainBody from './components/Main/MainBody';
+import MainFooter from './components/Footer/MainFooter';
 import { Home } from './components/DetailPage/navigation';
 
-//게시판 관련
+// 게시판 관련
 import BoardLayout from './components/Board/Pages/BoardLayout';
 import ChatList from './components/Board/Pages/ChatList';
 import { ChatProvider } from './components/Board/Context/ChatContext';
@@ -25,56 +27,52 @@ import { DetailBody } from './components/DetailPage/DetailBody';
 import { DetailSelect}  from './components/DetailPage/DetailSelect';
 
 function App() {
-  
-  return (
-    <div className="App" style={{ padding: "20px", marginLeft : 300, marginRight: 300, marginTop:20 }}>
-        <Router>
-            <MainHeaders />
-            <Routes>
-                {/* 메인 홈 전용 레이아웃 */}
-                <Route path="/" 
-                       element={
-                           <>
-                               <Home />
-                               <MainBodys />
-                           </>
-                       }
-                />
-                {/* 상세페이지 전체 */}
-                <Route path='/about' element={<DetailBody/>} />
-                <Route path='/about/select' element={<DetailSelect/>}/>
 
-
-                {/* 게시판 전체 (MainBodys 제외) */}
-                <Route path="/board/*" 
-                    element={
-                        <ChatProvider>
-                            <BoardLayout />
-                        </ChatProvider>}
-                >
-                    <Route index element={<ChatList />} />
-                    <Route path="chat" element={<ChatList />} />
+    return (
+        <div className="App" style={{ padding: "20px"}}>
+            
+            <Router>
+                <MainHeaders />
+                <Routes>
+                    {/* 메인 홈 전용 레이아웃 */}
+                    <Route path="/" element={
+                            <>
+                                <Home />
+                                <MainBody />
+                            </>
+                        }
+                    />
+                    {/* 게시판 전체 (MainBodys 제외) */}
+                    <Route path="/board/*" element={
+                            <ChatProvider>
+                                <BoardLayout />
+                            </ChatProvider>
+                        }
+                    >
+                        <Route index element={<ChatList />} />
+                        <Route path="chat" element={<ChatList />} />
+                    </Route>
+                    {/* 고객센터 전체 (MainBodys 제외) */}
+                    <Route path="/customer/*" element={
+                            <QnAProvider>
+                                <CustomerLayout />
+                            </QnAProvider>
+                        }
+                    >
+                    <Route index element={<FAQList />} />
+                    <Route path="faq" element={<FAQList />} />
+                    <Route path="faq/new" element={<FAQForm />} />
+                    <Route path="qna" element={<QnAList />} />
+                    <Route path="qna/new" element={<QnAForm />} />
+                    <Route path="qna/:id" element={<QnADetail />} />
+                    <Route path="adoption" element={<AdoptionInquiry />} />
                 </Route>
-
-                {/* 고객센터 전체 (MainBodys 제외) */}
-                <Route path="/customer/*" element={
-                    <QnAProvider>
-                        <CustomerLayout />
-                    </QnAProvider>}
-                >
-                <Route index element={<FAQList />} />
-                <Route path="faq" element={<FAQList />} />
-                <Route path="faq/new" element={<FAQForm />} />
-                <Route path="qna" element={<QnAList />} />
-                <Route path="qna/new" element={<QnAForm />} />
-                <Route path="qna/:id" element={<QnADetail />} />
-                <Route path="adoption" element={<AdoptionInquiry />} />
-            </Route>
-            </Routes>
-            <MainFooter />
-        </Router>
-    </div>
-  );
+                </Routes>
+                <MainFooter />
+            </Router>
+            
+        </div>
+    );
 }
 
 export default App;

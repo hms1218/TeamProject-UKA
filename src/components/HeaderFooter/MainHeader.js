@@ -21,8 +21,7 @@ const MainHeaders = () => {
                 <Link to="/" className="login-button">로그인</Link>
 
                 <nav className="nav-links">
-                    <Link to="/about">입양하고싶어요(상세페이지)</Link>
-                    <Link to="/">새로운동물소식</Link>
+                    <Link to="/about">입양하고싶어요</Link>
 
                     <div className="dropdown"
                          onMouseEnter={() => setBoardDropdown(true)}
@@ -30,6 +29,9 @@ const MainHeaders = () => {
                     >
                         <span className="dropdown-title">
                             <Link to="/board">게시판 </Link>
+
+                            //<Link to="/">게시판 </Link>
+
                             <span className="arrow">▼</span>
                         </span>
                         {boardDropdown && (

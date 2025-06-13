@@ -20,6 +20,10 @@ import QnAEdit from "./components/Customers/Pages/QnAEdit";
 import AdoptionInquiry from "./components/Customers/Pages/AdoptionInquiry";
 import { QnAProvider } from './components/Customers/Context/QnAContext';
 
+//상세보기 관련
+import { DetailBody } from './components/DetailPage/DetailBody';
+import { DetailSelect}  from './components/DetailPage/DetailSelect';
+
 function App() {
   
   return (
@@ -36,6 +40,11 @@ function App() {
                            </>
                        }
                 />
+                {/* 상세페이지 전체 */}
+                <Route path='/about' element={<DetailBody/>} />
+                <Route path='/about/select' element={<DetailSelect/>}/>
+
+
                 {/* 게시판 전체 (MainBodys 제외) */}
                 <Route path="/board/*" 
                     element={
@@ -47,7 +56,7 @@ function App() {
                     <Route path="chat" element={<ChatList />} />
                 </Route>
 
-            {/* 고객센터 전체 (MainBodys 제외) */}
+                {/* 고객센터 전체 (MainBodys 제외) */}
                 <Route path="/customer/*" element={
                     <QnAProvider>
                         <CustomerLayout />

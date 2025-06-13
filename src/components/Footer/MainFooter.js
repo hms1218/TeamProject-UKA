@@ -11,7 +11,7 @@ const MainFooter = () => {
                      alignItems: 'center', 
                      flexWrap: 'wrap',
                      padding: '10px',
-                     minWidth:"1400px",
+                     minWidth:"800px",
                  }}
             >
             <div style={{  fontSize:"14px", color:"#555"}}>

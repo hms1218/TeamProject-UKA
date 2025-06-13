@@ -1,22 +1,19 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Editor } from '@toast-ui/react-editor';
-import '@toast-ui/editor/dist/toastui-editor.css';
 
 const FAQForm = () => {
   const [title, setTitle] = useState('');
-  const editorRef = useRef();
+  const [content, setContent] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const content = editorRef.current.getInstance().getMarkdown(); // 또는 getHTML()
-
+    // ✅ 추후 API 연결 예정
     console.log('📄 작성된 FAQ:', { title, content });
 
     alert('FAQ가 등록되었습니다.');
-    navigate('/admin/faqform');
+    navigate('/admin/faqform'); // 등록 후 기본 탭(예: 신고된 게시글)으로 이동
   };
 
   return (
@@ -35,12 +32,12 @@ const FAQForm = () => {
         </div>
         <div>
           <label>내용</label><br />
-          <Editor
-            ref={editorRef}
-            previewStyle="vertical"
-            height="400px"
-            initialEditType="markdown" // wysiwyg도 가능
-            useCommandShortcut={true}
+          <textarea
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            rows="6"
+            required
+            style={{ width: '100%', padding: '10px' }}
           />
         </div>
         <button type="submit" className="write-button">등록</button>

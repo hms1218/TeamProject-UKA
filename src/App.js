@@ -21,7 +21,7 @@ import AdoptionInquiry from "./components/Customers/Pages/AdoptionInquiry";
 import { QnAProvider } from './components/Customers/Context/QnAContext';
 
 function App() {
-  
+
     return (
         <div className="App" style={{ padding: "20px", marginLeft: "280px", marginRight: "300px"}}>
             
@@ -46,7 +46,6 @@ function App() {
                         <Route index element={<ChatList />} />
                         <Route path="chat" element={<ChatList />} />
                     </Route>
-
                     {/* 고객센터 전체 (MainBodys 제외) */}
                     <Route path="/customer/*" element={
                             <QnAProvider>

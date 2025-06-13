@@ -1,8 +1,5 @@
-// src/components/boards/FAQForm.js
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './WriteButton.css';
 
 const FAQForm = () => {
   const [title, setTitle] = useState('');
@@ -11,14 +8,17 @@ const FAQForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // TODO: API로 저장
-    console.log('FAQ 작성됨:', { title, content });
-    navigate('/customer/faq');
+
+    // ✅ 추후 API 연결 예정
+    console.log('📄 작성된 FAQ:', { title, content });
+
+    alert('FAQ가 등록되었습니다.');
+    navigate('/admin/faqform'); // 등록 후 기본 탭(예: 신고된 게시글)으로 이동
   };
 
   return (
     <div className="faq-form">
-      <h2>FAQ 글쓰기</h2>
+      <h2>📄 FAQ 글쓰기</h2>
       <form onSubmit={handleSubmit}>
         <div>
           <label>제목</label><br />

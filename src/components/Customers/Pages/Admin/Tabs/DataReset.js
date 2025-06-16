@@ -1,14 +1,24 @@
+import { SidoApiData } from '../../../../../api/AnimalCommonApiData';
+
 const DataReset = () => {
+  const handleReset = async () => {
+    const confirmSave = window.confirm('정말 데이터를 저장하시겠습니까?');
+    if (!confirmSave) return;
+
+    try {
+      await SidoApiData();
+      alert('데이터 저장 완료!');
+    } catch (error) {
+      alert('저장 실패!');
+    }
+  };
+
   return (
     <div>
       <h2>🔄 데이터 새로고침</h2>
       <p>최신 데이터를 다시 불러오려면 아래 버튼을 클릭하세요.</p>
       <button
-        onClick={() => {
-          if (window.confirm('데이터 새로받기는 시간이 오래걸립니다.\n새로 받으시겠습니까?')) {
-            window.location.reload(); // 나중에 fetchQnAs()로 교체
-          }
-        }}
+        onClick={handleReset}
         style={{
           padding: '10px 20px',
           fontSize: '16px',

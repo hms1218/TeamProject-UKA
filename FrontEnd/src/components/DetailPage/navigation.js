@@ -1,3 +1,5 @@
+import { DetailBody } from "./DetailBody"
+
 const Home = () => {
     return (
         <></>
@@ -6,7 +8,9 @@ const Home = () => {
 
 const About = () => {
     return (
-        <></>
+        <>
+            
+        </>
     )
 }
 

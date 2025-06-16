@@ -4,7 +4,7 @@ import { useChat } from '../Context/ChatContext';
 import './BoardList.css';
 
 const AdoptionReview = () => {
-    const { review, notice} = useChat(); // 전역 상태 사용
+    const { review} = useChat(); // 전역 상태 사용
     const [currentPage, setCurrentPage] = useState(1);
     const [openId, setOpenId] = useState(null);
     const [inputPassword, setInputPassword] = useState('');
@@ -12,8 +12,7 @@ const AdoptionReview = () => {
   
     const itemsPerPage = 10;
   
-	const noticedChats = [...notice].sort((a, b) => b.id - a.id);
-	const sortedReview = [...review].sort((a, b) => b.id - a.id);
+	const sortedReview = [...review].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     const indexOfLast = currentPage * itemsPerPage;
     const indexOfFirst = indexOfLast - itemsPerPage;
     const currentReview = sortedReview.slice(indexOfFirst, indexOfLast);
@@ -41,24 +40,9 @@ const AdoptionReview = () => {
   
     return (
       	<div className="chat-container">
-			<div className="chat-header"><h2>자유게시판</h2></div>
+			<div className="chat-header"><h2>입양후기</h2></div>
 	
 			<div className="chat-list">
-			{/* ✅ 공지글 상단 고정 */}
-			{noticedChats.map((notice) => (
-			<div key={`notice-${notice.id}`} className="notice-item">
-				<div className="notice-wrapper">
-					<span className="notice-icon">📢</span>
-				</div>
-				<div className="chat-title-link">
-					<span className="chat-title-text" onClick={() => handleTitleClick(notice)}>
-						{notice.title}
-					</span>
-				</div>
-				<span className="chat-author">작성자: {notice.author}</span>
-			</div>
-			))}
-
 			{/* 일반게시글 */}
 			{currentReview.map((review) => (
 				<div key={review.id}>
@@ -74,6 +58,7 @@ const AdoptionReview = () => {
 					</div>
 	
 					<span className="chat-author">작성자: {review.author}</span>
+					<small>{new Date(review.createdAt).toLocaleString()}</small>
 				</div>
 	
 				{openId === review.id && review.isSecret && (

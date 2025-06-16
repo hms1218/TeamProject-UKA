@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { fetchSavedAnimals } from "../api/AnimalApiData";
+import { MainMockData } from "../data/MainMockData";
 
 export default function useRegionData() {
     const [rawData, setRawData] = useState([]); // API에서 파싱해온 객체 배열
@@ -9,7 +10,8 @@ export default function useRegionData() {
     useEffect(() => {
         const loadData = async () => {
             try {
-                const allData = await fetchSavedAnimals();
+                // const allData = await fetchSavedAnimals();
+                const allData = MainMockData;
                 setRawData(allData);
                 
                 if (!allData || Object.keys(allData).length === 0) {

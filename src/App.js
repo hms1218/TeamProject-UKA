@@ -15,6 +15,10 @@ import ResetPasswordPage from './components/Pages/ResetPasswordPage';
 
 //게시판 관련
 import BoardLayout from './components/Board/Pages/BoardLayout';
+import Notice from './components/Board/Pages/Notice';
+import NoticeForm from './components/Board/Pages/NoticeForm';
+import NoticeDetail from './components/Board/Pages/NoticeDetail';
+import NoticeEdit from './components/Board/Pages/NoticeEdit';
 import ChatList from './components/Board/Pages/ChatList';
 import ChatForm from './components/Board/Pages/ChatForm';
 import ChatDetail from './components/Board/Pages/ChatDetail';
@@ -46,6 +50,9 @@ import AdminQnADetail from './components/Customers/Pages/Admin/AdminQnADetail';
 // 관리자 화면
 import AdminPage from './components/Customers/Pages/Admin/AdminPage';
 import AdminQnADetail from './components/Customers/Pages/Admin/AdminQnADetail';
+import AllBoard from './components/Board/Pages/AllBoard';
+
+
 
 function App() {
 
@@ -82,7 +89,11 @@ function App() {
                                    <BoardLayout />
                                </ChatProvider>}
                     >
-                        <Route index element={<ChatList />} />
+                        <Route index element={<AllBoard />} />
+                        <Route path="notice" element={<Notice />} />
+                        <Route path="notice/new" element={<NoticeForm />} />
+                        <Route path="notice/:id" element={<NoticeDetail />} />
+                        <Route path="notice/:id/new" element={<NoticeEdit />} />
                         <Route path="chat" element={<ChatList />} />
                         <Route path="chat/new" element={<ChatForm />} />
                         <Route path="chat/:id" element={<ChatDetail />} />

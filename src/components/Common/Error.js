@@ -1,6 +1,4 @@
-// src/components/Common/Error.js
-
-import "./Error.css"; // 스타일 분리 원하면!
+import "./Error.css";
 
 const DefaultError = {
   network: {

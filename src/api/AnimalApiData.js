@@ -4,7 +4,6 @@ const BACKEND_API_URL = "http://localhost:8888/api/animals/import";
 const PAGE_SIZE = 1000;
 
 export const fetchRegionData = async () => {
-        
     let pageIndex = 1;
     let allData = [];
 
@@ -67,8 +66,26 @@ export const fetchAndSendAnimals = async () => {
 
 // React에서 데이터 불러오기
 export const fetchSavedAnimals = async () => {
-    const res = await fetch("http://localhost:8888/api/animals/");
+//   const token = localStorage.getItem('token');  // 1) 로그인 시 저장한 토큰 꺼내기
+//   if (!token) {
+//     throw new Error('로그인 토큰이 없습니다.'); 
+//   }
+
+    const res = await fetch('http://localhost:8888/api/animals/', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            // 'Authorization': `Bearer ${token}`      // 2) 헤더에 붙여 주기
+        }
+    });
+
+    if (!res.ok) {
+        // 3) 401, 403 같은 에러 처리
+        const err = await res.json();
+        throw new Error(err.message || '동물 데이터 조회 실패');
+    }
+
     const data = await res.json();
     console.log(data);
-    return data; // 배열 형태로 동물 데이터 반환
+    return data;
 };

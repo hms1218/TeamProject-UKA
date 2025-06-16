@@ -6,6 +6,13 @@ import MainBody from './components/Main/MainBody';
 import MainFooter from './components/Footer/MainFooter';
 import { Home } from './components/DetailPage/navigation';
 
+import LoginPage from './components/Pages/LoginPage';
+import SignupPage from './components/Pages/SignupPage';
+import FindIdPage from './components/Pages/FindIdPage';
+import FindPasswordPage from './components/Pages/FindPasswordPage';
+
+import ResetPasswordPage from './components/Pages/ResetPasswordPage';
+
 //게시판 관련
 import BoardLayout from './components/Board/Pages/BoardLayout';
 import ChatList from './components/Board/Pages/ChatList';
@@ -52,6 +59,14 @@ function App() {
                             </>
                         }
                     />
+                    <Route path="/login" element={<LoginPage />} />
+                    <Route path="/signup" element={<SignupPage />} />
+
+                    <Route path="/find-id" element={<FindIdPage />} />
+                    <Route path="/find-password" element={<FindPasswordPage />} />
+
+                    <Route path="/reset-password" element={<ResetPasswordPage />} />
+
                     {/* 상세페이지 전체 */}
                     <Route path='/about' element={<DetailBody/>} />
                     <Route path='/about/select' element={<DetailSelect/>}/>

@@ -1,7 +1,7 @@
 /* 전체 div */
 .dashboard-container {
   width: 100%;
-  min-width: 1415px;
+  min-width: 800px;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
@@ -186,4 +186,12 @@ path:hover {
   cursor: pointer;
   color: #00aaff;
   margin-left: 10px;
+}
+
+.dog-runner {
+    width: 160px;
+    height: auto;
+    margin-bottom: 16px;
+    image-rendering: pixelated;
+    transition: opacity 0.2s ease-in-out;
 }

@@ -245,3 +245,4 @@ export const DetailSelect = () => {
         </div>//end container
     )
 }
+

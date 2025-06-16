@@ -46,13 +46,7 @@ import { DetailSelect}  from './components/DetailPage/DetailSelect';
 // 관리자 화면
 import AdminPage from './components/Customers/Pages/Admin/AdminPage';
 import AdminQnADetail from './components/Customers/Pages/Admin/AdminQnADetail';
-
-// 관리자 화면
-import AdminPage from './components/Customers/Pages/Admin/AdminPage';
-import AdminQnADetail from './components/Customers/Pages/Admin/AdminQnADetail';
 import AllBoard from './components/Board/Pages/AllBoard';
-
-
 
 function App() {
 

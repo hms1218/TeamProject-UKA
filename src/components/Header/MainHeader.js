@@ -1,13 +1,14 @@
 import { Link } from 'react-router-dom';
 import MainLogo from '../../assets/MainLogo.png';
-import DropDownMenu from './DropDownMenu';
-import './MainHeader.css';
-import { fetchAndSendAnimals } from '../../api/AnimalApiData';
 import { SidoApiData } from '../../api/AnimalCommonApiData';
+import { useState } from 'react';
 
-
+import './MainHeader.css';
 
 const MainHeaders = () => {
+
+    const [boardDropdown, setBoardDropdown] = useState(false);
+    const [supportDropdown, setSupportDropdown] = useState(false);
 
     // 버튼 클릭시 실행되는 함수
     const handleSaveData = async () => {
@@ -39,27 +40,43 @@ const MainHeaders = () => {
                 </button>
 
                 <nav className="nav-links">
-                    <Link to="/">입양하고싶어요</Link>
+                    <Link to="/about">입양하고싶어요</Link>
 
-                    {/* DropDownMenu 컴포넌트 사용 */}
-                    <DropDownMenu title="게시판"
-                                  to="/board"
-                                  items={[
-                                      { label: "잡담", to: "/board/chat" },
-                                      { label: "입양후기", to: "/board/review" },
-                                      { label: "정보공유", to: "/board/info" },
-                                      { label: "잡다한것", to: "/board/etc" },
-                                  ]}
-                    />
-                    <DropDownMenu title="고객센터"
-                                  to="/customer"
-                                  items={[
-                                      { label: "FAQ", to: "/customer/faq" },
-                                      { label: "Q&A", to: "/customer/qna" },
-                                      { label: "입양문의", to: "/customer/adoption" },
-                                      { label: "잡다한것", to: "/customer/etc" },
-                                  ]}
-                    />
+                    <div className="dropdown"
+                         onMouseEnter={() => setBoardDropdown(true)}
+                         onMouseLeave={() => setBoardDropdown(false)}
+                    >
+                        <span className="dropdown-title">
+                            <Link to="/">게시판 </Link>
+                            <span className="arrow">▼</span>
+                        </span>
+                        {boardDropdown && (
+                            <div className="dropdown-menu">
+                                <Link to="/board/chat">속닥속닥</Link>
+                                <Link to="/board/adoptionReview">입양후기</Link>
+                                <Link to="/board/infoShare">정보공유</Link>
+                                <Link to="/board/etc">잡다한것</Link>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="dropdown"
+                         onMouseEnter={() => setSupportDropdown(true)}
+                         onMouseLeave={() => setSupportDropdown(false)}
+                    >
+                        <span className="dropdown-title">
+                            <Link to="/customer">고객센터</Link>
+                            <span className="arrow">▼</span>
+                        </span>
+                        {supportDropdown && (
+                            <div className="dropdown-menu">
+                                <Link to="/customer">FAQ</Link>
+                                <Link to="/customer/qna">Q&A</Link>
+                                <Link to="/customer/adoption">입양문의</Link>
+                                <Link to="/admin/reported">관리자 페이지</Link>
+                            </div>
+                        )}
+                    </div>
                 </nav>
             </div>
         </header>

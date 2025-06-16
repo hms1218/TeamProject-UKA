@@ -11,6 +11,11 @@ const BoardLayout = ({children}) => {
                     <h1 className="board-title">게시판</h1>
                 </div>
             <div className="board-header-center">
+                <select className='board-search-select'>
+                    <option>제목</option>
+                    <option>작성자</option>
+                    <option>내용</option>
+                </select>
                 <input
                     className="board-search-input"
                     type="text"
@@ -21,7 +26,7 @@ const BoardLayout = ({children}) => {
                 </button>
             </div>
             <div className="board-header-right">
-            
+                
             </div>
             {children}
         
@@ -33,7 +38,7 @@ const BoardLayout = ({children}) => {
                 to="/board/chat"
                 className={({ isActive }) => isActive ? 'active' : ''}
             >
-            잡담
+            자유게시판
             </NavLink>
             <NavLink
                 to="/board/adoptionReview"

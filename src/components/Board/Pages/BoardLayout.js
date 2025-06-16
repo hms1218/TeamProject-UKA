@@ -1,7 +1,7 @@
 import { Outlet, NavLink} from 'react-router-dom';
 import './BoardLayout.css';
 
-const BoardLayout = ({children}) => {
+const BoardLayout = () => {
 
     return (
         <div className="board-layout">
@@ -27,18 +27,28 @@ const BoardLayout = ({children}) => {
             </div>
             <div className="board-header-right">
                 
-            </div>
-            {children}
-        
+            </div>       
         </div>
 
         {/* 탭 메뉴 */}
         <nav className="mini-tab-bar">
             <NavLink
+                to="/board" end
+                className={({ isActive }) => isActive ? 'active' : ''}
+            >
+            전체
+            </NavLink>
+            <NavLink
+                to="/board/notice"
+                className={({ isActive }) => isActive ? 'active' : ''}
+            >
+            공지사항
+            </NavLink>
+            <NavLink
                 to="/board/chat"
                 className={({ isActive }) => isActive ? 'active' : ''}
             >
-            자유게시판
+            속닥속닥
             </NavLink>
             <NavLink
                 to="/board/adoptionReview"
@@ -50,13 +60,7 @@ const BoardLayout = ({children}) => {
                 to="/board/infoShare"
                 className={({ isActive }) => isActive ? 'active' : ''}
             >
-            정보공유
-            </NavLink>
-            <NavLink
-                to="/board/etc"
-                className={({ isActive }) => isActive ? 'active' : ''}
-            >
-            잡다한것
+            새끼분양
             </NavLink>
         </nav>
 

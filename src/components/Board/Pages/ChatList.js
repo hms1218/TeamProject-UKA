@@ -4,7 +4,7 @@ import { useChat } from '../Context/ChatContext';
 import './BoardList.css';
 
 const ChatList = () => {
-    const { chats, notice} = useChat(); // 전역 상태 사용
+    const { chats} = useChat(); // 전역 상태 사용
     const [currentPage, setCurrentPage] = useState(1);
     const [openId, setOpenId] = useState(null);
     const [inputPassword, setInputPassword] = useState('');
@@ -12,8 +12,7 @@ const ChatList = () => {
   
     const itemsPerPage = 10;
   
-	const noticedChats = [...notice].sort((a, b) => b.id - a.id);
-	const sortedChats = [...chats].sort((a, b) => b.id - a.id);
+	const sortedChats = [...chats].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     const indexOfLast = currentPage * itemsPerPage;
     const indexOfFirst = indexOfLast - itemsPerPage;
     const currentChats = sortedChats.slice(indexOfFirst, indexOfLast);
@@ -36,7 +35,7 @@ const ChatList = () => {
     };
   
     const handleWrite = () => {
-      	navigate('/customer/qna/new');
+      	navigate('/board/chat/new');
     };
   
     return (
@@ -44,21 +43,6 @@ const ChatList = () => {
 			<div className="chat-header"><h2>속닥속닥</h2></div>
 	
 			<div className="chat-list">
-			{/* ✅ 공지글 상단 고정 */}
-			{noticedChats.map((notice) => (
-			<div key={`notice-${notice.id}`} className="notice-item">
-				<div className="notice-wrapper">
-					<span className="notice-icon">📢</span>
-				</div>
-				<div className="chat-title-link">
-					<span className="chat-title-text" onClick={() => handleTitleClick(notice)}>
-						{notice.title}
-					</span>
-				</div>
-				<span className="chat-author">작성자: {notice.author}</span>
-			</div>
-			))}
-
 			{/* 일반게시글 */}
 			{currentChats.map((chat) => (
 				<div key={chat.id}>
@@ -74,6 +58,7 @@ const ChatList = () => {
 					</div>
 	
 					<span className="chat-author">작성자: {chat.author}</span>
+					<small>{new Date(chat.createdAt).toLocaleString()}</small>
 				</div>
 	
 				{openId === chat.id && chat.isSecret && (

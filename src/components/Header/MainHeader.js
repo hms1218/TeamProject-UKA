@@ -47,15 +47,16 @@ const MainHeaders = () => {
                          onMouseLeave={() => setBoardDropdown(false)}
                     >
                         <span className="dropdown-title">
-                            <Link to="/">게시판 </Link>
+                            <Link to="/board">게시판 </Link>
                             <span className="arrow">▼</span>
                         </span>
                         {boardDropdown && (
                             <div className="dropdown-menu">
+                                <Link to="/board">전체</Link>
+                                <Link to="/board/notice">공지사항</Link>
                                 <Link to="/board/chat">속닥속닥</Link>
                                 <Link to="/board/adoptionReview">입양후기</Link>
-                                <Link to="/board/infoShare">정보공유</Link>
-                                <Link to="/board/etc">잡다한것</Link>
+                                <Link to="/board/infoShare">새끼분양</Link>
                             </div>
                         )}
                     </div>

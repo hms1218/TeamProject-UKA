@@ -35,6 +35,10 @@ import QnAEdit from "./components/Customers/Pages/QnAEdit";
 import AdoptionInquiry from "./components/Customers/Pages/AdoptionInquiry";
 import { QnAProvider } from './components/Customers/Context/QnAContext';
 
+//상세보기 관련
+import { DetailBody } from './components/DetailPage/DetailBody';
+import { DetailSelect}  from './components/DetailPage/DetailSelect';
+
 // 관리자 화면
 import AdminPage from './components/Customers/Pages/Admin/AdminPage';
 import AdminQnADetail from './components/Customers/Pages/Admin/AdminQnADetail';

@@ -7,12 +7,18 @@ import { Home } from './components/DetailPage/navigation';
 //게시판 관련
 import BoardLayout from './components/Board/Pages/BoardLayout';
 import ChatList from './components/Board/Pages/ChatList';
+import ChatForm from './components/Board/Pages/ChatForm';
+import ChatDetail from './components/Board/Pages/ChatDetail';
+import ChatEdit from './components/Board/Pages/ChatEdit';
+import AdoptionReview from './components/Board/Pages/AdoptionReview';
+import ReviewForm from './components/Board/Pages/ReviewForm';
+import AdoptionReviewDetail from './components/Board/Pages/AdoptionReviewDetail';
+import ReviewEdit from './components/Board/Pages/ReviewEdit';
 import { ChatProvider } from './components/Board/Context/ChatContext';
 
 // 고객센터 관련
 import CustomerLayout from './components/Customers/Pages/CustomerLayout';
 import FAQList from "./components/Customers/Pages/FAQList";
-import FAQForm from "./components/Customers/Pages/FAQForm";
 import QnAList from "./components/Customers/Pages/QnAList";
 import QnAForm from "./components/Customers/Pages/QnAForm";
 import QnADetail from "./components/Customers/Pages/QnADetail";
@@ -20,12 +26,16 @@ import QnAEdit from "./components/Customers/Pages/QnAEdit";
 import AdoptionInquiry from "./components/Customers/Pages/AdoptionInquiry";
 import { QnAProvider } from './components/Customers/Context/QnAContext';
 
+// 관리자 화면
+import AdminPage from './components/Customers/Pages/Admin/AdminPage';
+import AdminQnADetail from './components/Customers/Pages/Admin/AdminQnADetail';
+
 //상세보기 관련
 import { DetailBody } from './components/DetailPage/DetailBody';
 import { DetailSelect}  from './components/DetailPage/DetailSelect';
 
 function App() {
-  
+
   return (
     <div className="App" style={{ padding: "20px", marginLeft : 300, marginRight: 300, marginTop:20 }}>
         <Router>
@@ -40,11 +50,6 @@ function App() {
                            </>
                        }
                 />
-                {/* 상세페이지 전체 */}
-                <Route path='/about' element={<DetailBody/>} />
-                <Route path='/about/select' element={<DetailSelect/>}/>
-
-
                 {/* 게시판 전체 (MainBodys 제외) */}
                 <Route path="/board/*" 
                     element={
@@ -56,7 +61,7 @@ function App() {
                     <Route path="chat" element={<ChatList />} />
                 </Route>
 
-                {/* 고객센터 전체 (MainBodys 제외) */}
+            {/* 고객센터 전체 (MainBodys 제외) */}
                 <Route path="/customer/*" element={
                     <QnAProvider>
                         <CustomerLayout />

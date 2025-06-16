@@ -1,8 +1,16 @@
 import { Tooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
 import KoreaMap from "./koreaMap";
+import test1 from '../../assets/test1.jpg';
 
-const KoreaMapSection = ({ onRegionSelect, selectedRegionId, tooltipContent, setTooltipContent, regionInfo }) => {
+const KoreaMapSection = ({
+    regionList,
+    onRegionSelect,
+    selectedRegionId,
+    tooltipContent,
+    setTooltipContent,
+    allRegionData,
+}) => {
     return (
         <>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 524 631">
@@ -26,15 +34,21 @@ const KoreaMapSection = ({ onRegionSelect, selectedRegionId, tooltipContent, set
                     />
                 ))}
             </svg>
-
-            <Tooltip id="region-tooltip" render={() => tooltipContent ? (
-                <div style={{ padding: '8px' }}>
-                    <strong>{tooltipContent.name}</strong>
-                    <p>센터 : {tooltipContent.centerCount}</p>
-                    <p>동물 수 : {tooltipContent.animalCount}</p>
-                </div>
-                ) : null
-            }/>
+            <Tooltip
+                id="region-tooltip"
+                render={() =>
+                    tooltipContent ? (
+                        <div style={{ padding: "8px" }}>
+                            <strong>{tooltipContent.name}</strong>
+                            <p>센터 : {tooltipContent.centerCount}</p>
+                            <p>동물 수 : {tooltipContent.animalCount}</p>
+                            <p>강아지: {tooltipContent.dogs}</p>
+                            <p>고양이: {tooltipContent.cats}</p>
+                            <p>기타: {tooltipContent.others}</p>
+                        </div>
+                    ) : null
+                }
+            />
         </>
     );
 };

@@ -31,29 +31,21 @@ const AllBoard = () => {
         if (post.isSecret) {
             setOpenId(openId === post.id ? null : post.id);
         } else {
-            setOpenId(post.id);
+            navigate(`/board/all/${post.id}`, {state: { postType: post.type }});
         }
     };
   
     const handlePasswordConfirm = (post) => {
         if (inputPassword === post.password) {
-            switch (post.type) {
-                case 'chat':
-                    navigate(`/board/chat/${post.id}`);
-                    break;
-                case 'review':
-                    navigate(`/board/adoptionReview/${post.id}`);
-                    break;
-                default:
-                    break;
-            }
-        } else {
-            alert('비밀번호가 틀렸습니다.');
-        }
+			window.sessionStorage.setItem(`chat_access_${post.id}`, 'true');
+			navigate(`/board/all/${post.id}`, {state: { postType: post.type }})
+		} else {
+			alert('비밀번호가 틀렸습니다.');
+		}
     };
 
     const handleWrite = () => {
-      	navigate('/board/chat/new');
+      	navigate('/board/all/new');
     };
   
     return (

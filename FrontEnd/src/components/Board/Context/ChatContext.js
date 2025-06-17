@@ -1,42 +1,58 @@
 import { createContext, useContext, useState } from 'react';
 
 const ChatContext = createContext();
-
 const now = new Date();
 
+const getRandomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
+const generatePost = (id, title, author, content, minutesAgo, isSecret = false) => ({
+    id,
+    title,
+    author,
+    comment: getRandomInt(0, 10),
+    views: getRandomInt(1, 200),
+    likes: getRandomInt(0, 50),
+    content,
+    isSecret,
+    ...(isSecret && { password: "1234" }),
+    createdAt: new Date(now.getTime() - 1000 * 60 * minutesAgo)
+});
+
 const initialNotice = [
-    { id: 1, title: '최신 공지사항1', author: '관리자', content: '공지사항1', isSecret: false, createdAt: new Date(now.getTime() - 1000 * 60 * 5) }, //5분전
-    { id: 2, title: '최신 공지사항2', author: '관리자', content: '공지사항2', isSecret: false, createdAt: new Date(now.getTime() - 1000 * 60 * 4) }, //4분전
-    { id: 3, title: '최신 공지사항3', author: '관리자', content: '공지사항3', isSecret: false, createdAt: new Date(now.getTime() - 1000 * 60 * 15) }, //15분전
-    { id: 4, title: '최신 공지사항4', author: '관리자', content: '공지사항4', isSecret: false, createdAt: new Date(now.getTime() - 1000 * 60 * 60) }, //60분전
+    generatePost(1, '최신 공지사항1', '관리자이이이이이이이', '공지사항1', 5),
+    generatePost(2, '최신 공지사항2', '관리자', '공지사항2', 4),
+    generatePost(3, '최신 공지사항3', '관리자', '공지사항3', 15),
+    generatePost(4, '최신 공지사항4', '관리자', '공지사항4', 60),
+    generatePost(5, '최신 공지사항5', '관리자', '공지사항5', 75),
+    generatePost(6, '최신 공지사항6', '관리자', '공지사항6', 9),
 ];
 
 const initialChatList = [
-    { id: 1, title: '자유1', author: '사람1', content: '자유게시판1', isSecret: false, createdAt: new Date(now.getTime() - 1000 * 60 * 5) },
-    { id: 2, title: '게시판2', author: '사람2', content: '자유게시판2', isSecret: false, createdAt: new Date(now.getTime() - 1000 * 60 * 7) },
-    { id: 3, title: '수3', author: '사람3', content: '자유게시판3', isSecret: false, createdAt: new Date(now.getTime() - 1000 * 60 * 15) },
-    { id: 4, title: '근4', author: '사람3', content: '자유게시판4', isSecret: false, createdAt: new Date(now.getTime() - 1000 * 60 * 88) },
-    { id: 5, title: '수5', author: '사람3', content: '자유게시판5', isSecret: false, createdAt: new Date(now.getTime() - 1000 * 60 * 10) },
-    { id: 6, title: '근6', author: '사람3', content: '자유게시판6', isSecret: false, createdAt: new Date(now.getTime() - 1000 * 60 * 80) },
-    { id: 7, title: '수7', author: '사람3', content: '자유게시판7', isSecret: false, createdAt: new Date(now.getTime() - 1000 * 60 * 39) },
-    { id: 8, title: '속8', author: '사람3', content: '자유게시판8', isSecret: false, createdAt: new Date(now.getTime() - 1000 * 60 * 200) },
-    { id: 9, title: '닥9', author: '사람3', content: '자유게시판9', isSecret: false, createdAt: new Date(now.getTime() - 1000 * 60 * 104) },
-    { id: 10, title: '속10', author: '사람3', content: '자유게시판10', isSecret: false, createdAt: new Date(now.getTime() - 1000 * 60 * 51) },
-    { id: 11, title: '닥11', author: '사람3', content: '자유게시판11', isSecret: false, createdAt: new Date(now.getTime() - 1000 * 60 * 95) },
+    generatePost(1, '속닥1', '속닥맨1', '자유게시판1', 5),
+    generatePost(2, '속닥2', '속닥맨2', '자유게시판2', 7),
+    generatePost(3, '속닥3', '속닥맨3', '자유게시판3', 15),
+    generatePost(4, '속닥4', '속닥맨3', '자유게시판4', 88, true),
+    generatePost(5, '속닥5', '속닥맨3', '자유게시판5', 10),
+    generatePost(6, '속닥6', '속닥맨3', '자유게시판6', 80, true),
+    generatePost(7, '속닥7', '속닥맨3', '자유게시판7', 39),
+    generatePost(8, '속닥8', '속닥맨3', '자유게시판8', 200, true),
+    generatePost(9, '속닥9', '속닥맨3', '자유게시판9', 104),
+    generatePost(10, '속닥10', '속닥맨3', '자유게시판10', 51),
+    generatePost(11, '속닥11', '속닥맨3', '자유게시판11', 95),
 ]
 
 const initialReviewList = [
-    { id: 1, title: '입양1', author: '사람1', content: '입양후기1', isSecret: false, createdAt: new Date(now.getTime() - 1000 * 60 * 9) },
-    { id: 2, title: '후기2', author: '사람2', content: '입양후기2', isSecret: false, createdAt: new Date(now.getTime() - 1000 * 60 * 4) },
-    { id: 3, title: '입양3', author: '사람3', content: '입양후기3', isSecret: false, createdAt: new Date(now.getTime() - 1000 * 60 * 5) },
-    { id: 4, title: '입양4', author: '사람3', content: '입양후기4', isSecret: false, createdAt: new Date(now.getTime() - 1000 * 60 * 36) },
-    { id: 5, title: '입양5', author: '사람3', content: '입양후기5', isSecret: false, createdAt: new Date(now.getTime() - 1000 * 60 * 39) },
-    { id: 6, title: '입양6', author: '사람3', content: '입양후기6', isSecret: false, createdAt: new Date(now.getTime() - 1000 * 60 * 3) },
-    { id: 7, title: '입양7', author: '사람3', content: '입양후기7', isSecret: false, createdAt: new Date(now.getTime() - 1000 * 60 * 19) },
-    { id: 8, title: '후기8', author: '사람3', content: '입양후기8', isSecret: false, createdAt: new Date(now.getTime() - 1000 * 60 * 306) },
-    { id: 9, title: '후기9', author: '사람3', content: '입양후기9', isSecret: false, createdAt: new Date(now.getTime() - 1000 * 60 * 22) },
-    { id: 10, title: '후기10', author: '사람3', content: '입양후기10', isSecret: false, createdAt: new Date(now.getTime() - 1000 * 60 * 99) },
-    { id: 11, title: '후기11', author: '사람3', content: '입양후기11', isSecret: false, createdAt: new Date(now.getTime() - 1000 * 60 * 103) },
+    generatePost(1, '입양1', '후기맨1', '입양후기1', 9),
+    generatePost(2, '입양2', '후기맨2', '입양후기2', 4),
+    generatePost(3, '입양3', '후기맨3', '입양후기3', 5, true),
+    generatePost(4, '입양4', '후기맨3', '입양후기4', 36),
+    generatePost(5, '입양5', '후기맨3', '입양후기5', 39),
+    generatePost(6, '입양6', '후기맨3', '입양후기6', 3, true),
+    generatePost(7, '입양7', '후기맨3', '입양후기7', 19),
+    generatePost(8, '입양8', '후기맨3', '입양후기8', 306),
+    generatePost(9, '입양9', '후기맨3', '입양후기9', 22, true),
+    generatePost(10, '입양10', '후기맨3', '입양후기10', 99),
+    generatePost(11, '입양11', '후기맨3', '입양후기11', 103, true),
 ]
 
 export const ChatProvider = ({ children }) => {

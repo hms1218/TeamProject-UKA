@@ -1,6 +1,8 @@
 import { Button, Card } from 'react-bootstrap'
 import {Link}from 'react-router-dom'
 
+// import 'bootstrap/dist/css/bootstrap.min.css';
+
 export const CardComponent = ({img,title,description,url=''}) => {
 
     return(

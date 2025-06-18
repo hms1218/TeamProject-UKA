@@ -1,6 +1,7 @@
 import React from 'react';
 import { useQnA } from '../../../Context/QnAContext';
 import { useNavigate } from 'react-router-dom';
+import { Alert } from 'react-bootstrap';
 
 const ReportedPosts = () => {
   const { qnas } = useQnA();
@@ -26,7 +27,7 @@ const ReportedPosts = () => {
               </div>
               <div className="admin-post-author">by {post.author}</div>
               <div className="admin-action-buttons">
-                <button className="restore-btn" onClick={() => alert("복원되었습니다.")}>복원</button>
+                <button className="restore-btn" onClick={() => alert("","복원되었습니다.")}>복원</button>
                 <button
                   className="delete-btn"
                   onClick={() => {

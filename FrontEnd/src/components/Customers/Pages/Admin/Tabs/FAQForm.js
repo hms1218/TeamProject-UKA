@@ -40,7 +40,7 @@ const FAQForm = () => {
             style={{ width: '100%', padding: '10px' }}
           />
         </div>
-        <button type="submit" className="write-button">등록</button>
+        <button type="submit" className="customer-write-button">등록</button>
       </form>
     </div>
   );

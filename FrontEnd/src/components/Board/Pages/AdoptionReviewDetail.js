@@ -15,7 +15,7 @@ const AdoptionReviewDetail = () => {
     useEffect(() => {
         const reviewId = parseInt(id);
         const sorted = [...review].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        const currentIndex = sorted.findIndex((q) => q.id === reviewId);
+        const currentIndex = sorted.findIndex((item) => item.id === reviewId);
         const current = sorted[currentIndex];
 
         setReviews(current);

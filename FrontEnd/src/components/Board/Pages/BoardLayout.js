@@ -62,6 +62,18 @@ const BoardLayout = () => {
             >
             새끼분양
             </NavLink>
+            <NavLink
+                to="/board/test"
+                className={({ isActive }) => isActive ? 'active' : ''}
+            >
+            테스트
+            </NavLink>
+            <NavLink
+                to="/board/testboard"
+                className={({ isActive }) => isActive ? 'active' : ''}
+            >
+            데이터적용
+            </NavLink>
         </nav>
 
         {/* 라우트 출력 영역 */}

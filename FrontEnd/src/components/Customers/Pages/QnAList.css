@@ -1,165 +1,165 @@
-/* 🔷 전체 컨테이너 */
-.qna-container {
-  position: relative;
-  padding: 20px;
-  min-width: 1350px;
+.customer-container {
+  min-width: 730px;
+  margin: 32px auto 0 auto;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(44,62,80,.09);
+  padding: 32px 36px 36px 36px;
 }
-
-.qna-header {
-  margin-bottom: 20px;
+.customer-title {
+  font-size: 32px;
+  font-weight: bold;
+  padding: 8px 18px;
+  margin-top: 0;
 }
-
-.qna-list {
+.customer-controls {
   display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-/* 🔹 QnA 항목 박스 */
-.qna-item {
-  display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 14px;
-  background-color: white;
-  border: 2px solid #00aaff;
-  border-radius: 12px;
-  padding: 16px 24px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-  min-width: 1350px;
+  margin-bottom: 16px;
 }
-
-/* 🔒 자물쇠 */
-.lock-wrapper {
-  width: 24px;
+.customer-search {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
+  margin: 18px 0 16px 0;
 }
-
-.lock-icon {
-  font-size: 18px;
-  color: #00aaff;
-}
-
-.lock-placeholder {
-  visibility: hidden;
-}
-
-
-/* 👤 작성자 */
-.qna-author {
-  font-size: 14px;
-  color: #555;
-  white-space: nowrap;
-}
-
-.qna-write-container {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 32px;
-  margin-bottom: 20px;
-}
-
-/* 🖊 글쓰기 버튼 */
-.qna-write-button {
-  background-color: #00aaff;
-  color: white;
+.customer-search-btn {
+  background: #b19cd9;
+  color: #fff;
   border: none;
-  border-radius: 24px;
-  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: 700;
+  padding: 8px 18px;
+  margin-left: 6px;
+  transition: filter 0.2s;
+}
+.customer-write-btn {
+  background-color: #b19cd9;
+  color: white;
+  padding: 10px 24px;
+  border: none;
+  border-radius: 6px;
   font-size: 16px;
   font-weight: bold;
+  box-shadow: 0 3px 8px rgba(0, 170, 255, 0.18);
+  transition: background-color 0.2s, transform 0.1s;
   cursor: pointer;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: background-color 0.2s ease;
+}
+.customer-write-btn:hover,
+.customer-search-btn:hover {
+  background-color: #6441a5;
+  transform: translateY(-2px);
+}
+.customer-table-container{
+  width: 100%;
+}
+.customer-table{
+  width: 100%;
+}
+.customer-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 6px rgba(44,62,80,.07);
+  margin-bottom: 20px;
+  table-layout: fixed; 
+}
+.customer-table th {
+  background: #f0ebf8;
+  color: #6441a5;
+  font-weight: 700;
+  padding: 16px 10px;
+  font-size: 17px;
+  border-top: none;
+}
+.customer-table td {
+  background: #fff;
+  padding: 15px 10px;
+  border-top: 1px solid #eee;
+  font-size: 16px;
+  text-align: center;
 }
 
-.qna-write-button:hover {
-  background-color: #0094dd;
+.customer-table tr:hover td {
+  background: #faf7ff;
 }
-
-/* 📝 제목 전체 영역: 텍스트 정렬만 담당 (hover X) */
-.qna-title-link {
-  flex: 1;
-  font-size: 18px;
-  font-weight: bold;
-  color: inherit;
-}
-
-/* 📝 제목 (클릭 가능) */
-.qna-title-text {
-  color: black;
+.customer-table td.title-cell {
+  text-align: left;
+  padding-left: 22px;
+  font-weight: 600;
+  color: #222;
+  font-size: 17px;
   cursor: pointer;
-  transition: color 0.2s ease;
-  text-decoration: none;
+  transition: color 0.15s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-
-/* hover 효과 */
-.qna-title-text:hover {
-  color: #00aaff; /* 조금 더 진한 파란색으로 */
+.customer-table td.title-cell:hover {
+  color: #b19cd9;
   text-decoration: underline;
 }
-
-/* 비밀번호 박스 */
-.qna-password-box {
-  display: flex;
-  gap: 12px;
-  margin-top: 10px;
-  padding: 12px 24px;
-  border-left: 4px solid #00aaff;
-  background-color: #f8f8f8;
-  border-radius: 8px;
-  margin-bottom: 20px;
+.customer-password-row td {
+  background: #f7f1fd;
+  padding: 18px 0;
+  border-bottom: 1px solid #eee;
+  text-align: center;
 }
-
-.qna-password-box input {
-  width: 160px;
-  padding: 8px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-}
-
-.qna-password-box button {
+.customer-password-input {
   padding: 8px 16px;
-  font-size: 15px;
-  background-color: #00aaff;
+  font-size: 16px;
+  border: 1px solid #b19cd9;
+  border-radius: 7px;
+  margin-right: 14px;
+}
+.customer-password-btn {
+  padding: 8px 22px;
+  font-size: 16px;
+  background-color: #b19cd9;
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: 7px;
+  font-weight: bold;
   cursor: pointer;
+  box-shadow: 0 1px 4px rgba(177,156,217,0.13);
 }
-
-.qna-password-box button:hover {
-  background-color: #0094dd;
+.customer-password-btn:hover {
+  background-color: #a082c6;
 }
-
 .pagination {
   display: flex;
   justify-content: center;
-  margin-top: 20px;
+  gap: 8px;
+  font-size: 15px;
+  margin-top: 22px;
 }
-
 .pagination button {
-  margin: 0 4px;
-  padding: 6px 12px;
-  border: none;
-  background-color: #eee;
+  background: #fff;
+  border: 1px solid #b19cd9;
+  color: #b19cd9;
+  padding: 6px 13px;
+  border-radius: 6px;
   cursor: pointer;
-  border-radius: 4px;
+  font-weight: 700;
+  font-size: 16px;
+  transition: all .15s;
 }
-
-.pagination button.active {
-  background-color: #00aaff;
-  color: white;
-  font-weight: bold;
+.pagination button.active, .pagination .active {
+  background-color: #b19cd9;
+  color: #fff;
+  border: none;
 }
-
-.qna-answer-preview {
-  font-size: 0.85rem;
-  color: #666;
-  margin: 4px 0 0 20px;
+.pagination button:disabled {
+  background-color: #f3f3f3;
+  color: #bfbfbf;
+  cursor: not-allowed;
+}
+.customer-table td, .customer-table th {
+  vertical-align: middle;
+  font-size: 16px;
+  line-height: 1.6;
+  word-break: keep-all;
 }

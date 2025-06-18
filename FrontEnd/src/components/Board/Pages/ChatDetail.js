@@ -15,7 +15,7 @@ const ChatDetail = () => {
   useEffect(() => {
     const chatId = parseInt(id);
     const sorted = [...chats].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-    const currentIndex = sorted.findIndex((q) => q.id === chatId);
+    const currentIndex = sorted.findIndex((item) => item.id === chatId);
     const current = sorted[currentIndex];
 
     setChat(current);

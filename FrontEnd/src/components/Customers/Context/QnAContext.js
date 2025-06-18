@@ -5,7 +5,7 @@ const QnAContext = createContext();
 const initialQnAs = [
   {
     id: 1,
-    title: '입양 문의드립니다',
+    title: '문의1',
     author: 'user1',
     content: '입양에 대해 궁금해요',
     isSecret: false,
@@ -15,7 +15,7 @@ const initialQnAs = [
   },
   {
     id: 2,
-    title: '후원 문의',
+    title: '문의2',
     author: 'user2',
     content: '정기후원이 가능한가요?',
     isSecret: true,
@@ -26,7 +26,7 @@ const initialQnAs = [
   },
   {
     id: 3,
-    title: '후원 관련 문의',
+    title: '문의3',
     author: 'user2',
     content: '입양에 대해 궁금해요',
     isSecret: true,
@@ -36,7 +36,7 @@ const initialQnAs = [
   },
   {
     id: 4,
-    title: '위치가 어디인가요?',
+    title: '문의4',
     author: 'user3',
     content: '입양에 대해 궁금해요',
     isSecret: false,
@@ -44,7 +44,7 @@ const initialQnAs = [
   },
   {
     id: 5,
-    title: '입양문의는 어디인가요?',
+    title: '문의5',
     author: 'user3',
     content: '입양에 대해 궁금해요',
     isSecret: false,
@@ -53,7 +53,7 @@ const initialQnAs = [
   },
   {
     id: 6,
-    title: '봉사활동 어디서 신청하죠?',
+    title: '문의6',
     author: 'user3',
     content: '입양에 대해 궁금해요',
     isSecret: false,
@@ -61,7 +61,7 @@ const initialQnAs = [
   },
   {
     id: 7,
-    title: '위치가 어디인가요?',
+    title: '문의7',
     author: 'user3',
     content: '입양에 대해 궁금해요',
     isSecret: false,
@@ -69,7 +69,7 @@ const initialQnAs = [
   },
   {
     id: 8,
-    title: '위치가 어디인가요?',
+    title: '문의8',
     author: 'user3',
     content: '입양에 대해 궁금해요',
     isSecret: false,
@@ -77,7 +77,7 @@ const initialQnAs = [
   },
   {
     id: 9,
-    title: '위치가 어디인가요?',
+    title: '문의9',
     author: 'user3',
     content: '입양에 대해 궁금해요',
     isSecret: false,
@@ -85,7 +85,7 @@ const initialQnAs = [
   },
   {
     id: 10,
-    title: '후원 관련 문의',
+    title: '문의10',
     author: 'user2',
     content: '입양에 대해 궁금해요',
     isSecret: true,
@@ -94,7 +94,7 @@ const initialQnAs = [
   },
   {
     id: 11,
-    title: '후원 관련 문의',
+    title: '문의11',
     author: 'user2',
     content: '입양에 대해 궁금해요',
     isSecret: true,
@@ -103,7 +103,7 @@ const initialQnAs = [
   },
   {
     id: 12,
-    title: '후원 관련 문의',
+    title: '문의12',
     author: 'user2',
     content: '입양에 대해 궁금해요',
     isSecret: true,
@@ -112,7 +112,7 @@ const initialQnAs = [
   },
   {
     id: 13,
-    title: '후원 관련 문의',
+    title: '문의13333333333333333333333333333333333333333333333333333333333333333333333333333',
     author: 'user2',
     content: '입양에 대해 궁금해요',
     isSecret: true,
@@ -121,7 +121,7 @@ const initialQnAs = [
   },
   {
     id: 14,
-    title: '마지막 질문인가요?',
+    title: '문의14',
     author: 'user3',
     content: '입양에 대해 궁금해요',
     isSecret: false,

@@ -15,6 +15,10 @@ import ResetPasswordPage from './components/Pages/ResetPasswordPage';
 
 //게시판 관련
 import BoardLayout from './components/Board/Pages/BoardLayout';
+import AllBoard from './components/Board/Pages/AllBoard';
+import AllBoardForm from './components/Board/Pages/AllBoardForm';
+import AllBoardDetail from './components/Board/Pages/AllBoardDetail';
+import AllBoardEdit from './components/Board/Pages/AllBoardEdit';
 import Notice from './components/Board/Pages/Notice';
 import NoticeForm from './components/Board/Pages/NoticeForm';
 import NoticeDetail from './components/Board/Pages/NoticeDetail';
@@ -29,6 +33,9 @@ import AdoptionReviewDetail from './components/Board/Pages/AdoptionReviewDetail'
 import ReviewEdit from './components/Board/Pages/ReviewEdit';
 import { ChatProvider } from './components/Board/Context/ChatContext';
 
+import TestForm from './components/Board/Pages/TestForm';
+import TestBoard from './components/Board/Pages/TestBoard';
+
 // 고객센터 관련
 import CustomerLayout from './components/Customers/Pages/CustomerLayout';
 import FAQList from "./components/Customers/Pages/FAQList";
@@ -38,6 +45,8 @@ import QnADetail from "./components/Customers/Pages/QnADetail";
 import QnAEdit from "./components/Customers/Pages/QnAEdit";
 import AdoptionInquiry from "./components/Customers/Pages/AdoptionInquiry";
 import { QnAProvider } from './components/Customers/Context/QnAContext';
+import { AlertProvider } from './components/Customers/Context/AlertContext';
+import 'react-quill/dist/quill.snow.css';
 
 //상세보기 관련
 import { DetailBody } from './components/DetailPage/DetailBody';
@@ -46,7 +55,6 @@ import { DetailSelect}  from './components/DetailPage/DetailSelect';
 // 관리자 화면
 import AdminPage from './components/Customers/Pages/Admin/AdminPage';
 import AdminQnADetail from './components/Customers/Pages/Admin/AdminQnADetail';
-import AllBoard from './components/Board/Pages/AllBoard';
 
 function App() {
 
@@ -84,6 +92,10 @@ function App() {
                                </ChatProvider>}
                     >
                         <Route index element={<AllBoard />} />
+                        <Route path="all" element={<AllBoard />} />
+                        <Route path="all/new" element={<AllBoardForm />} />
+                        <Route path="all/:id" element={<AllBoardDetail />} />
+                        <Route path="all/:id/new" element={<AllBoardEdit />} />
                         <Route path="notice" element={<Notice />} />
                         <Route path="notice/new" element={<NoticeForm />} />
                         <Route path="notice/:id" element={<NoticeDetail />} />
@@ -96,12 +108,17 @@ function App() {
                         <Route path="adoptionReview/new" element={<ReviewForm />} />
                         <Route path="adoptionReview/:id" element={<AdoptionReviewDetail />} />
                         <Route path="adoptionReview/:id/new" element={<ReviewEdit />} />
+                        <Route path="test" element={<TestForm />} />
+                        <Route path="testboard" element={<TestBoard />} />
                     </Route>
                     {/* 고객센터 라우팅 */}
                     <Route path="/customer/*" element={
-                        <QnAProvider>
-                        <CustomerLayout />
-                        </QnAProvider>
+                        
+                        <AlertProvider>
+                            <QnAProvider>
+                                <CustomerLayout />
+                            </QnAProvider>
+                        </AlertProvider>
                     }>
                         <Route index element={<FAQList />} />
                         <Route path="faq" element={<FAQList />} />
@@ -113,18 +130,20 @@ function App() {
                     </Route>
                     {/* 관리자 라우팅 - 독립 경로 */}
                     <Route path="/admin/*" 
-                           element={
-                               <QnAProvider>
-                                   <AdminPage />
-                               </QnAProvider>
-                           } 
+                        element={
+                        <AlertProvider>
+                            <QnAProvider>
+                                <AdminPage />
+                            </QnAProvider>
+                        </AlertProvider>
+                        } 
                     />
                     <Route path="/customer/qna/:id/admin"
-                           element={
-                               <QnAProvider>
-                                   <AdminQnADetail />
-                               </QnAProvider>
-                           }
+                        element={
+                            <QnAProvider>
+                                <AdminQnADetail />
+                            </QnAProvider>
+                        }
                     />
                 </Routes>
                 <MainFooter />

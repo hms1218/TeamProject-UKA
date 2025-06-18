@@ -1,14 +1,19 @@
+.faq-container{
+  /* margin-top: 32px; */
+  padding-top: 32px;
+  padding-bottom: 10px;
+}
+
 .faq-item {
-  margin: 24px 0;
-  border-radius: 8px;
+  margin: 0;
   overflow: hidden;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
-  min-width: 1415px;
+  min-width: 800px;
 }
 
 .faq-question {
   background-color: #ffffff;
   border: 1px solid #ddd;
+  margin-bottom: 0;
   padding: 16px;
   display: flex;
   justify-content: space-between;
@@ -41,16 +46,19 @@
 .faq-text {
   font-size: 16px;
   line-height: 1.6;
+  /* 줄바꿈 \n로 하기 */
+  white-space: pre-line;
 }
 
 .faq-question .faq-text {
-  font-size: 24px;
-  font-weight: bold;
+  font-size: 16px;
+  align-items: baseline;
+  /* font-weight: bold; */
 }
 
 .faq-answer .faq-text {
-  font-size: 20px;
-  font-weight: bold;
+  font-size: 14px;
+  /* font-weight: bold; */
   color: #333;
   align-items: center;
   justify-content: center;

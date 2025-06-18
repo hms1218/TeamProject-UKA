@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import './TestForm.css';
+import './AllBoard.css';
 
 const TestForm = () => {
   // 🔹 더미 데이터 생성 (100개)
@@ -25,7 +25,7 @@ const TestForm = () => {
 
   // 🔹 페이지 버튼 생성 로직
   const getPageNumbers = () => {
-    const maxButtons = 5;
+    const maxButtons = 5; //페이지 바에서 최대 보여주는 버튼 개수
     let start = Math.max(1, currentPage - 2);
     let end = Math.min(totalPages, start + maxButtons - 1);
 
@@ -102,12 +102,9 @@ const TestForm = () => {
             <button onClick={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages}>›</button>
             <button onClick={() => goToPage(totalPages)} disabled={currentPage === totalPages}>»</button>
         </div>
-        <div className="board-search">
-            <div className="search-group">
-                <input type="text" placeholder="검색어를 입력해주세요" />
-                <button className="search-btn">검색</button>
-            </div>
-            <button className="write-btn-down">글쓰기</button>
+        <div className="board-search">   
+            <input type="text" placeholder="검색어를 입력해주세요" />
+            <button className="search-btn">검색</button>                      
         </div>
     </div>
   );

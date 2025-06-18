@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useChat } from '../Context/ChatContext';
-import './TestBoard.css';
+import './AllBoard.css';
 
 const TestBoard = () => {
     const { chats, notice, review } = useChat();
@@ -10,7 +10,7 @@ const TestBoard = () => {
     const [inputPassword, setInputPassword] = useState('');
     const navigate = useNavigate();
 
-    const itemsPerPage = 15;
+    const itemsPerPage = 10;
 
     const noticedChats = [...notice.map(post => ({ ...post, type: 'notice' }))].sort(
         (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
@@ -29,7 +29,7 @@ const TestBoard = () => {
     );
 
     const getPageNumbers = () => {
-        const maxButtons = 100;
+        const maxButtons = 5;
         let start = Math.max(1, currentPage - 2);
         let end = Math.min(totalPages, start + maxButtons - 1);
         if (end - start < maxButtons - 1) {
@@ -65,8 +65,10 @@ const TestBoard = () => {
 
         <div className="board-controls">
             <select>
-            <option>최신순</option>
+            <option selected>최신순</option>
             <option>조회순</option>
+            <option>추천순</option>
+            <option>댓글순</option>
             </select>
             <button className="write-btn" onClick={handleWrite}>글쓰기</button>
         </div>
@@ -92,7 +94,8 @@ const TestBoard = () => {
                     <td>{post.comment}</td>
                     <td>{post.views}</td>
                     <td>{post.likes}</td>
-                    <td>{new Date(post.createdAt).toLocaleString()}</td>
+                    {/* <td>{new Date(post.createdAt).toLocaleString()}</td> */}
+                    <td>{post.createdAt}</td>
                 </tr>
             ))}
 
@@ -107,7 +110,8 @@ const TestBoard = () => {
                         <td>{post.comment}</td>
                         <td>{post.views}</td>
                         <td>{post.likes}</td>
-                        <td>{new Date(post.createdAt).toLocaleString()}</td>
+                        {/* <td>{(post.createdAt).toLocaleString()}</td> */}
+                        <td>{post.createdAt}</td>
                 </tr>
                 {openId === post.id && post.isSecret && (
                     <tr className="password-row">
@@ -144,12 +148,9 @@ const TestBoard = () => {
             <button onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages}>»</button>
         </div>
 
-        <div className="board-search">
-            <div className="search-group">
-                <input type="text" placeholder="검색어를 입력해주세요" />
-                <button className="search-btn">검색</button>
-            </div>
-            <button className="write-btn-down">글쓰기</button>
+        <div className="board-search">   
+            <input type="text" placeholder="검색어를 입력해주세요" />
+            <button className="search-btn">검색</button>                      
         </div>
     </div>
     );

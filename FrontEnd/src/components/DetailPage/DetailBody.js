@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 // 부트스트랩
 import {Carousel,Button, Card} from 'react-bootstrap'
 
-import 'bootstrap/dist/css/bootstrap.min.css';
+// import 'bootstrap/dist/css/bootstrap.min.css';
 import { CardComponent } from "./CardComponent";
 
 export const DetailBody = () => {

@@ -8,14 +8,13 @@ import { useEffect } from "react";
  * @param {number} intervalMs - 전환 시간(ms), 기본값 3000
  */
 
-const useSliderAutoPlay = (isPlaying, setCurrentSlide, total, intervalMs = 3000) => {
+const useSliderAutoPlay = (setCurrentSlide, total, intervalMs = 60000) => {
     useEffect(() => {
-        if (!isPlaying) return;
         const interval = setInterval(() => {
             setCurrentSlide(prev => (prev + 1) % total);
         }, intervalMs);
         return () => clearInterval(interval);
-    }, [isPlaying, setCurrentSlide, total, intervalMs]);
+    }, [setCurrentSlide, total, intervalMs]);
 };
 
 export default useSliderAutoPlay;

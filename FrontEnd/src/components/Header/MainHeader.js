@@ -1,16 +1,13 @@
 import { Link, useNavigate } from 'react-router-dom';
 import MainLogo from '../../assets/MainLogo.png';
-import { useState, useContext } from 'react';
-
+import { useContext } from 'react';
+import DropDownMenu from './DropDownMenu';
 import { AuthContext } from '../../AuthContext';
+import DogFootPrint from '../../assets/DogFootPrint.png';
 
 import './MainHeader.css';
 
 const MainHeaders = () => {
-
-    const [boardDropdown, setBoardDropdown] = useState(false);
-    const [supportDropdown, setSupportDropdown] = useState(false);
-
     const { user, logout } = useContext(AuthContext);
     const navigate = useNavigate();
 
@@ -34,6 +31,10 @@ const MainHeaders = () => {
 
             <div className="right-section">
                 <div className="auth-buttons">
+                    {/* 가운데 발바닥 아이콘 */}
+                    {/* <div className="middle-section">
+                        <img src={DogFootPrint} alt="Dog Footprint" className="footprint-icon" />
+                    </div> */}
                     {user ? (
                         <>
                             {/* /profile */}
@@ -57,45 +58,29 @@ const MainHeaders = () => {
                 </div>
                 
                 <nav className="nav-links">
-                    <Link to="/about">입양하고싶어요</Link>
-                    <Link to="/find">찾고있어요</Link>
-
-                    <div className="dropdown"
-                         onMouseEnter={() => setBoardDropdown(true)}
-                         onMouseLeave={() => setBoardDropdown(false)}
-                    >
-                        <span className="dropdown-title">
-                            <Link to="/board">게시판</Link>
-                            <span className="arrow">▼</span>
-                        </span>
-                        {boardDropdown && (
-                            <div className="dropdown-menu">
-                                <Link to="/board">전체</Link>
-                                <Link to="/board/notice">공지사항</Link>
-                                <Link to="/board/chat">속닥속닥</Link>
-                                <Link to="/board/adoptionReview">입양후기</Link>
-                                <Link to="/board/infoShare">새끼분양</Link>
-                            </div>
-                        )}
-                    </div>
-
-                    <div className="dropdown"
-                         onMouseEnter={() => setSupportDropdown(true)}
-                         onMouseLeave={() => setSupportDropdown(false)}
-                    >
-                        <span className="dropdown-title">
-                            <Link to="/customer">고객센터</Link>
-                            <span className="arrow">▼</span>
-                        </span>
-                        {supportDropdown && (
-                            <div className="dropdown-menu">
-                                <Link to="/customer">FAQ</Link>
-                                <Link to="/customer/qna">Q&A</Link>
-                                <Link to="/customer/adoption">입양문의</Link>
-                                <Link to="/admin/reported">관리자 페이지</Link>
-                            </div>
-                        )}
-                    </div>
+                    <Link to="/about" style={{marginRight : 25}}>입양하고싶어요</Link>
+                    <Link to="/find" style={{marginRight : 10}}>찾고있어요</Link>
+                    <DropDownMenu
+                        title="게시판"
+                        to="/board"
+                        items={[
+                            { label: '전체', to: '/board' },
+                            { label: '공지사항', to: '/board/notice' },
+                            { label: '속닥속닥', to: '/board/chat' },
+                            { label: '입양후기', to: '/board/adoptionReview' },
+                            { label: '새끼분양', to: '/board/infoShare' },
+                        ]}
+                    />
+                    <DropDownMenu
+                        title="고객센터"
+                        to="/customer"
+                        items={[
+                            { label: 'FAQ', to: '/customer' },
+                            { label: 'Q&A', to: '/customer/qna' },
+                            { label: '입양문의', to: '/customer/adoption' },
+                            { label: '관리자 페이지', to: '/admin/reported' },
+                        ]}
+                    />
                 </nav>
             </div>
         </header>

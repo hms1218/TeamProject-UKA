@@ -1,6 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
 import { fetchSavedAnimals } from "../api/AnimalApiData";
-import { MainMockData } from "../data/MainMockData";
 
 export default function useRegionData() {
     const [rawData, setRawData] = useState([]); // API에서 파싱해온 객체 배열
@@ -10,8 +9,8 @@ export default function useRegionData() {
     useEffect(() => {
         const loadData = async () => {
             try {
-                // const allData = await fetchSavedAnimals();
-                const allData = MainMockData;
+                const allData = await fetchSavedAnimals();
+                // const allData = MainMockData;
                 setRawData(allData);
                 
                 if (!allData || Object.keys(allData).length === 0) {
@@ -26,56 +25,83 @@ export default function useRegionData() {
         loadData();
     }, []);
 
-  // rawData를 “전체/지역별 집계용” allRegionData로 변환
-  const allRegionData = useMemo(() => {
-    const map = {};
-
-    rawData.forEach(item => {
-      // 1) 지역 키: 예시로 orgNm(“경상남도 창원시 의창성산구”)를 사용
-      const regionCode = item.orgNm;
-      if (!map[regionCode]) {
-        map[regionCode] = {
-          regionCode,
-          regionName: regionCode,
-          centerSet: new Set(),  // 보호소 개수
-          animalCount: 0,        // 동물 총합
-          dogsCount: 0,          // 개
-          catsCount: 0,          // 고양이
-          othersCount: 0,        // 그 외
+    // 전체 집계
+    const allRegionData = useMemo(() => {
+        const result = {
+            centerSet: new Set(),
+            animalCount: 0,
+            dogsCount: 0,
+            catsCount: 0,
+            othersCount: 0,
         };
-      }
 
-      const r = map[regionCode];
-      // 보호소 고유번호(careRegNo)별로 하나만 세기 위해 Set 사용
-      r.centerSet.add(item.careRegNo);
+        rawData.forEach(item => {
+            result.centerSet.add(item.careRegNo);
+            result.animalCount += 1;
+            switch (item.upKindNm) {
+                case "개":
+                    result.dogsCount += 1;
+                    break;
+                case "고양이":
+                    result.catsCount += 1;
+                    break;
+                default:
+                    result.othersCount += 1;
+            }
+        });
 
-      // 동물 한 마리 추가
-      r.animalCount += 1;
+        return [{
+            centerCount: result.centerSet.size,
+            animalCount: result.animalCount,
+            dogsCount: result.dogsCount,
+            catsCount: result.catsCount,
+            otherCount: result.othersCount,
+        }];
+    }, [rawData]);
 
-      // 종류별 집계
-      switch (item.upKindNm) {
-        case "개":
-          r.dogsCount += 1;
-          break;
-        case "고양이":
-          r.catsCount += 1;
-          break;
-        default:
-          r.othersCount += 1;
-      }
-    });
+    // 지역별 집계
+    const regionData = useMemo(() => {
+        const map = {};
 
-    // Set → 숫자로 변환하고, Plain Object 배열로 리턴
-    return Object.values(map).map(r => ({
-      regionCode:   r.regionCode,
-      regionName:   r.regionName,
-      centerCount:  r.centerSet.size,
-      animalCount:  r.animalCount,
-      dogsCount:    r.dogsCount,
-      catsCount:    r.catsCount,
-      otherCount:   r.othersCount,
-    }));
-  }, [rawData]);
+        rawData.forEach(item => {
+            const fullName = item.orgNm; // "orgNm = 경상북도 포항시 ... "
 
-  return { allRegionData, loading, error };
+            // item.orgNm.replace(/\s.*$/, '') 정규식으로도 사용가능
+            const region = fullName.split(" ")[0]; 
+            if (!map[region]) {
+                map[region] = {
+                    region,
+                    centerSet: new Set(),
+                    animalCount: 0,
+                    dogsCount: 0,
+                    catsCount: 0,
+                    othersCount: 0,
+                };
+            }
+            map[region].centerSet.add(item.careRegNo);
+            map[region].animalCount += 1;
+            switch (item.upKindNm) {
+                case "개":
+                    map[region].dogsCount += 1;
+                    break;
+                case "고양이":
+                    map[region].catsCount += 1;
+                    break;
+                default:
+                    map[region].othersCount += 1;
+            }
+        });
+
+        return Object.values(map).map(r => ({
+            region: r.region,
+            centerCount: r.centerSet.size,
+            animalCount: r.animalCount,
+            dogsCount: r.dogsCount,
+            catsCount: r.catsCount,
+            otherCount: r.othersCount,
+        }));
+    }, [rawData]);
+
+    console.log("regionData:", regionData);
+    return { allRegionData, regionData, loading, error };
 }

@@ -28,7 +28,7 @@
 
 .nav-links {
     display: flex;
-    gap: 20px;
+    gap: 15px;
     align-items: center;
     position: relative;
 }
@@ -165,6 +165,7 @@
     box-shadow: 0 4px 10px rgba(0, 170, 255, 0.1);
     border-radius: 8px;
     overflow: hidden;
+    
 }
 
 .dropdown-menu a {

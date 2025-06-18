@@ -5,19 +5,15 @@ const SliderPanel = ({
     currentSlide,
     onPrev,
     onNext,
-    isPlaying,
-    togglePlay,
-    }) => (
-        <div className="bottom-panel">
-            <SliderBanner
-                slides={MainSlides}
-                currentSlide={currentSlide}
-                onPrev={onPrev}
-                onNext={onNext}
-                isPlaying={isPlaying}
-                togglePlay={togglePlay}
-            />
-        </div>
+}) => (
+    <div className="bottom-panel">
+        <SliderBanner
+            slides={MainSlides}
+            currentSlide={currentSlide}
+            onPrev={onPrev}
+            onNext={onNext}
+        />
+    </div>
 );
 
 export default SliderPanel;

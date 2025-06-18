@@ -1,8 +1,3 @@
-/* 자고로 모든 이미지는 둥굴어야 한다 */
-img{
-    border-radius: 40px;
-}
-
 /* 메인컨테이너 */
 .container {
     border-radius: 10px;

@@ -1,23 +1,20 @@
 import KoreaMapSection from "../Map/KoreaMapSection";
 
 const MapPanel = ({
-    regionList = [],
+    regionList,
     onRegionSelect,
-    setRegionNm,
+    onRegionHover,
     tooltipContent,
-    setTooltipContent,
-    allRegionData = {},
-
+    regionNm,
 }) => (
     <div className="map-panel">
         <div className="info-box-top">🗺 지역을 선택해주세요</div>
         <KoreaMapSection
             regionList={regionList}
             onRegionSelect={onRegionSelect}
-            setRegionNm={setRegionNm}
+            onRegionHover={onRegionHover}
             tooltipContent={tooltipContent}
-            setTooltipContent={setTooltipContent}
-            allRegionData={allRegionData}
+            regionNm={regionNm}
         />
         <div className="info-box-bottom marquee">
             <span>

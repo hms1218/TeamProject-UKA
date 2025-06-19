@@ -1,9 +1,10 @@
-import { Link, useNavigate } from 'react-router-dom';
-import MainLogo from '../../assets/MainLogo.png';
 import { useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+
 import DropDownMenu from './DropDownMenu';
 import { AuthContext } from '../../AuthContext';
-import DogFootPrint from '../../assets/DogFootPrint.png';
+
+import MainLogo from '../../assets/MainLogo.png';
 
 import './MainHeader.css';
 
@@ -23,21 +24,16 @@ const MainHeaders = () => {
 
     return (
         <header className="main-header">
-            <div className="left-section" style={{cursor : "pointer"}}>
+            <div className="header-left-section">
                 <Link to="/">
                     <img src={MainLogo} alt="Logo" className="logo" />
                 </Link>
             </div>
 
-            <div className="right-section">
-                <div className="auth-buttons">
-                    {/* 가운데 발바닥 아이콘 */}
-                    {/* <div className="middle-section">
-                        <img src={DogFootPrint} alt="Dog Footprint" className="footprint-icon" />
-                    </div> */}
+            <div className="header-right-section">
+                <div className="header-auth-buttons">
                     {user ? (
                         <>
-                            {/* /profile */}
                             <Link to="/" onClick={handleProfile} className="profile-button">
                                 마이페이지
                             </Link>
@@ -57,7 +53,7 @@ const MainHeaders = () => {
                     )}
                 </div>
                 
-                <nav className="nav-links">
+                <nav className="header-nav-links">
                     <Link to="/about" style={{marginRight : 25}}>입양하고싶어요</Link>
                     <Link to="/find" style={{marginRight : 10}}>찾고있어요</Link>
                     <DropDownMenu

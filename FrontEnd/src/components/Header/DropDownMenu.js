@@ -6,16 +6,16 @@ const DropDownMenu = ({ title, to, items }) => {
     const [open, setOpen] = useState(false);
 
     return (
-        <div className="dropdown"
+        <div className="header-dropdown"
              onMouseEnter={() => setOpen(true)}
              onMouseLeave={() => setOpen(false)}
         >
-            <span className="dropdown-title">
+            <span className="header-dropdown-title">
                 <Link to={to}>{title}</Link>
                 <span className="arrow">▼</span>
             </span>
             {open && (
-                <div className="dropdown-menu">
+                <div className="header-dropdown-menu">
                     {items.map((item, idx) => (
                         <Link key={idx} to={item.to}>{item.label}</Link>
                     ))}

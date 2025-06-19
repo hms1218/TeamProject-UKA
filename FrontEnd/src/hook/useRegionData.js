@@ -102,6 +102,5 @@ export default function useRegionData() {
         }));
     }, [rawData]);
 
-    console.log("regionData:", regionData);
-    return { allRegionData, regionData, loading, error };
+    return {rawData, allRegionData, regionData, loading, error };
 }

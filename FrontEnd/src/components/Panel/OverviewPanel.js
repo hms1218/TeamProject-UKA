@@ -1,5 +1,5 @@
 // src/components/Panel/OverviewPanel.js
-import { useMemo, useRef, useEffect  } from "react";
+import { useMemo, useRef  } from "react";
 import "./OverviewPanel.css";
 
 import chartCat from "../../assets/chartCat.png";
@@ -58,13 +58,6 @@ export default function OverviewPanel({ allRegionData, regionData, regionNm, set
     return regionData.find(item => item.region.startsWith(regionNm)) || null;
     }, [regionData, regionNm]);
 
-    // regionNm이 바뀔 때마다 콤보박스에 포커스
-    useEffect(() => {
-        if (selectRef.current) {
-        selectRef.current.focus();
-        }
-    }, [regionNm]);
-
     // 파이 차트 이미지 랜덤 호출
     const randomImg = useMemo(() => {
         const idx = Math.floor(Math.random() * allImages.length);
@@ -98,12 +91,13 @@ export default function OverviewPanel({ allRegionData, regionData, regionNm, set
             <div className="info-top">
                 {/* 전체 현황판 패널 */}
                 <div className="overall-status-panel">
-                    <h2 style={{textAlign:"center"}}>전체 현황판</h2>
-                    <h6 style={{textAlign:"center", marginTop : -10, marginBottom : 0}}>{today} 기준</h6>
+                    
+                    <h2 style={{textAlign:"center", marginTop : 5}}>전체 현황판</h2>
+                    <p style={{textAlign:"center", fontSize : 14, marginTop : -10}}>전체 동물 수 : {overallData.animalCount} | 전체 센터 수 : {overallData.centerCount}</p>
                     {/* 스타일 적용된 차트 */}
                     <div className="chart-container">
-                        <ResponsiveContainer width="100%" height={235}>
-                            <BarChart data={chartAllData} margin={{ top: 20, right: 20, left: -15, bottom: -10 }}>
+                        <ResponsiveContainer width="100%" height={250}>
+                            <BarChart data={chartAllData} margin={{ top: 10, right: 20, left: -15, bottom: -10 }}>
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis dataKey="name" tick={{ fontSize: 14, fill: "#555" }} />
                                 <YAxis tick={{ fontSize: 14, fill: "#555" }} />
@@ -124,7 +118,7 @@ export default function OverviewPanel({ allRegionData, regionData, regionNm, set
                                             color: colors[i],
                                         }))}
                                         wrapperStyle={{
-                                            top: 0,          // 범례를 컨테이너 최상단으로 올림
+                                            top: -5,          // 범례를 컨테이너 최상단으로 올림
                                             left: '55%',     // 가운데 정렬을 유지하면서
                                             transform: 'translateX(-50%)', // 정확한 중앙 배치
                                         }}
@@ -138,15 +132,16 @@ export default function OverviewPanel({ allRegionData, regionData, regionNm, set
                             </BarChart>
                         </ResponsiveContainer>
                     </div>
+                    <h6 style={{textAlign:"center", marginTop : 5, marginBottom : 0, marginLeft : 20}}>{today} 기준</h6>
                 </div>
             </div>
             {/* 지역 현황판 패널 */}
             <div className="info-middle">
                 <div className="regional-status-panel">
                     {selectedRegion ? (
-                        <h2 style={{ textAlign: "center" }}> {selectedRegion.region} 현황판</h2>
+                        <h2 style={{ textAlign: "center", marginTop : 5 }}> {selectedRegion.region} 현황판</h2>
                     ) : (
-                        <h2 style={{ textAlign: "center" }}> 지역현황판</h2>
+                        <h2 style={{ textAlign: "center", marginTop : 5 }}> 지역현황판</h2>
                     )}
                     {/* 1) 지역명, 전체 동물 수, 센터 수 추가 */}
                     {selectedRegion ? (
@@ -165,10 +160,10 @@ export default function OverviewPanel({ allRegionData, regionData, regionNm, set
                                 alt="센터 로고"
                                 className="center-img"
                             />
-                            <ResponsiveContainer width="100%" height={235}>
+                            <ResponsiveContainer width="100%" height={250}>
                                 {/* margin을 넉넉히 줘서 라벨이 짤리지 않도록 */}
                                 <PieChart 
-                                    margin={{ top: 12, right: 20, left: 20, bottom: 0 }}
+                                    margin={{ top: 12, right: 20, left: 20, bottom: 10 }}
                                     style={{ outline: 'none' }}
                                 >
                                     <Pie
@@ -222,7 +217,7 @@ export default function OverviewPanel({ allRegionData, regionData, regionNm, set
             </div>
 
                 <div className="info-bottom">
-                <h4>선택 지역 유기동물 찾기</h4>
+                <h4 style={{marginTop : 10}}>선택 지역 유기동물 찾기</h4>
 
                 {/* select + button 을 묶는 컨테이너 */}
                 <div className="bottom-actions">

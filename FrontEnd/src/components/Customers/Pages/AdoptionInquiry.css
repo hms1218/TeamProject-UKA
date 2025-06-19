@@ -1,5 +1,5 @@
 /* 모달 전체 어둡게 */
-.slide-modal {
+.customer-slide-modal {
   position: fixed;
   z-index: 1010;
   left: 0; top: 0; right: 0; bottom: 0;
@@ -9,7 +9,7 @@
 }
 
 /* 모달 내부 */
-.slide-modal-content {
+.customer-slide-modal-content {
   background: #fff;
   padding: 36px 28px 24px 28px;
   border-radius: 18px;
@@ -21,7 +21,7 @@
 }
 
 /* X 닫기 버튼 */
-.close-btn {
+.customer-close-btn {
   position: absolute;
   right: 18px; top: 14px;
   font-size: 32px;
@@ -33,7 +33,7 @@
   padding: 0;
 }
 
-.modal-overlay {
+.customer-modal-overlay {
   position: fixed;
   left: 0; top: 0; right: 0; bottom: 0;
   background: rgba(0,0,0,0.3);
@@ -41,7 +41,7 @@
 }
 
 /* 슬라이드 썸네일 */
-.slide-thumbnails {
+.customer-slide-thumbnails {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
@@ -49,7 +49,7 @@
   margin-top: 10px;
   justify-content: center;
 }
-.slide-thumb {
+.customer-slide-thumb {
   width: 800px;
   height: 2137px;
   border-radius: 8px;
@@ -58,22 +58,22 @@
   cursor: pointer;
   transition: box-shadow 0.2s, border 0.15s;
 }
-.slide-thumb:hover {
+.customer-slide-thumb:hover {
   box-shadow: 0 0 0 2px #00aaff;
   border: 2px solid #00aaff;
 }
 
 /* 슬라이드 좌우 버튼 */
-.slider-arrow-btn {
+.customer-slider-arrow-btn {
   transition: color 0.18s, background 0.18s;
 }
-.slider-arrow-btn:disabled {
+.customer-slider-arrow-btn:disabled {
   color: #ccc !important;
   cursor: default !important;
 }
 
 /* 슬라이드 메인 이미지 */
-.slide {
+.customer-slide {
   border-radius: 16px;
   background: #f0f2f6;
   object-fit: cover;
@@ -81,14 +81,14 @@
 }
 
 /* 버튼들 줄 세우기 */
-.adoption-buttons {
+.customer-adoption-buttons {
   display: flex;
   justify-content: center;
   gap: 18px;
   margin-top: 16px;
 }
 
-.adopt-button {
+.customer-adopt-button {
   background: #00aaff;
   color: #fff;
   border: none;
@@ -100,16 +100,16 @@
   transition: background 0.18s;
   box-shadow: 0 2px 6px rgba(0,170,255,0.08);
 }
-.adopt-button:disabled {
+.customer-adopt-button:disabled {
   background: #b5e3f6;
   color: #eee;
   cursor: default;
 }
-.slider-arrow-btn {
+.customer-slider-arrow-btn {
   box-shadow: 0 2px 8px rgba(0,0,0,0.13);
   outline: none;
 }
-.slider-arrow-btn:disabled {
+.customer-slider-arrow-btn:disabled {
   color: #ccc !important;
   background: rgba(0,0,0,0.09) !important;
   cursor: default !important;

@@ -57,17 +57,17 @@ const AdoptionInquiry = () => {
   };
 
   return (
-    <div className="adoption-inquiry">
-      <h2 className="adoption-title"></h2>
+    <div className="customer-adoption-inquiry">
+      <h2 className="customer-adoption-title"></h2>
 
       {/* 썸네일 리스트 */}
-      <div className="slide-thumbnails">
+      <div className="customer-slide-thumbnails">
         {thumbnailImages.map((src, idx) => (
           <img
             key={src}
             src={src}
             alt={`썸네일${idx + 1}`}
-            className="slide-thumb"
+            className="customer-slide-thumb"
             // 썸네일 클릭시 특별한 행동 없음, 필요하면 팝업 띄우기 가능
           />
         ))}
@@ -76,7 +76,7 @@ const AdoptionInquiry = () => {
       {/* 다시 보기 버튼: confirmed면 노출 */}
       {confirmed && (
         <div style={{ textAlign: 'center', margin: '18px 0 0 0' }}>
-          <button className="adopt-button" onClick={() => openModal(0)}>
+          <button className="customer-adopt-button" onClick={() => openModal(0)}>
             다시 보기
           </button>
         </div>
@@ -84,15 +84,15 @@ const AdoptionInquiry = () => {
 
       {/* 슬라이드 팝업 모달 */}
       {open && (
-        <div className="slide-modal">
-          <div className="slide-modal-content">
+        <div className="customer-slide-modal">
+          <div className="customer-slide-modal-content">
             {/* (X 버튼 아예 없음) */}
               {confirmed && (
-                <button className="close-btn" onClick={closeModal}>×</button>
+                <button className="customer-close-btn" onClick={closeModal}>×</button>
               )}
             {/* 슬라이드: 버튼-이미지-버튼 */}
             <div
-              className="slider-container"
+              className="customer-slider-container"
               style={{
                 width: 700,
                 height: 700,
@@ -107,7 +107,7 @@ const AdoptionInquiry = () => {
               <img
                 src={slideImages[slide]}
                 alt={`사진${slide + 1}`}
-                className="slide"
+                className="customer-slide"
                 style={{
                   width: "100%",
                   height: "100%",
@@ -120,7 +120,7 @@ const AdoptionInquiry = () => {
               <button
                 onClick={prev}
                 disabled={slide === 0}
-                className="slider-arrow-btn"
+                className="customer-slider-arrow-btn"
                 style={{
                   position: "absolute",
                   top: "50%",
@@ -144,7 +144,7 @@ const AdoptionInquiry = () => {
               <button
                 onClick={next}
                 disabled={slide === slideImages.length - 1}
-                className="slider-arrow-btn"
+                className="customer-slider-arrow-btn"
                 style={{
                   position: "absolute",
                   top: "50%",
@@ -187,7 +187,7 @@ const AdoptionInquiry = () => {
                           </label>
                           <br />
                           <button
-                            className="adopt-button"
+                            className="customer-adopt-button"
                             style={{
                               marginTop: 8,
                               opacity: checked ? 1 : 0.5,
@@ -202,7 +202,7 @@ const AdoptionInquiry = () => {
               </div>
               {/* 오버레이 클릭: confirmed면 닫힘, 아니면 무시 */}
               <div
-                className="modal-overlay"
+                className="customer-modal-overlay"
                 onClick={() => {
                   if (confirmed) closeModal();
                 }}
@@ -213,20 +213,20 @@ const AdoptionInquiry = () => {
 
 
       {/* 기존 입양 안내 내용(그대로) */}
-      <div className="steps-grid">
+      <div className="customer-steps-grid">
         {/* ...(네가 쓴 기존 안내 Steps)... */}
       </div>
 
-      <div className="adoption-buttons">
+      <div className="customer-adoption-buttons">
         <a
           href="/Files/동물입양신청서.pdf"
-          className="adopt-button"
+          className="customer-adopt-button"
           download="동물입양신청서.pdf"
         >
           📄 입양 서류 다운로드
         </a>
         <button
-          className="adopt-button"
+          className="customer-adopt-button"
           onClick={async () => {
             await showAlert({
               title: '입양 상담 신청',

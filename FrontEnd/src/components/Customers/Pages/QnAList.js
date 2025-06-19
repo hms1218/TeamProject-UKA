@@ -99,10 +99,10 @@ const currentQnAs = sortedQnAs.slice(indexOfFirst, indexOfLast);
       await showAlert({
         title: '❌ 비밀번호 오류',
         text: '비밀번호가 틀렸습니다.',
-        imageUrl: process.env.PUBLIC_URL + '/img/pwWhat.jpg',
-        imageWidth: 300,
-        imageHeight: 300,
-        imageAlt: '패스워드',
+        // imageUrl: process.env.PUBLIC_URL + '/img/pwWhat.jpg',
+        // imageWidth: 300,
+        // imageHeight: 300,
+        // imageAlt: '패스워드',
         icon: 'warning',
       });
       return;

@@ -1,5 +1,8 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import FAQEdit from './FAQEdit';
 import './FAQList.css';
+import { useAlert } from '../Context/AlertContext';
 
 const dummyFaqs = [
   { id: 1, question: '입양 절차는 어떻게 되나요?', answer: '입양 절차는 상담 → 서류 작성 → 방문 순입니다.' },
@@ -17,15 +20,66 @@ const dummyFaqs = [
   // { id: 13, question: '', answer: '' },
 ];
 
-const FAQList = () => {
+const FAQList = ({ faqs = [], isAdmin = false, onDelete = () => {} }) => {
   const [openId, setOpenId] = useState(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [selectedFaq, setSelectedFaq] = useState(null);
+  const navigate = useNavigate();
+  const { showAlert } = useAlert();
+
+  // 테스트용
+  const [Admin, setAdmin] = useState(true);
 
   const toggle = (id) => {
     setOpenId(prev => (prev === id ? null : id));
   };
 
+    // 수정 버튼 클릭 시 모달 열기 or 페이지 이동
+    const handleEdit = (faq) => {
+      // 모달로 띄울 경우
+      setSelectedFaq(faq);
+      setShowEditModal(true);
+
+      // or 페이지 이동 방식
+      // navigate(`/customer/faq/edit/${faq.id}`, { state: { ...faq } });
+    };
+
+    // 삭제
+const handleDelete = async (id) => {
+  const result = await showAlert({
+    title: "정말 삭제할까요?",
+    text: "삭제하면 되돌릴 수 없습니다.",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "네, 삭제",
+    cancelButtonText: "아니오",
+    imageUrl: process.env.PUBLIC_URL + '/img/code.jpg', // (옵션)
+    imageWidth: 300,
+    imageHeight: 250,
+    imageAlt: '코딩',
+  });
+
+  if (!result || !result.isConfirmed) return;
+
+  onDelete(id); // 상위에서 실제 삭제 처리
+
+  await showAlert({
+    title: '삭제 완료!',
+    icon: 'success',
+    timer: 1200,
+    // showConfirmButton: false,
+    imageUrl: process.env.PUBLIC_URL + '/img/goodCat.jpg', // (옵션)
+    imageWidth: 300,
+    imageHeight: 300,
+    imageAlt: '좋았쓰',
+  });
+};
   return (
     <div className='faq-container'>
+      {/* 관리자 테스트 버튼 */}
+      <button onClick={() => setAdmin(v => !v)} style={{ marginBottom: 12 }}>
+        {Admin ? "관리자 모드" : "일반 모드"}
+      </button>
       <div className="faq-list">
         {dummyFaqs.map((faq) => (
           <div key={faq.id} className="faq-item">
@@ -44,13 +98,37 @@ const FAQList = () => {
 
             {openId === faq.id && (
               <div className="faq-answer">
-                <span className="faq-label">A</span>
-                <span className="faq-text">{faq.answer}</span>
+                <div className="faq-answer-content">
+                  <span className="faq-label">A</span>
+                  <span className="faq-text">{faq.answer}</span>
+                </div>
+                {Admin && (
+                  <div className="faq-admin-buttons">
+                    <button
+                      className="edit-btn"
+                      onClick={() => navigate(`/customer/faq/edit/${faq.id}`, { state: { ...faq } })}
+                    >
+                      ✏️ 수정
+                    </button>
+                    <button className="delete-btn" onClick={() => handleDelete(faq.id)}>🗑️ 삭제</button>
+                  </div>
+                )}
               </div>
             )}
           </div>
         ))}
       </div>
+      {/* 수정 모달 (예시, 모달 컴포넌트 분리 추천) */}
+      {showEditModal && selectedFaq && (
+        <div className="modal">
+          {/* FAQEditForm 컴포넌트에 데이터 전달 */}
+          <FAQEdit
+            faq={selectedFaq}
+            onClose={() => setShowEditModal(false)}
+            // onSave={...} ← 저장 시 콜백 처리
+          />
+        </div>
+      )}
     </div>
   );
 };

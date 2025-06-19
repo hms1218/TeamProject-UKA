@@ -5,15 +5,6 @@ import { useAlert } from '../Context/AlertContext';
 import axios from 'axios';
 import './QnADetail.css';
 
-const mockComments = [
-  { id: 1, author: 'guest1', content: '저도 궁금해요.', date: '25.06.14' },
-  { id: 2, author: 'user2', content: '답변 부탁드려요.', date: '25.06.14' },
-];
-const mockAdminAnswer = {
-  answer: '입양 절차는 문의주시면 상세히 안내드립니다.',
-  answerDate: '25.06.14',
-};
-
 const QnADetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -21,8 +12,11 @@ const QnADetail = () => {
   const [qna, setQna] = useState(null);
   const [prev, setPrev] = useState(null);
   const [next, setNext] = useState(null);
-  const [comments, setComments] = useState(mockComments);
   const [commentInput, setCommentInput] = useState('');
+  const [answerEditMode, setAnswerEditMode] = useState(false);
+  const [answerInput, setAnswerInput] = useState(qna?.answer || "");
+  const [isAdmin, setIsAdmin] = useState(false); // 관리자 토글
+  const isOwner = false; // 임시 추후 삭제 필요
 
   // 신고
   const [isReported, setIsReported] = useState(false);
@@ -31,9 +25,12 @@ const QnADetail = () => {
   const [isLiked, setIsLiked] = useState(false);
   const [likes, setLikes] = useState(0);
 
-  const { qnas } = useQnA();
+  const { qnas, setQnas } = useQnA();
   const { showAlert } = useAlert();
 
+  useEffect(() => {
+    setAnswerInput(qna?.answer || "");
+  }, [qna]);
 
   // 날짜 변환
   const formatDate = (dateString) => {
@@ -197,25 +194,44 @@ const QnADetail = () => {
   };
 
   // 버튼 핸들러
-  const handleEdit = () => navigate(`/customer/qna/${qna.id}/edit`, { state: qna });
+  const handleEdit = () => {
+  if (!(isOwner || isAdmin)) {
+    showAlert && showAlert({
+      title: '권한이 없습니다.',
+      text: '작성자 또는 관리자만 수정 가능합니다.',
+      icon: 'error'
+    });
+    return;
+  }
+  // 수정 페이지 이동
+  navigate(`/customer/qna/${qna.id}/edit`, { state: qna });
+};
 
 	const handleDelete = async () => {
-	const result = await showAlert({
-		title: '삭제하시겠습니까?',
-		text: '정말로 이 글을 삭제하시겠습니까?',
-        imageUrl: process.env.PUBLIC_URL + '/img/what.jpg',   // ← 확장자 포함!
-        imageWidth: 300,
-        imageHeight: 300,
-        imageAlt: '에?',
-		icon: 'warning',
-		showCancelButton: true,
-		confirmButtonText: '네, 삭제합니다',
-		cancelButtonText: '아니오',
-	});
+      if (!(isOwner || isAdmin)) {
+        await showAlert({
+          title: '권한이 없습니다.',
+          text: '작성자 또는 관리자만 삭제 가능합니다.',
+          icon: 'error'
+        });
+        return;
+      }
 
 	if (!result || !result.isConfirmed) return; // 취소 시 아무 동작 X
 
 	// 실제 삭제 로직
+    const result = await showAlert({
+      title: '삭제하시겠습니까?',
+      text: '정말로 이 글을 삭제하시겠습니까?',
+      imageUrl: process.env.PUBLIC_URL + '/img/what.jpg',
+      imageWidth: 300,
+      imageHeight: 300,
+      imageAlt: '에?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: '네, 삭제합니다',
+      cancelButtonText: '아니오',
+    });
 	// await axios.delete(`/api/qna/${qna.id}`); // 서버연결시
 		await showAlert && showAlert({
         title: '삭제 완료',
@@ -240,7 +256,7 @@ const handleReport = async () => {
 		title: '이미 신고하셨습니다.',
 		imageUrl: process.env.PUBLIC_URL + '/img/code.jpg', // 예시
 		imageWidth: 300,
-		imageHeight: 300,
+		imageHeight: 250,
 		imageAlt: '코딩',
 		icon: 'info',
     });
@@ -284,26 +300,122 @@ const handleReport = async () => {
   // 댓글 추가
   const handleCommentSubmit = (e) => {
     e.preventDefault();
-    if (commentInput.trim()) {
-      setComments([
-        ...comments,
-        {
-          id: comments.length + 1,
-          author: 'me',
-          content: commentInput,
-          date: formatDate(new Date().toISOString().split('T')[0]),
-        },
-      ]);
-      setCommentInput('');
-    }
+    if (!commentInput.trim()) return;
+    setQnas((prevQnas) =>
+      prevQnas.map((item) =>
+        item.id === qna.id
+          ? {
+              ...item,
+              comments: [
+                ...(item.comments || []),
+                {
+                  id: (item.comments?.length || 0) + 1,
+                  author: isAdmin ? '관리자' : 'me',
+                  content: commentInput,
+                  date: formatDate(new Date().toISOString().split('T')[0]),
+                },
+              ],
+            }
+          : item
+      )
+    );
+    setCommentInput('');
   };
 
-  // 관리자 답변 수정/삭제
-  const handleEditAnswer = () => alert('관리자 답변 수정 기능 준비중');
-  const handleDeleteAnswer = () => alert('관리자 답변 삭제 기능 준비중');
+  if (!qna) return <p>게시글을 찾을 수 없습니다.</p>;
+
+  // 관리자 답변 수정
+  const handleEditAnswer = () => {
+    setAnswerEditMode(true);
+    setAnswerInput(qna?.answer || "");
+  };
+
+  // 답변 저장(수정) 함수
+  const handleSaveAnswer = async () => {
+    // 여기서 실제 서버에 PATCH/PUT 날리는 게 정석
+    // 예시로는 QnA 상태 바로 변경
+    // 빈칸 못넣게
+    if (!answerInput.trim()) {
+      showAlert && showAlert({
+        title: '답변 내용을 입력해주세요!',
+        imageUrl: process.env.PUBLIC_URL + '/img/what.jpg',   // ← 확장자 포함!
+        imageWidth: 300,
+        imageHeight: 300,
+        imageAlt: '에?',
+        icon: 'warning',
+        timer: 1300,
+        showConfirmButton: false,
+      });
+      return;
+    }
+    // 1. 컨펌 모달 먼저 띄움
+    const result = await showAlert({
+      title: '답변을 저장하시겠습니까?',
+      imageUrl: process.env.PUBLIC_URL + '/img/code.jpg',   // ← 확장자 포함!
+      imageWidth: 300,
+      imageHeight: 250,
+      imageAlt: '코딩',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: '네, 저장합니다',
+      cancelButtonText: '아니오',
+    });
+    if (!result || !result.isConfirmed) return; // 취소 시 아무 일도 없음
+
+    // 2. 저장 로직
+    setQnas(prev =>
+      prev.map(q =>
+        q.id === qna.id ? { ...q, answer: answerInput, isAnswered: true } : q
+      )
+    );
+    setAnswerEditMode(false);
+
+    // 3. 저장 완료 안내 토스트
+    showAlert && showAlert({
+      title: '저장되었습니다!',
+      imageUrl: process.env.PUBLIC_URL + '/img/helmetGood.png',   // ← 확장자 포함!
+      imageWidth: 300,
+      imageHeight: 300,
+      imageAlt: '좋았쓰',
+      icon: 'success',
+      timer: 1300,
+      showConfirmButton: false,
+    });
+  };
+
+  // 관리자 답변 삭제
+  const handleDeleteAnswer = async () => {
+    const result = await showAlert({
+      title: '정말 답변을 삭제하시겠습니까?',
+      text: '삭제된 답변은 복구할 수 없습니다.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: '네, 삭제합니다',
+      cancelButtonText: '아니오',
+    });
+    if (!result || !result.isConfirmed) return;
+    // 삭제 로직
+    setQnas(prev =>
+      prev.map(q =>
+        q.id === qna.id ? { ...q, answer: '', isAnswered: false } : q
+      )
+    );
+    setAnswerEditMode(false);
+
+    showAlert && showAlert({
+      title: '삭제되었습니다!',
+      icon: 'success',
+      timer: 1200,
+      showConfirmButton: false,
+    });
+  };
 
   return (
     <div className="qna-detail-wrapper">
+      {/* 관리자 모드 토글 (임시) */}
+      <button onClick={() => setIsAdmin((v) => !v)} style={{ marginBottom: 10 }}>
+        {isAdmin ? '👑 관리자 모드' : '일반 사용자 모드'}
+      </button>
       {/* 1. 제목 */}
       <div className="qna-detail-title-row"
 	  	style={{ 
@@ -356,21 +468,68 @@ const handleReport = async () => {
         }}>{qna.content}</pre>
       </div>
       {/* 4. 관리자 답변 */}
-      {qna.isAnswered && (
+      {(qna.isAnswered || answerEditMode) && (
         <div className="qna-detail-answer">
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-            <div>
-              <h3 style={{ display: 'inline', marginRight: 10, fontWeight: 700, fontSize: 16, color: "#222" }}>💬 관리자 답변</h3>
-              <span style={{ fontWeight: 500, fontSize: 16 }}>{mockAdminAnswer.answer}</span>
-            </div>
-            <div style={{ display: 'flex', gap: 8 }}>
-              <button className="qna-action-btn" style={{ fontSize: 13, padding: "4px 10px" }} onClick={handleEditAnswer}>수정</button>
-              <button className="qna-action-btn" style={{ fontSize: 13, padding: "4px 10px" }} onClick={handleDeleteAnswer}>삭제</button>
-            </div>
+          <div>
+            <h3 style={{
+              display: 'inline',
+              marginRight: 10,
+              fontWeight: 700,
+              fontSize: 16,
+              color: "#222"
+            }}>💬 관리자 답변</h3>
+            {answerEditMode ? (
+              <textarea
+                value={answerInput}
+                onChange={e => setAnswerInput(e.target.value)}
+                placeholder="답변을 입력하세요"
+                style={{
+                  width: '100%',
+                  minHeight: 80,
+                  margin: "12px 0 0 0",
+                  fontSize: 15,
+                  borderRadius: 5,
+                  border: "1px solid #bfbfbf",
+                  padding: 10
+                }}
+              />
+            ) : (
+              <span style={{ fontWeight: 500, fontSize: 16 }}>{qna.answer}</span>
+            )}
           </div>
-          <div style={{ color: "#aaa", fontSize: 13 }}>답변일: {mockAdminAnswer.answerDate}</div>
+          <div style={{ display: 'flex', gap: 8, margin: '8px 0' }}>
+            {isAdmin && !answerEditMode && qna.isAnswered && (
+              <>
+                <button className="qna-action-btn" onClick={handleEditAnswer}>수정</button>
+                <button className="qna-action-btn" onClick={handleDeleteAnswer}>삭제</button>
+              </>
+            )}
+            {isAdmin && answerEditMode && (
+              <>
+                <button className="qna-action-btn" onClick={handleSaveAnswer}>저장</button>
+                <button className="qna-action-btn" onClick={() => setAnswerEditMode(false)}>취소</button>
+              </>
+            )}
+          </div>
+          <div style={{ color: "#aaa", fontSize: 13 }}>
+            {!answerEditMode && qna.answerDate && (
+              <div style={{ color: "#aaa", fontSize: 13 }}>
+                답변일: {qna.answerDate}
+              </div>
+            )}
+          </div>
         </div>
       )}
+      {/* 답변이 없고, 어드민이고, 수정모드 아니면 “답변 작성” 버튼 */}
+      {isAdmin && !qna.isAnswered && !answerEditMode && (
+        <div style={{ margin: "20px 0" }}>
+          <button className="qna-action-btn" onClick={() => setAnswerEditMode(true)}>
+            답변 작성
+          </button>
+        </div>
+      )}
+
+
       {/* 5. 추천/신고 */}
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '26px 0', gap: 10 }}>
 		<button
@@ -396,18 +555,33 @@ const handleReport = async () => {
       </div>
       {/* 7. 댓글 */}
       <div style={{ margin: "35px 0 0 0" }}>
-        <h4 style={{ marginBottom: 12, fontWeight: 700, fontSize: 17 }}>댓글 <span style={{ color: '#b19cd9' }}>({comments.length})</span></h4>
-        <div style={{ marginLeft: 3 }}>
-          {comments.length === 0 && <div style={{ color: "#aaa" }}>등록된 댓글이 없습니다.</div>}
-          {comments.map(c => (
-            <div key={c.id} style={{
-              marginBottom: 10, fontSize: 15, padding: '12px 0', borderBottom: '1px solid #f1f1f1'
-            }}>
-              <b>{c.author}</b> <span style={{ color: "#bbb", fontSize: 13, marginLeft: 8 }}>{c.date}</span>
-              <div style={{ marginLeft: 2 }}>{c.content}</div>
-            </div>
-          ))}
-        </div>
+  <h4 style={{ marginBottom: 12, fontWeight: 700, fontSize: 17 }}>
+    댓글 <span style={{ color: '#b19cd9' }}>({qna.comments ? qna.comments.length : 0})</span>
+  </h4>
+  <div style={{ marginLeft: 3 }}>
+    {/* qna.comments가 없거나 0개일 때 */}
+    {(!qna.comments || qna.comments.length === 0) && (
+      <div style={{ color: "#aaa" }}>등록된 댓글이 없습니다.</div>
+    )}
+
+    {/* qna.comments가 있을 때 */}
+    {qna.comments && qna.comments.map(c => (
+      <div key={c.id} style={{
+        marginBottom: 10,
+        fontSize: 15,
+        padding: '12px 0',
+        borderBottom: '1px solid #f1f1f1'
+      }}>
+        <b>{c.user || c.author}</b>
+        {/* 날짜 필드도 유동적으로 처리 */}
+        <span style={{ color: "#bbb", fontSize: 13, marginLeft: 8 }}>
+          {c.date}
+        </span>
+        <div style={{ marginLeft: 2 }}>{c.text || c.content}</div>
+      </div>
+    ))}
+  </div>
+
         <form style={{ display: "flex", gap: 8, marginBottom: 18, marginTop: 12 }} onSubmit={handleCommentSubmit}>
           <input
             type="text"
@@ -476,15 +650,15 @@ const handleReport = async () => {
               {next.isReported && (
                 <span className="nav-reported" style={{ color: "#ff7676", fontWeight: 700, cursor: 'pointer', marginLeft: 4 }}
                   onClick={() => 
-					showAlert && showAlert({
-						title: '🚫 관리자 검토중',
-						text: '신고가 누적된 글입니다.',
-						imageUrl: process.env.PUBLIC_URL + '/img/badCat.jpg',   // ← 확장자 포함!
-						imageWidth: 300,
-						imageHeight: 300,
-						imageAlt: '조져쓰',
-						icon: 'warning', // 주의: imageUrl이 있으면 icon은 무시됨!
-				})}
+                    showAlert && showAlert({
+                      title: '🚫 관리자 검토중',
+                      text: '신고가 누적된 글입니다.',
+                      imageUrl: process.env.PUBLIC_URL + '/img/badCat.jpg',   // ← 확장자 포함!
+                      imageWidth: 300,
+                      imageHeight: 300,
+                      imageAlt: '조져쓰',
+                      icon: 'warning', // 주의: imageUrl이 있으면 icon은 무시됨!
+                  })}
                 >신고글</span>
               )}
               {next.isReported && next.isSecret && <span style={{ color: '#bbb' }}> | </span>}

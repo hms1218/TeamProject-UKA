@@ -39,6 +39,7 @@ import TestBoard from './components/Board/Pages/TestBoard';
 // 고객센터 관련
 import CustomerLayout from './components/Customers/Pages/CustomerLayout';
 import FAQList from "./components/Customers/Pages/FAQList";
+import FAQEdit from "./components/Customers/Pages/FAQEdit";
 import QnAList from "./components/Customers/Pages/QnAList";
 import QnAForm from "./components/Customers/Pages/QnAForm";
 import QnADetail from "./components/Customers/Pages/QnADetail";
@@ -122,6 +123,7 @@ function App() {
                     }>
                         <Route index element={<FAQList />} />
                         <Route path="faq" element={<FAQList />} />
+                        <Route path="faq/edit/:id" element={<FAQEdit />} />
                         <Route path="qna" element={<QnAList />} />
                         <Route path="qna/new" element={<QnAForm />} />
                         <Route path="qna/:id" element={<QnADetail />} />

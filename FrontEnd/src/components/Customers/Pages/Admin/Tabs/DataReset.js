@@ -35,8 +35,8 @@ const DataReset = () => {
       confirmButtonText: '네',
       cancelButtonText: '아니오',
       imageUrl: process.env.PUBLIC_URL + '/img/code.jpg', // 사진도 넣고 싶으면 추가
-      imageWidth: 200,
-      imageHeight: 200,
+      imageWidth: 300,
+      imageHeight: 250,
       imageAlt: '코딩',
     });
     if (!result || !result.isConfirmed) return;

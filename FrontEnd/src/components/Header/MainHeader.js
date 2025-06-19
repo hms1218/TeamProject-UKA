@@ -70,13 +70,11 @@ const MainHeaders = () => {
                         </span>
                         {boardDropdown && (
                             <div className="dropdown-menu">
-                                <Link to="/board">전체</Link>
+                                <Link to="/board">전체게시판</Link>
                                 <Link to="/board/notice">공지사항</Link>
                                 <Link to="/board/chat">속닥속닥</Link>
                                 <Link to="/board/adoptionReview">입양후기</Link>
                                 <Link to="/board/infoShare">새끼분양</Link>
-                                <Link to="/board/test">테스트</Link>
-                                <Link to="/board/testboard">데이터적용</Link>
                             </div>
                         )}
                     </div>

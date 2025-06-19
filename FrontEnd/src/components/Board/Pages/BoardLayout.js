@@ -10,7 +10,7 @@ const BoardLayout = () => {
                 <div className="board-header-left">
                     <h1 className="board-title">게시판</h1>
                 </div>
-            <div className="board-header-center">
+            {/* <div className="board-header-center">
                 <select className='board-search-select'>
                     <option>제목</option>
                     <option>작성자</option>
@@ -24,7 +24,7 @@ const BoardLayout = () => {
                 <button className="board-search-button">
                 🔍
                 </button>
-            </div>
+            </div> */}
             <div className="board-header-right">
                 
             </div>       
@@ -36,7 +36,7 @@ const BoardLayout = () => {
                 to="/board" end
                 className={({ isActive }) => isActive ? 'active' : ''}
             >
-            전체
+            전체게시판
             </NavLink>
             <NavLink
                 to="/board/notice"
@@ -61,18 +61,6 @@ const BoardLayout = () => {
                 className={({ isActive }) => isActive ? 'active' : ''}
             >
             새끼분양
-            </NavLink>
-            <NavLink
-                to="/board/test"
-                className={({ isActive }) => isActive ? 'active' : ''}
-            >
-            테스트
-            </NavLink>
-            <NavLink
-                to="/board/testboard"
-                className={({ isActive }) => isActive ? 'active' : ''}
-            >
-            데이터적용
             </NavLink>
         </nav>
 

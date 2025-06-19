@@ -33,8 +33,7 @@ import AdoptionReviewDetail from './components/Board/Pages/AdoptionReviewDetail'
 import ReviewEdit from './components/Board/Pages/ReviewEdit';
 import { ChatProvider } from './components/Board/Context/ChatContext';
 
-import TestForm from './components/Board/Pages/TestForm';
-import TestBoard from './components/Board/Pages/TestBoard';
+import TestDetail from './components/Board/Pages/TestDetail';
 
 // 고객센터 관련
 import CustomerLayout from './components/Customers/Pages/CustomerLayout';
@@ -53,6 +52,7 @@ import { DetailSelect}  from './components/DetailPage/DetailSelect';
 // 관리자 화면
 import AdminPage from './components/Customers/Pages/Admin/AdminPage';
 import AdminQnADetail from './components/Customers/Pages/Admin/AdminQnADetail';
+
 
 
 
@@ -95,6 +95,7 @@ function App() {
                         <Route path="all" element={<AllBoard />} />
                         <Route path="all/new" element={<AllBoardForm />} />
                         <Route path="all/:id" element={<AllBoardDetail />} />
+                        {/* <Route path="all/:id" element={<TestDetail />} /> */}
                         <Route path="all/:id/new" element={<AllBoardEdit />} />
                         <Route path="notice" element={<Notice />} />
                         <Route path="notice/new" element={<NoticeForm />} />
@@ -108,8 +109,6 @@ function App() {
                         <Route path="adoptionReview/new" element={<ReviewForm />} />
                         <Route path="adoptionReview/:id" element={<AdoptionReviewDetail />} />
                         <Route path="adoptionReview/:id/new" element={<ReviewEdit />} />
-                        <Route path="test" element={<TestForm />} />
-                        <Route path="testboard" element={<TestBoard />} />
                     </Route>
                     {/* 고객센터 라우팅 */}
                     <Route path="/customer/*" element={

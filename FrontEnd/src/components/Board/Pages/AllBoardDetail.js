@@ -52,7 +52,7 @@ const AllBoardDetail = () => {
     if (post.isSecret && !window.sessionStorage.getItem(`chat_access_${post.id}`)) {
         const input = prompt('🔒 비밀글입니다. 비밀번호를 입력해주세요');
         if (input === post.password) {
-            window.sessionStorage.setItem(`chat_access_${post.id}`, 'true');
+            window.sessionStorage.setItem(`post_access_${post.id}`, 'true');
         } else {
             alert('❌ 비밀번호가 일치하지 않습니다.');
             navigate('/board/all');
@@ -70,25 +70,39 @@ const AllBoardDetail = () => {
                 alert('❌ 비밀번호가 틀렸습니다.');
             }
         } else {
-            navigate(`/board/${post.id}`, {state: { postType: post.type || 'notice' }});
+            navigate(`/board/all/${post.id}`, {state: { postType: post.type || 'notice' }});
         }
     };
 
     return (
         <div style={{ padding: '20px' }}>
-            <h2>{post.title}</h2>
-            <p>작성자: {post.author}</p>
-            <p>{post.content}</p>
+            <div>
+            <table className='board-detail-table-container'>
+                <tbody>
+                    <tr>
+                        <td style={{ background: '#ccc', padding: 9, fontWeight: 700 }}>등록자명</td>
+                        <td style={{ background: '#fff', width: '18%', padding: 9 }}>{post.author}</td>
+                        <td style={{ background: '#ccc', padding: 9, fontWeight: 700 }}>등록일</td>
+                        <td style={{ background: '#fff', width: '20%', padding: 9 }}>{new Date(post.createdAt).toLocaleString()}</td>
+                        <td style={{ background: '#ccc', padding: 9, fontWeight: 700 }}>조회수</td>
+                        <td style={{ background: '#fff', width: '8%', padding: 9 }}>{post.views ?? 0}</td>
+                        <td style={{ background: '#ccc', padding: 9, fontWeight: 700 }}>추천수</td>
+                        <td style={{ background: '#fff', width: '8%', padding: 9 }}>{post.likes ?? 0}</td>
+                    </tr>
+                </tbody>
+            </table>
+                <p>{post.content}</p>
+            </div>
 
-            <div className="chat-button-group">
+            <div className="board-detail-button-group">
                 <button
-                className="chat-button"
+                className="board-detail-button"
                     onClick={() => navigate(`/board/all/${post.id}/edit`, { state: post })}
                 >
                 ✏️ 수정
                 </button>
                 <button
-                className="chat-button"
+                className="board-detail-button"
                 onClick={() => {
                     if (window.confirm('삭제하시겠습니까?')) {
                     alert('삭제 기능은 아직 구현되지 않았습니다.');
@@ -99,29 +113,29 @@ const AllBoardDetail = () => {
                 🗑 삭제
                 </button>
                 <button
-                    className="chat-button"
+                    className="board-detail-button"
                     onClick={() => navigate('/board/all')}
                 >
                 ← 목록으로
                 </button>
             </div>
 
-            <div className="chat-navigation">
+            <div className="board-post-navigation">
             {prev && (
                 <div 
-                    className="chat-nav-item" 
-                    onClick={() => navigate(`/board/all/${prev.id}`, {state: { postType: prev.type || 'notice' }})}
+                    className="board-post-nav-item" 
+                    onClick={() => handleSecretNavigate(prev)}
                 >
-                    <span className="chat-nav-label">◀️ 이전글</span>
-                    <span className="chat-nav-title">
+                    <span className="board-post-nav-label">◀️ 이전글</span>
+                    <span className="board-post-nav-title">
                     {prev.isSecret ? '비밀글입니다.' : prev.title}
                     </span>
                 </div>
             )}
             {next && (
-                <div className="chat-nav-item" onClick={() => navigate(`/board/all/${next.id}`, {state: { postType: next.type || 'notice' }})}>
-                    <span className="chat-nav-label">▶️ 다음글</span>
-                    <span className="chat-nav-title">
+                <div className="board-post-nav-item" onClick={() => handleSecretNavigate(next)}>
+                    <span className="board-post-nav-label">▶️ 다음글</span>
+                    <span className="board-post-nav-title">
                     {next.isSecret ? '비밀글입니다.' : next.title}
                     </span>
                 </div>

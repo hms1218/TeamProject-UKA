@@ -145,6 +145,9 @@
 .dropdown {
     position: relative;
     cursor: pointer;
+    display: flex;
+    justify-content: end;
+    padding : 20px;
 }
 
 .dropdown-title {

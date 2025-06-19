@@ -1,19 +1,29 @@
 import { useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import ReactQuill from 'react-quill';
+import { useAlert } from '../Context/AlertContext';
 import 'react-quill/dist/quill.snow.css';
 
 const QnAEdit = () => {
   const { id } = useParams();
   const { state } = useLocation();
   const navigate = useNavigate();
+  const { showAlert } = useAlert();
 
   const [title, setTitle] = useState(state?.title || '');
   const [content, setContent] = useState(state?.content || '');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert('수정이 완료되었습니다.');
+    await showAlert({
+      title: '수정완료',
+      text: '수정이 완료되었습니다.',
+      imageUrl: process.env.PUBLIC_URL + '/img/goodCat.jpg',
+      imageWidth: 300,
+      imageHeight: 300,
+      imageAlt: '좋았쓰',
+      icon: "success",
+    })
     navigate(`/customer/qna/${id}`);
   };
 

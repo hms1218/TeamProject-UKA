@@ -35,33 +35,33 @@ const loadingItems = [
 ];
 
 const Loading = () => {
-  // 한 번만 랜덤으로 선택
-  const { img, texts } = useMemo(
-    () => loadingItems[Math.floor(Math.random() * loadingItems.length)],
-    []
-  );
+    // 한 번만 랜덤으로 선택
+    const { img, texts } = useMemo(
+        () => loadingItems[Math.floor(Math.random() * loadingItems.length)],
+        []
+    );
 
   // 이미지도 Dog일 땐 배열 중 랜덤, 나머진 그대로
-  const selectedImg = useMemo(() => {
-    if (Array.isArray(img)) {
-      // Dog 그룹일 때
-      return img[Math.floor(Math.random() * img.length)];
-    }
-    return img;
-  }, [img]);
+    const selectedImg = useMemo(() => {
+        if (Array.isArray(img)) {
+            // Dog 그룹일 때
+            return img[Math.floor(Math.random() * img.length)];
+        }
+        return img;
+    }, [img]);
 
-  // 텍스트도 랜덤
-  const randomText = useMemo(
-    () => texts[Math.floor(Math.random() * texts.length)],
-    [texts]
-  );
+    // 텍스트도 랜덤
+    const randomText = useMemo(
+        () => texts[Math.floor(Math.random() * texts.length)],
+        [texts]
+    );
 
-  return (
-    <div className="loading-container">
-      <img src={selectedImg} alt="로딩 중" />
-      <p>{randomText}</p>
-    </div>
-  );
+    return (
+        <div className="loading-container">
+        <img src={selectedImg} alt="로딩 중" />
+        <p>{randomText}</p>
+        </div>
+    );
 };
 
 

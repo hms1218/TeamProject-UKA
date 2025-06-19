@@ -42,7 +42,7 @@ const QnAForm = () => {
       imageUrl: process.env.PUBLIC_URL + '/img/goodCat.jpg', // 필요하면
       imageWidth: 200,
       imageHeight: 200,
-      imageAlt: '등록',
+      imageAlt: '좋았쓰',
       showConfirmButton: false,
     });
 

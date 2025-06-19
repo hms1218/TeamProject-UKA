@@ -1,0 +1,16 @@
+/* 메인컨테이너 */
+.RWcontainer {
+    border-radius: 10px;
+    min-width: 850px;
+}
+
+/* 본문 위쪽 */
+.RWtop{
+    border: 1px solid #cceeff;
+    border-radius: 10px;
+}
+
+.RWbottom{
+    border: 1px solid #cceeff;
+    border-radius: 10px;
+}

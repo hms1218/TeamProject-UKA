@@ -1,0 +1,16 @@
+/* 메인컨테이너 */
+.RMcontainer {
+    border-radius: 10px;
+    min-width: 850px;
+}
+
+/* 본문 위쪽 */
+.RMtop{
+    border: 1px solid #cceeff;
+    border-radius: 10px;
+}
+
+.RMbottom{
+    border: 1px solid #cceeff;
+    border-radius: 10px;
+}

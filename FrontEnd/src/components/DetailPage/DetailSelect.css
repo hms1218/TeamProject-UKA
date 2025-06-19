@@ -60,12 +60,18 @@
 
     flex : 0 0 24%;
     text-align: center;
-    padding : 20px;
+    padding : 10px;
 }
 
 /* 정보의 글자 */
 .DSinfo p{
     font-size: 20px;
+}
+
+.DSinfo-text{
+    font-size: 20px;
+    width: auto;
+    height: 40px;
 }
 
 

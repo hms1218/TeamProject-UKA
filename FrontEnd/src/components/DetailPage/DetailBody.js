@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react"
 import img from "../../assets/test1.jpg"
-import KoreaMapSection from "../Map/KoreaMapSection";
 import './DetailBody.css'
-import { Link } from "react-router-dom";
 
 import { CardComponent } from "./CardComponent";
+import { Button } from "react-bootstrap";
 
 export const DetailBody = () => {
 
@@ -15,6 +14,9 @@ export const DetailBody = () => {
     const [center,setCenter] = useState('');
     const [regionInfo, setRegionInfo] = useState([]);
 
+    const [isRow,setIsRow] = useState(false);
+    const [show,setShow] = useState(false);
+
     //지도 데이터 로딩용
     useEffect(()=>{
         
@@ -24,14 +26,14 @@ export const DetailBody = () => {
     return(
         <div className="DBcontainer">
             <div className="DBtop">
-                <div className="map">
-                    <KoreaMapSection 
+                <div className="DBmap">
+                    {/* <KoreaMapSection 
                         // onRegionSelect={handleRegionSelect}
                         //     selectedRegionId={selectedRegionId}
                         //     tooltipContent={tooltipContent}
                         //     setTooltipContent={setTooltipContent}
                             regionInfo={regionInfo}
-                    />
+                    /> */}
                 </div>
 
                 <div className="DBcombobox">
@@ -58,17 +60,23 @@ export const DetailBody = () => {
                             <option id='gu' value={gu}>구</option>
                         </select>
                     </div>
+                    <Button title="검색하기" onClick={()=>{
+
+                    }}/>
                 </div>
                 
             </div>{/* end top */}
 {/* ================================================================================================ */}
             {/* 지역선택하면 값을 받아서 렌더링하게 설정할것(지금은 일단 보임.) */}
             <div className="DBbottom">
-                {/* 렌더링 개수 정하는 드롭다운. */}
+                {/* 렌더링 방식 정하는 드롭다운. */}
                 <div className="DBdropdown">
-                    <select>
-                        <option value='8'>세로</option>
-                        <option value='12'>가로</option>
+                    <select value={isRow} onChange={(e)=>{
+                        setIsRow(e.target.value==='true') 
+                        console.log(isRow)
+                        }}>
+                        <option value='false'>세로</option>
+                        <option value='true'>가로</option>
                     </select>
                 </div>
 
@@ -77,24 +85,21 @@ export const DetailBody = () => {
                 <div className="DBdetail-box">
 
                     {/* 상세정보하나 */}
-                    <CardComponent img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
 
-                    <CardComponent img={img} description={'간략한 정보'} title={'제목'}/>
-
-                    <CardComponent img={img} description={'간략한 정보'} title={'제목'}/>
-
-                    <CardComponent img={img} description={'간략한 정보'} title={'제목'}/>
-
-                    <CardComponent img={img} description={'간략한 정보'} title={'제목'}/>
-
-                    <CardComponent img={img} description={'간략한 정보'} title={'제목'}/>
-
-                    <CardComponent img={img} description={'간략한 정보'} title={'제목'}/>
-
-                    <CardComponent img={img} description={'간략한 정보'} title={'제목'}/>
-
-                    <CardComponent img={img} description={'간략한 정보'} title={'제목'}/>
-
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                                       
                     
 
                 </div>

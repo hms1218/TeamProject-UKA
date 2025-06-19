@@ -47,6 +47,8 @@ import { DetailSelect}  from './components/DetailPage/DetailSelect';
 import AdminPage from './components/Customers/Pages/Admin/AdminPage';
 import AdminQnADetail from './components/Customers/Pages/Admin/AdminQnADetail';
 import AllBoard from './components/Board/Pages/AllBoard';
+import { RequestMain } from './components/Request/RequestMain';
+import { RequestWrite } from './components/Request/RequestWrite';
 
 function App() {
 
@@ -72,9 +74,13 @@ function App() {
 
                     <Route path="/reset-password" element={<ResetPasswordPage />} />
 
-                    {/* 상세페이지 전체 */}
+                    {/* 입양하고싶어요 전체 */}
                     <Route path='/about' element={<DetailBody/>} />
                     <Route path='/about/select' element={<DetailSelect/>}/>
+                    
+                    {/* 찾고 있어요 전체 */}
+                    <Route path='/request' element={<RequestMain/>} />
+                    <Route path='/request/write' element={<RequestWrite/>}/>
                     
                     {/* 게시판 전체 (MainBodys 제외) */}
                     <Route path="/board/*" 

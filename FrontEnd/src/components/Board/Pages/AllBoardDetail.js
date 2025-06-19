@@ -77,6 +77,7 @@ const AllBoardDetail = () => {
     return (
         <div style={{ padding: '20px' }}>
             <div>
+                <p>{post.title}</p>
             <table className='board-detail-table-container'>
                 <tbody>
                     <tr>

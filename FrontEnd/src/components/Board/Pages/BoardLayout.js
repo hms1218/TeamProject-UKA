@@ -10,21 +10,6 @@ const BoardLayout = () => {
                 <div className="board-header-left">
                     <h1 className="board-title">게시판</h1>
                 </div>
-            {/* <div className="board-header-center">
-                <select className='board-search-select'>
-                    <option>제목</option>
-                    <option>작성자</option>
-                    <option>내용</option>
-                </select>
-                <input
-                    className="board-search-input"
-                    type="text"
-                    placeholder="검색"
-                />
-                <button className="board-search-button">
-                🔍
-                </button>
-            </div> */}
             <div className="board-header-right">
                 
             </div>       

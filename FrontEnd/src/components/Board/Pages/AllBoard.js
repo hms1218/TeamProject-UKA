@@ -9,13 +9,13 @@ const AllBoard = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const navigate = useNavigate();
     const [sortOption, setSortOption] = useState('latest');
-    const [sortAsc, setSortAsc] = useState(true); // 오름차순/내림차순
+    const [sortAsc, setSortAsc] = useState(false); // 오름차순/내림차순
 
     const itemsPerPage = 10;
 
 	//공지사항 글 매핑
     const noticedChats = [...notice.map(post => ({ ...post, type: 'notice' }))].sort((a, b) => {
-        const order = sortAsc ? 1 : -1; // 정렬 방향 설정
+        const order = sortAsc ? -1 : 1; // 정렬 방향 설정
 
         if(sortOption === 'latest'){
             return order * (new Date(b.createdAt) - new Date(a.createdAt));
@@ -33,7 +33,7 @@ const AllBoard = () => {
         ...chats.map(post => ({ ...post, type: 'chat' })),
         ...review.map(post => ({ ...post, type: 'review' })),
     ].sort((a, b) => {
-        const order = sortAsc ? 1 : -1; // 정렬 방향 설정
+        const order = sortAsc ? -1 : 1; // 정렬 방향 설정
 
         if(sortOption === 'latest'){
             return order * (new Date(b.createdAt) - new Date(a.createdAt));
@@ -132,10 +132,15 @@ const AllBoard = () => {
 
     return (
         <div className="board-container">
-        <h1 className="board-title">전체 게시판</h1>
+        {/* <h1 className="board-title">전체 게시판</h1> */}
 
         <div className="board-controls">
-            <select value={sortOption} onChange={(e) => setSortOption(e.target.value)}>
+            <select 
+                value={sortOption} 
+                onChange={(e) => {
+                    setSortOption(e.target.value); 
+                    setSortAsc(false);
+                }}>
             <option value='latest' selected>최신순</option>
             <option value='comment'>댓글순</option>
             <option value='views'>조회순</option>
@@ -147,7 +152,7 @@ const AllBoard = () => {
         <table className="board-table">
             <thead>
             <tr>
-                <th>탭</th>
+                <th>카테고리</th>
                 <th>제목</th>
                 <th>작성자</th>
 				<th className='comment-header'>
@@ -195,7 +200,7 @@ const AllBoard = () => {
                             setSortAsc(true);
                         }
                         }}>
-                        작성일 {sortOption === 'latest' ? (sortAsc ? '∨' : '∧') : '∨'}
+                        작성일 {sortOption === 'latest' ? (!sortAsc ? '∨' : '∧') : '∨'}
                     </button>
 				</th>
             </tr>

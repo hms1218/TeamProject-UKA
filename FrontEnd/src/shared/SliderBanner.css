@@ -14,7 +14,7 @@
     grid-template-columns: 40px 1fr 40px;
     align-items: center;
     width: 100%;
-    height: 100%;
+    max-width: 100%;
 }
 
 .slider-viewport {
@@ -66,6 +66,9 @@
     overflow-wrap: break-word;
     word-break: break-word;
 }
+.slide-info p {
+    margin-top: 8px;
+}
 
 .main-slider-button {
     background: rgba(0, 0, 0, 0.5);
@@ -75,7 +78,7 @@
     width: 100%;
     height: 25%;
     cursor: pointer;
-    transform: translateY(-85%);
+    transform: translateY(-50%);
 }
 
 .main-slider-button.prev {
@@ -97,8 +100,8 @@
 }
 
 .slider-empty-image {
-  width: 250px;             /* 적당한 크기로 조절 */
-  height: 250px;
+  width: 300px;             /* 적당한 크기로 조절 */
+  height: 100px;
   margin-bottom: 8px;
   opacity: 0.5;
 }

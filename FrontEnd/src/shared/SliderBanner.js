@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import "./SliderBanner.css";
-import DogRun from "../assets/DogRun2.gif";
+import test2 from "../assets/test2.jpg";
 
 const SliderBanner = ({ currentSlide, onPrev, onNext, MainSlides }) => {
     const visibleCount = 2; // 한 번에 보여줄 슬라이드 개수
@@ -12,25 +12,25 @@ const SliderBanner = ({ currentSlide, onPrev, onNext, MainSlides }) => {
             <div className="slider-empty">
                 {/* 대체 이미지 */}
                 <img
-                    src={DogRun}       // 프로젝트에 맞게 경로 조정
+                    src={test2}       // 프로젝트에 맞게 경로 조정
                     alt="데이터 없음"
                     className="slider-empty-image"
                 />
-                    {/* 대체 텍스트 */}
-                    <p className="slider-empty-text">새로 들어온 동물이 없습니다.</p>
+                {/* 대체 텍스트 */}
+                <p className="slider-empty-text">새로 들어온 동물이 없습니다.</p>
             </div>
         );
     }
 
     return (
         <div className="main-slider-container">
-        {/* 1. 왼쪽 버튼 */}
-        <button
-            className="main-slider-button prev"
-            onClick={onPrev}
-            aria-label="Previous Slide"
-        > ◀ </button>
-        {/* 2. 슬라이드 뷰포트 */}
+            {/* 1. 왼쪽 버튼 */}
+            <button
+                className="main-slider-button prev"
+                onClick={onPrev}
+                aria-label="Previous Slide"
+            > ◀ </button>
+            {/* 2. 슬라이드 뷰포트 */}
         <div className="slider-viewport">
             <div
                 className="slider-content"

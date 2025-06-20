@@ -216,8 +216,8 @@ export default function OverviewPanel({ allRegionData, regionData, regionNm, set
                 </div>
             </div>
 
-                <div className="info-bottom">
-                <h4 style={{marginTop : 10}}>선택 지역 유기동물 찾기</h4>
+            <div className="info-bottom">
+                <h4>선택 지역 유기동물 찾기</h4>
 
                 {/* select + button 을 묶는 컨테이너 */}
                 <div className="bottom-actions">
@@ -243,7 +243,6 @@ export default function OverviewPanel({ allRegionData, regionData, regionNm, set
                     </button>
                 </div>
             </div>
-
         </div>
     );
 }

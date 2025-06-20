@@ -4,7 +4,6 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import MainHeaders from './components/Header/MainHeader';
 import MainBody from './components/Main/MainBody';
 import MainFooter from './components/Footer/MainFooter';
-import { Home } from './components/DetailPage/navigation';
 
 import LoginPage from './components/Pages/LoginPage';
 import SignupPage from './components/Pages/SignupPage';
@@ -28,6 +27,7 @@ import AdoptionReviewDetail from './components/Board/Pages/AdoptionReviewDetail'
 import ReviewEdit from './components/Board/Pages/ReviewEdit';
 import { ChatProvider } from './components/Board/Context/ChatContext';
 
+// 고객센터 관련
 import CustomerLayout from './components/Customers/Pages/CustomerLayout';
 import FAQList from "./components/Customers/Pages/FAQList";
 import QnAList from "./components/Customers/Pages/QnAList";
@@ -62,7 +62,6 @@ function App() {
                         {/* 메인 홈 전용 레이아웃 */}
                         <Route path="/" element={
                             <>
-                                <Home />
                                 <MainBody />
                             </>
                         } />

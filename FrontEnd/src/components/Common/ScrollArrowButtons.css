@@ -2,7 +2,7 @@
     position: fixed;
     display: flex;
     flex-direction: column;
-    right: calc(50vw - 750px);
+    right: calc(50vw - 650px);
     bottom: 36px;
     gap: 14px;
     z-index: 99;

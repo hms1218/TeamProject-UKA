@@ -176,9 +176,9 @@ export const DetailSelect = () => {
             </div>{/* ent bottom */}
             {/* 고객센터로 값과 함께 전달할 버튼 */}
                 <div className='DSbutton'>
-                    <Button variant="contained" onClick={()=>navigate('/customer/adoption')} >이전 동물</Button>
+                    <Button variant="contained" color='secondary' onClick={()=>navigate('/customer/adoption')} >이전 동물</Button>
                     <Button variant="contained" onClick={()=>navigate('/customer/adoption')} >입양 문의</Button>
-                    <Button variant="contained" onClick={()=>navigate('/customer/adoption')} >다음 동물</Button>
+                    <Button variant="contained" color='secondary' onClick={()=>navigate('/customer/adoption')} >다음 동물</Button>
                 </div>
         </div>//end container
     )

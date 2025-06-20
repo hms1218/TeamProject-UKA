@@ -3,7 +3,7 @@ import img from "../../assets/test1.jpg"
 import './DetailBody.css'
 
 import { CardComponent } from "./CardComponent";
-import { Button } from "react-bootstrap";
+import { Button } from "@mui/material";
 
 export const DetailBody = () => {
 
@@ -25,7 +25,46 @@ export const DetailBody = () => {
 
     return(
         <div className="DBcontainer">
+
+            {/* 헤더 */}
+            <div className="DBcombobox">
+                {/* 시 */}
+                <div style={{}}>
+                    <label className="DBtext" for="si" >시 선택</label> 
+                    <select id='si'title="시입니다">                        
+                    {<option value={si}>시</option>}
+                    </select>
+                </div>
+
+                {/* 군 */}
+                <div style={{}}>
+                    <label className="DBtext" for="gun" >군 선택</label>
+                    <select>
+                        <option id="gun" value={gun}>군</option>
+                    </select>
+                </div>
+
+                {/* 구 */}
+                <div style={{}}>
+                    <label className="DBtext" for="gu" >구 선택</label>
+                    <select>
+                        <option id='gu' value={gu}>구</option>
+                    </select>
+                </div>
+                <Button 
+                    variant="contained"
+                    className="DBButton"
+                    color="inherit"
+                    onClick={()=>{
+                        setShow(!show)
+
+                    }}>검색하기
+                </Button>
+            </div>
+
+            {/* 상단 div */}
             <div className="DBtop">
+                {/* 여기에 지도 들어갈 것 같아요. */}
                 <div className="DBmap">
                     {/* <KoreaMapSection 
                         // onRegionSelect={handleRegionSelect}
@@ -36,34 +75,41 @@ export const DetailBody = () => {
                     /> */}
                 </div>
 
-                <div className="DBcombobox">
-                    {/* 시 */}
-                    <div style={{display:'flex', flexDirection:'column'}}>
-                        <label className="DBtext" for="si" >시 선택</label> 
-                        <select id='si'title="시입니다">                        
-                        {<option value={si}>시</option>}
-                        </select>
+                
+                {/* 보드에서 가져온 헤더 */}
+                <div className="DBboard-layout">
+                
+                    <div className="DBboard-header-container">
+                        <div className="DBboard-header-left">
+                            <h1 className="DBboard-title">게시판</h1>
+                        </div>
+                        <div className="DBboard-header-center">
+                            <select className='DBboard-search-select'>
+                                <option>제목</option>
+                                <option>작성자</option>
+                                <option>내용</option>
+                            </select>
+                            <input
+                                className="DBboard-search-input"
+                                type="text"
+                                placeholder="검색"
+                            />
+                            <button className="DBboard-search-button">
+                            🔍
+                            </button>
+                        </div>
+                        <div className="DBboard-header-right">
+                            
+                        </div>   
                     </div>
 
-                    {/* 군 */}
-                    <div style={{display:'flex', flexDirection:'column'}}>
-                        <label className="DBtext" for="gun" >군 선택</label>
-                        <select>
-                            <option id="gun" value={gun}>군</option>
-                        </select>
-                    </div>
+                    {/* 탭 메뉴 */}
+                    <nav className="DBmini-tab-bar">
+                    
+                    </nav>
 
-                    {/* 구 */}
-                    <div style={{display:'flex', flexDirection:'column'}}>
-                        <label className="DBtext" for="gu" >구 선택</label>
-                        <select>
-                            <option id='gu' value={gu}>구</option>
-                        </select>
-                    </div>
-                    <Button title="검색하기" onClick={()=>{
+                 </div>
 
-                    }}/>
-                </div>
                 
             </div>{/* end top */}
 {/* ================================================================================================ */}
@@ -73,17 +119,27 @@ export const DetailBody = () => {
                 <div className="DBdropdown">
                     <select value={isRow} onChange={(e)=>{
                         setIsRow(e.target.value==='true') 
-                        console.log(isRow)
                         }}>
                         <option value='false'>세로</option>
                         <option value='true'>가로</option>
                     </select>
+
+                    <div className="DBrowbutton"
+                        onClick={()=>{setIsRow(false)}} 
+                    >
+                        
+                    </div>
+                    <div className="DBrowbutton"
+                        onClick={()=>{setIsRow(true)}} 
+                    >
+
+                    </div>
+                    
                 </div>
 
 
                 {/* 상세정보 하나 들어가는 박스 */}
-                <div className="DBdetail-box">
-
+                {show&&<div className="DBdetail-box">
                     {/* 상세정보하나 */}
                     <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
                     <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
@@ -99,10 +155,7 @@ export const DetailBody = () => {
                     <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
                     <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
                     <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
-                                       
-                    
-
-                </div>
+                </div>}
             </div>{/* end bottom */}
             
 

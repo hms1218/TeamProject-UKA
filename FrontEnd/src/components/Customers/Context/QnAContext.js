@@ -129,8 +129,9 @@ const initialQnAs = [
     title: '문의11',
     author: 'user2',
     content: '입양에 대해 궁금해요',
-    isSecret: true,
-    password: '1234',
+    isSecret: false,
+    password: '',
+    isReported: true,
     createdAt: '2025-06-12T17:30:00',
     comments: [
       { id: 1, user: "관리자", text: "확인 후 안내드릴게요." }

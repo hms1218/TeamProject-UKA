@@ -46,7 +46,6 @@ import QnADetail from "./components/Customers/Pages/QnADetail";
 import QnAEdit from "./components/Customers/Pages/QnAEdit";
 import AdoptionInquiry from "./components/Customers/Pages/AdoptionInquiry";
 import { QnAProvider } from './components/Customers/Context/QnAContext';
-import { AlertProvider } from './components/Customers/Context/AlertContext';
 import 'react-quill/dist/quill.snow.css';
 
 //상세보기 관련
@@ -114,12 +113,9 @@ function App() {
                     </Route>
                     {/* 고객센터 라우팅 */}
                     <Route path="/customer/*" element={
-                        
-                        <AlertProvider>
-                            <QnAProvider>
-                                <CustomerLayout />
-                            </QnAProvider>
-                        </AlertProvider>
+                        <QnAProvider>
+                            <CustomerLayout />
+                        </QnAProvider>
                     }>
                         <Route index element={<FAQList />} />
                         <Route path="faq" element={<FAQList />} />
@@ -133,11 +129,9 @@ function App() {
                     {/* 관리자 라우팅 - 독립 경로 */}
                     <Route path="/admin/*" 
                         element={
-                        <AlertProvider>
                             <QnAProvider>
                                 <AdminPage />
                             </QnAProvider>
-                        </AlertProvider>
                         } 
                     />
                     <Route path="/customer/qna/:id/admin"

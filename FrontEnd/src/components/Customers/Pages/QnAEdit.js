@@ -18,10 +18,10 @@ const QnAEdit = () => {
     await showAlert({
       title: '수정완료',
       text: '수정이 완료되었습니다.',
-      imageUrl: process.env.PUBLIC_URL + '/img/goodCat.jpg',
-      imageWidth: 300,
-      imageHeight: 300,
-      imageAlt: '좋았쓰',
+      // imageUrl: process.env.PUBLIC_URL + '/img/goodCat.jpg',
+      // imageWidth: 300,
+      // imageHeight: 300,
+      // imageAlt: '좋았쓰',
       icon: "success",
     })
     navigate(`/customer/qna/${id}`);

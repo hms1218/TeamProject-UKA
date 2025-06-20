@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useQnA } from '../Context/QnAContext';
 import './QnAList.css';
 import { useAlert } from '../Context/AlertContext';
+import { useAdmin } from '../Context/AdminContext';
 
 const ITEMS_PER_PAGE = 10;
 const PAGE_BUTTON_LIMIT = 5;
@@ -14,15 +15,16 @@ const QnAList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [openId, setOpenId] = useState(null);
   const { showAlert } = useAlert();
+  const { isAdmin } = useAdmin();
 
   const sortedQnAs = [...qnas].sort((a, b) => Number(b.id) - Number(a.id));
 
   // 페이징 처리
-const totalItems = sortedQnAs.length;
-const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
-const indexOfLast = currentPage * ITEMS_PER_PAGE;
-const indexOfFirst = indexOfLast - ITEMS_PER_PAGE;
-const currentQnAs = sortedQnAs.slice(indexOfFirst, indexOfLast);
+  const totalItems = sortedQnAs.length;
+  const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+  const indexOfLast = currentPage * ITEMS_PER_PAGE;
+  const indexOfFirst = indexOfLast - ITEMS_PER_PAGE;
+  const currentQnAs = sortedQnAs.slice(indexOfFirst, indexOfLast);
 
   // yyyy-mm-dd → yy.mm.dd
   const formatDate = (dateString) => {
@@ -44,19 +46,25 @@ const currentQnAs = sortedQnAs.slice(indexOfFirst, indexOfLast);
 
   // 제목 클릭 시(비밀글 입력창 처리)
   const handleTitleClick = (qna) => {
+    // 어드민은 상관없음
+    if (isAdmin) {
+      navigate(`/customer/qna/${qna.id}`);
+      return;
+    }
     // 🚫 신고된 글은 이동 금지 (비밀 여부와 상관없이)
-    if (qna.isReported) {
+    if (!isAdmin && qna.isReported) {
 	    showAlert && showAlert({
             title: '🚫 관리자 검토중',
             text: '신고가 누적된 글입니다.',
-            imageUrl: process.env.PUBLIC_URL + '/img/badCat.jpg',   // ← 확장자 포함!
-            imageWidth: 300,
-            imageHeight: 300,
-            imageAlt: '조져쓰',
+            // imageUrl: process.env.PUBLIC_URL + '/img/badCat.jpg',   // ← 확장자 포함!
+            // imageWidth: 300,
+            // imageHeight: 300,
+            // imageAlt: '조져쓰',
             icon: 'warning', // 주의: imageUrl이 있으면 icon은 무시됨!
     });
       return;
     }
+    // 비밀글이면 비밀번호 확인, 아니면 이동
     if (qna.isSecret) {
       handlePasswordConfirm(qna); // ✅ 팝업 바로 실행
     } else {
@@ -66,6 +74,10 @@ const currentQnAs = sortedQnAs.slice(indexOfFirst, indexOfLast);
 
   // 비밀번호 확인
   const handlePasswordConfirm = async (qna) => {
+    if (isAdmin) {
+      navigate(`/customer/qna/${qna.id}`);
+      return;
+    }
     const result = await showAlert({
       title: '🔒 비밀글입니다',
       text: '비밀번호를 입력해주세요',
@@ -85,10 +97,10 @@ const currentQnAs = sortedQnAs.slice(indexOfFirst, indexOfLast);
       await showAlert({
         title: '⚠️ 비밀번호 입력 필요',
         text: '비밀번호를 입력해주세요.',
-        imageUrl: process.env.PUBLIC_URL + '/img/tobeCattinue.jpg',
+        imageUrl: process.env.PUBLIC_URL + '/img/pwWhat.jpg',
         imageWidth: 300,
         imageHeight: 300,
-        imageAlt: '다음에',
+        imageAlt: '비밀번호',
         icon: 'warning',
       });
       return;
@@ -99,10 +111,10 @@ const currentQnAs = sortedQnAs.slice(indexOfFirst, indexOfLast);
       await showAlert({
         title: '❌ 비밀번호 오류',
         text: '비밀번호가 틀렸습니다.',
-        // imageUrl: process.env.PUBLIC_URL + '/img/pwWhat.jpg',
-        // imageWidth: 300,
-        // imageHeight: 300,
-        // imageAlt: '패스워드',
+        imageUrl: process.env.PUBLIC_URL + '/img/pwWhat.jpg',
+        imageWidth: 300,
+        imageHeight: 300,
+        imageAlt: '패스워드',
         icon: 'warning',
       });
       return;
@@ -130,7 +142,7 @@ const currentQnAs = sortedQnAs.slice(indexOfFirst, indexOfLast);
             <th style={{ textAlign: 'left', paddingLeft: 22 }}>제목</th>
             <th style={{ width: '100px'}}>작성자</th>
             <th style={{ width: '80px'}}>답변</th>
-            <th style={{ width: '50px'}}>상태</th>
+            <th style={{ width: '100px'}}>상태</th>
             <th style={{ width: '70px'}}>작성일</th>
           </tr>
         </thead>

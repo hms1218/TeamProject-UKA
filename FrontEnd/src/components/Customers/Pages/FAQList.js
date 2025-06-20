@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import FAQEdit from './FAQEdit';
 import './FAQList.css';
 import { useAlert } from '../Context/AlertContext';
+import { useAdmin } from '../Context/AdminContext';
 
 const dummyFaqs = [
   { id: 1, question: '입양 절차는 어떻게 되나요?', answer: '입양 절차는 상담 → 서류 작성 → 방문 순입니다.' },
@@ -20,7 +21,7 @@ const dummyFaqs = [
   // { id: 13, question: '', answer: '' },
 ];
 
-const FAQList = ({ faqs = [], isAdmin = false, onDelete = () => {} }) => {
+const FAQList = ({ faqs = [], onDelete = () => {} }) => {
   const [openId, setOpenId] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedFaq, setSelectedFaq] = useState(null);
@@ -28,7 +29,7 @@ const FAQList = ({ faqs = [], isAdmin = false, onDelete = () => {} }) => {
   const { showAlert } = useAlert();
 
   // 테스트용
-  const [Admin, setAdmin] = useState(true);
+  const { isAdmin, setIsAdmin } = useAdmin();
 
   const toggle = (id) => {
     setOpenId(prev => (prev === id ? null : id));
@@ -76,10 +77,6 @@ const handleDelete = async (id) => {
 };
   return (
     <div className='faq-container'>
-      {/* 관리자 테스트 버튼 */}
-      <button onClick={() => setAdmin(v => !v)} style={{ marginBottom: 12 }}>
-        {Admin ? "관리자 모드" : "일반 모드"}
-      </button>
       <div className="faq-list">
         {dummyFaqs.map((faq) => (
           <div key={faq.id} className="faq-item">
@@ -102,7 +99,7 @@ const handleDelete = async (id) => {
                   <span className="faq-label">A</span>
                   <span className="faq-text">{faq.answer}</span>
                 </div>
-                {Admin && (
+                {isAdmin && (
                   <div className="faq-admin-buttons">
                     <button
                       className="edit-btn"

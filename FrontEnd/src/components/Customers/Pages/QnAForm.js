@@ -23,10 +23,10 @@ const QnAForm = () => {
       showCancelButton: true,
       confirmButtonText: '네',
       cancelButtonText: '아니오',
-      imageUrl: process.env.PUBLIC_URL + '/img/code.jpg', // 필요하면
-      imageWidth: 300,
-      imageHeight: 250,
-      imageAlt: '코딩',
+      // imageUrl: process.env.PUBLIC_URL + '/img/code.jpg', // 필요하면
+      // imageWidth: 300,
+      // imageHeight: 250,
+      // imageAlt: '코딩',
     });
 
     // 2. 아니오(취소)면 그냥 리턴
@@ -39,10 +39,10 @@ const QnAForm = () => {
       title: '등록 완료!',
       icon: 'success',
       timer: 1500,
-      imageUrl: process.env.PUBLIC_URL + '/img/goodCat.jpg', // 필요하면
-      imageWidth: 200,
-      imageHeight: 200,
-      imageAlt: '좋았쓰',
+      // imageUrl: process.env.PUBLIC_URL + '/img/goodCat.jpg', // 필요하면
+      // imageWidth: 200,
+      // imageHeight: 200,
+      // imageAlt: '좋았쓰',
       showConfirmButton: false,
     });
 

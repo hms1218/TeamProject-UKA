@@ -4,11 +4,13 @@ import { useContext } from 'react';
 import DropDownMenu from './DropDownMenu';
 import { AuthContext } from '../../AuthContext';
 import DogFootPrint from '../../assets/DogFootPrint.png';
+import { useAdmin } from '../Customers/Context/AdminContext';
 
 import './MainHeader.css';
 
 const MainHeaders = () => {
     const { user, logout } = useContext(AuthContext);
+    const { isAdmin, setIsAdmin } = useAdmin(); // 어드민 테스트중
     const navigate = useNavigate();
 
     const handleLogout = () => {
@@ -35,6 +37,21 @@ const MainHeaders = () => {
                     {/* <div className="middle-section">
                         <img src={DogFootPrint} alt="Dog Footprint" className="footprint-icon" />
                     </div> */}
+                    {/* 관리자 토글 버튼 추가 */}
+                <button
+                    onClick={() => setIsAdmin(v => !v)}
+                    style={{
+                        background: isAdmin ? "#ffe066" : "#e9ecef",
+                        border: "1px solid #adb5bd",
+                        borderRadius: 8,
+                        marginRight: 10,
+                        padding: "4px 10px",
+                        cursor: "pointer"
+                    }}
+                >
+                    {isAdmin ? "관리자 모드" : "일반 모드"}
+                </button>
+                {/* 여기 위 까지 관리자 테스트 */}
                     {user ? (
                         <>
                             {/* /profile */}
@@ -78,7 +95,7 @@ const MainHeaders = () => {
                             { label: 'FAQ', to: '/customer' },
                             { label: 'Q&A', to: '/customer/qna' },
                             { label: '입양문의', to: '/customer/adoption' },
-                            { label: '관리자 페이지', to: '/admin/reported' },
+                            ...(isAdmin ? [{ label: '관리자 페이지', to: '/admin/reported' }] : []),
                         ]}
                     />
                 </nav>

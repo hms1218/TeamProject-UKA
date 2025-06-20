@@ -2,6 +2,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState, useRef } from 'react';
 import { useQnA } from '../Context/QnAContext';
 import { useAlert } from '../Context/AlertContext';
+import { useAdmin } from '../Context/AdminContext';
 import axios from 'axios';
 import './QnADetail.css';
 
@@ -15,8 +16,8 @@ const QnADetail = () => {
   const [commentInput, setCommentInput] = useState('');
   const [answerEditMode, setAnswerEditMode] = useState(false);
   const [answerInput, setAnswerInput] = useState(qna?.answer || "");
-  const [isAdmin, setIsAdmin] = useState(false); // 관리자 토글
   const isOwner = false; // 임시 추후 삭제 필요
+  const { isAdmin, setIsAdmin } = useAdmin(); // 어드민 임시(추후 삭제 필요)
 
   // 신고
   const [isReported, setIsReported] = useState(false);
@@ -42,54 +43,30 @@ const QnADetail = () => {
   };
 
   useEffect(() => {
-    const checkPasswordAndShowAlert = async () => {
-      const sorted = [...qnas].sort((a, b) => Number(b.id) - Number(a.id));
-      const currentIndex = sorted.findIndex((q) => String(q.id) === String(id));
-      const current = sorted[currentIndex];
-
-      if (!current) return;
-
-      if (
-        current.isSecret &&
-        sessionStorage.getItem(`qna_access_${current.id}`) !== 'true'
-      ) {
-        const input = window.prompt('🔒 비밀글입니다. 비밀번호를 입력해주세요');
-        if (input !== current.password) {
-          // 커스텀 알림
-          showAlert && showAlert({
-            title: '비밀번호 오류',
-            text: '비밀번호가 틀렸습니다.',
-            imageUrl: process.env.PUBLIC_URL + '/img/pwWhat.jpg',   // ← 확장자 포함!
-            imageWidth: 300,
-            imageHeight: 300,
-            imageAlt: '패스워드',
-            icon: 'warning', // 주의: imageUrl이 있으면 icon은 무시됨!
-        });
-          navigate('/customer/qna');
-          return;
-        } else {
-          sessionStorage.setItem(`qna_access_${current.id}`, 'true');
-        }
-      }
-      if (current.isReported && !alreadyRedirected.current) {
-        alreadyRedirected.current = true;
-        showAlert && showAlert({
-          title: '🚫 관리자 검토중',
-          text: '신고가 누적된 글입니다.',
-          imageUrl: process.env.PUBLIC_URL + '/img/badCat.jpg',   // ← 확장자 포함!
-          imageWidth: 300,
-          imageHeight: 300,
-          imageAlt: '조져쓰',
-          icon: 'warning', // 주의: imageUrl이 있으면 icon은 무시됨!
-        });
-        return;
-      }
-      setQna(current);
-      setPrev(sorted[currentIndex - 1] || null);
-      setNext(sorted[currentIndex + 1] || null);
-    };
-    checkPasswordAndShowAlert();
-  }, [id, qnas, showAlert, navigate]);
+  const sorted = [...qnas].sort((a, b) => Number(b.id) - Number(a.id));
+  const currentIndex = sorted.findIndex((q) => String(q.id) === String(id));
+  const current = sorted[currentIndex];
+  if (!current) return;
+  if (isAdmin) {
+    setQna(current);
+    setPrev(sorted[currentIndex - 1] || null);
+    setNext(sorted[currentIndex + 1] || null);
+    return;
+  }
+  // 비밀번호 접근권한 체크
+  if (current.isSecret && sessionStorage.getItem(`qna_access_${current.id}`) !== 'true') {
+    showAlert && showAlert({
+      title: '비밀번호 오류',
+      text: '잘못된 접근입니다. 비밀번호 인증 후 접근하세요.',
+      icon: 'warning',
+    });
+    navigate('/customer/qna');
+    return;
+  }
+  setQna(current);
+  setPrev(sorted[currentIndex - 1] || null);
+  setNext(sorted[currentIndex + 1] || null);
+}, [id, qnas, isAdmin, showAlert, navigate]);
 
   // 추천여부 체크
 	useEffect(() => {
@@ -132,16 +109,63 @@ const QnADetail = () => {
 
   if (!qna) return <p>게시글을 찾을 수 없습니다.</p>;
 
+    // 복원, 삭제, 완전삭제 함수들은 원하는 대로 정의
+  const handleRestore = async () => {
+    const result = await showAlert({
+		title: '복원하시겠습니까?',
+		imageUrl: process.env.PUBLIC_URL + '/img/what.jpg',
+		imageWidth: 300,
+		imageHeight: 300,
+		imageAlt: '에?',
+		icon: 'warning',
+		showCancelButton: true,
+		confirmButtonText: '네, 복원',
+		cancelButtonText: '아니오',
+    });
+	// 취소 시
+    if (!result || !result.isConfirmed) return;
+
+	// QnA 리스트에서 복원 처리 (isReported: false, reportCount: 0)
+	setQnas(prev =>
+		prev.map(q =>
+		q.id === qna.id
+			? { ...q, isReported: false, reportCount: 0 }
+			: q
+		)
+	);
+
+	// 로컬스토리지에서도 신고카운트/신고상태 리셋
+	localStorage.removeItem(`qna_reportCount_${qna.id}`);
+	localStorage.removeItem(`qna_reported_${qna.id}`);
+
+    // 실제 복원 로직 (API 호출 등)
+    await showAlert({
+		title: '복원되었습니다.',
+		imageUrl: process.env.PUBLIC_URL + '/img/helmetGood.png',
+		imageWidth: 300,
+		imageHeight: 300,
+		imageAlt: '좋았쓰(헬멧)',
+		icon: 'success',
+		timer: 1200,
+		showConfirmButton: false
+	});
+  };
+
   // 이전/다음글 네비
   const handleSecretNavigate = async (post) => {
+    // 어드민은 상관없음
+    if (isAdmin) {
+      navigate(`/customer/qna/${post.id}`);
+      return;
+    }
     if (post.isReported) {
 	    showAlert && showAlert({
             title: '🚫 관리자 검토중',
             text: '신고가 누적된 글입니다.',
-            imageUrl: process.env.PUBLIC_URL + '/img/badCat.jpg',   // ← 확장자 포함!
-            imageWidth: 300,
-            imageHeight: 300,
-            imageAlt: '조져쓰',
+            // imageUrl: process.env.PUBLIC_URL + '/img/badCat.jpg',   // ← 확장자 포함!
+            // imageWidth: 300,
+            // imageHeight: 300,
+            // imageAlt: '조져쓰',
             icon: 'warning', // 주의: imageUrl이 있으면 icon은 무시됨!
     });
       return;
@@ -166,10 +190,10 @@ const QnADetail = () => {
 			await showAlert && showAlert({
 				title: '⚠️ 비밀번호 입력 필요',
 				text: '비밀번호를 입력해주세요.',
-				imageUrl: process.env.PUBLIC_URL + '/img/tobeCattinue.jpg',   // ← 확장자 포함!
+				imageUrl: process.env.PUBLIC_URL + '/img/pwWhat.jpg',   // ← 확장자 포함!
 				imageWidth: 300,
 				imageHeight: 300,
-				imageAlt: '계속',
+				imageAlt: '패스워드',
 				icon: 'warning', // 주의: imageUrl이 있으면 icon은 무시됨!
         });
 		return;
@@ -217,85 +241,122 @@ const QnADetail = () => {
         return;
       }
 
-	if (!result || !result.isConfirmed) return; // 취소 시 아무 동작 X
-
-	// 실제 삭제 로직
-    const result = await showAlert({
-      title: '삭제하시겠습니까?',
-      text: '정말로 이 글을 삭제하시겠습니까?',
-      imageUrl: process.env.PUBLIC_URL + '/img/what.jpg',
-      imageWidth: 300,
-      imageHeight: 300,
-      imageAlt: '에?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: '네, 삭제합니다',
-      cancelButtonText: '아니오',
-    });
-	// await axios.delete(`/api/qna/${qna.id}`); // 서버연결시
-		await showAlert && showAlert({
-        title: '삭제 완료',
-		text: '게시글이 삭제되었습니다.',
-        imageUrl: process.env.PUBLIC_URL + '/img/helmetGood.png',   // ← 확장자 포함!
-        imageWidth: 300,
-        imageHeight: 300,
-        imageAlt: '좋았쓰(헬멧)',
-        icon: 'warning', // 주의: imageUrl이 있으면 icon은 무시됨!
-        icon: 'success',
-        timer: 1500,
-        showConfirmButton: false,
-    });
-
-	navigate('/customer/qna');
-	};
-
-  // 신고 버튼
-const handleReport = async () => {
-	if (isReported) {
-    	await showAlert({
-		title: '이미 신고하셨습니다.',
-		imageUrl: process.env.PUBLIC_URL + '/img/code.jpg', // 예시
-		imageWidth: 300,
-		imageHeight: 250,
-		imageAlt: '코딩',
-		icon: 'info',
-    });
-    return;
-  }
-
-  // 1. 신고 확인 모달
+  // result를 여기서 선언해야 함!
   const result = await showAlert({
-    title: '신고하시겠습니까?',
-    text: '해당 게시글을 신고합니다.',
-    imageUrl: process.env.PUBLIC_URL + '/img/what.jpg',   // ← 확장자 포함!
-    imageWidth: 300,
-    imageHeight: 300,
-	imageAlt: '에?',
+    title: '삭제하시겠습니까?',
+    text: '정말로 이 글을 삭제하시겠습니까?',
+    // imageUrl: process.env.PUBLIC_URL + '/img/what.jpg',
+    // imageWidth: 300,
+    // imageHeight: 300,
+    // imageAlt: '에?',
     icon: 'warning',
     showCancelButton: true,
-    confirmButtonText: '예',
+    confirmButtonText: '네, 삭제합니다',
     cancelButtonText: '아니오',
   });
 
-  // 2. 예(확인) 누르면
-  if (result && result.isConfirmed) {
-    // 신고 처리 로직 (서버 연동 예정)
-    localStorage.setItem(`qna_reported_${qna.id}`, 'true'); // 중복방지 예시
-    showAlert({
-      title: '',
-    });
-	await showAlert && showAlert({
-        title: '신고하였습니다.',
-        imageUrl: process.env.PUBLIC_URL + '/img/helmetGood.png',   // ← 확장자 포함!
-        imageWidth: 300,
-        imageHeight: 300,
-        imageAlt: '좋았쓰(헬멧)',
-        icon: 'success',
-        timer: 1500,
-        showConfirmButton: false,
-    });
-  }
+  if (!result || !result.isConfirmed) return; // 취소 시 아무 동작 X
+
+  // await axios.delete(`/api/qna/${qna.id}`); // 서버연결시
+  await showAlert && showAlert({
+    title: '삭제 완료',
+    text: '게시글이 삭제되었습니다.',
+    // imageUrl: process.env.PUBLIC_URL + '/img/helmetGood.png',
+    // imageWidth: 300,
+    // imageHeight: 300,
+    // imageAlt: '좋았쓰(헬멧)',
+    icon: 'success',
+    timer: 1500,
+    showConfirmButton: false,
+  });
+
+  navigate('/customer/qna');
 };
+
+  // 신고 버튼
+	const handleReport = async () => {
+	const result = await showAlert({
+		title: '신고하시겠습니까?',
+		text: '해당 게시글을 신고합니다.',
+		icon: 'warning',
+		showCancelButton: true,
+		confirmButtonText: '예',
+		cancelButtonText: '아니오',
+	});
+
+	if (result && result.isConfirmed) {
+
+		// 이미 신고한 사람(이전 기록 있음)
+		if (localStorage.getItem(`qna_reported_${qna.id}`)) {
+			await showAlert({
+			title: '이미 신고하셨습니다.',
+			icon: 'info',
+			});
+			return;
+		}
+
+		// 관리자라면 바로 신고글로 만들기
+		if (isAdmin) {
+		setQnas(qnas =>
+			qnas.map(q =>
+			q.id === qna.id
+				? { ...q, reportCount: 5, isReported: true }
+				: q
+			)
+		);
+
+		let reportCount = parseInt(localStorage.getItem(`qna_reportCount_${qna.id}`) || "0", 10);
+
+		// 이미 신고글로 분류된 경우 (5회 이상)
+		if (qna.isReported || reportCount >= 5) {
+			await showAlert({
+			title: '이미 신고 처리된 게시글입니다.',
+			imageUrl: process.env.PUBLIC_URL + '/img/huh.png',
+			imageWidth: 300,
+			imageHeight: 300,
+			imageAlt: '어?',
+			icon: 'info',
+			});
+			return;
+		}
+		await showAlert({
+			title: '신고글로 바로 지정되었습니다.',
+			imageUrl: process.env.PUBLIC_URL + '/img/you.png',
+			imageWidth: 200,
+			imageHeight: 200,
+			imageAlt: '너고소',
+			icon: 'success',
+			timer: 1500,
+			showConfirmButton: false,
+		});
+		return;
+		}
+
+		// 일반유저: 신고 카운트 누적
+		setQnas(qnas =>
+		qnas.map(q =>
+			q.id === qna.id
+			? {
+				...q,
+				reportCount: Math.min((q.reportCount || 0) + 1, 5),
+				isReported: (q.reportCount || 0) + 1 >= 5
+				}
+			: q
+		)
+		);
+
+		// localStorage에도 기록(중복방지용)
+		localStorage.setItem(`qna_reported_${qna.id}`, 'true');
+
+		await showAlert({
+		title: '신고하였습니다.',
+		icon: 'success',
+		timer: 1500,
+		showConfirmButton: false,
+		});
+	}
+	};
+
 
   // 댓글 추가
   const handleCommentSubmit = (e) => {
@@ -376,7 +437,7 @@ const handleReport = async () => {
       imageUrl: process.env.PUBLIC_URL + '/img/helmetGood.png',   // ← 확장자 포함!
       imageWidth: 300,
       imageHeight: 300,
-      imageAlt: '좋았쓰',
+      imageAlt: '좋았쓰(헬멧)',
       icon: 'success',
       timer: 1300,
       showConfirmButton: false,
@@ -387,7 +448,10 @@ const handleReport = async () => {
   const handleDeleteAnswer = async () => {
     const result = await showAlert({
       title: '정말 답변을 삭제하시겠습니까?',
-      text: '삭제된 답변은 복구할 수 없습니다.',
+      imageUrl: process.env.PUBLIC_URL + '/img/what.jpg',   // ← 확장자 포함!
+      imageWidth: 300,
+      imageHeight: 300,
+      imageAlt: '에?',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: '네, 삭제합니다',
@@ -404,6 +468,10 @@ const handleReport = async () => {
 
     showAlert && showAlert({
       title: '삭제되었습니다!',
+      imageUrl: process.env.PUBLIC_URL + '/img/helmetGood.png',   // ← 확장자 포함!
+      imageWidth: 300,
+      imageHeight: 300,
+      imageAlt: '좋았쓰(헬멧)',
       icon: 'success',
       timer: 1200,
       showConfirmButton: false,
@@ -412,10 +480,6 @@ const handleReport = async () => {
 
   return (
     <div className="qna-detail-wrapper">
-      {/* 관리자 모드 토글 (임시) */}
-      <button onClick={() => setIsAdmin((v) => !v)} style={{ marginBottom: 10 }}>
-        {isAdmin ? '👑 관리자 모드' : '일반 사용자 모드'}
-      </button>
       {/* 1. 제목 */}
       <div className="qna-detail-title-row"
 	  	style={{ 
@@ -498,18 +562,19 @@ const handleReport = async () => {
             )}
           </div>
           <div style={{ display: 'flex', gap: 8, margin: '8px 0' }}>
-            {isAdmin && !answerEditMode && qna.isAnswered && (
-              <>
-                <button className="qna-action-btn" onClick={handleEditAnswer}>수정</button>
-                <button className="qna-action-btn" onClick={handleDeleteAnswer}>삭제</button>
-              </>
-            )}
-            {isAdmin && answerEditMode && (
-              <>
-                <button className="qna-action-btn" onClick={handleSaveAnswer}>저장</button>
-                <button className="qna-action-btn" onClick={() => setAnswerEditMode(false)}>취소</button>
-              </>
-            )}
+				{isAdmin && !answerEditMode && qna.isAnswered && (
+					<>
+						
+						<button className="qna-action-btn" onClick={handleEditAnswer}>수정</button>
+						<button className="qna-action-btn" onClick={handleDeleteAnswer}>삭제</button>
+					</>
+				)}
+				{isAdmin && answerEditMode && (
+					<>
+						<button className="qna-action-btn" onClick={handleSaveAnswer}>저장</button>
+						<button className="qna-action-btn" onClick={() => setAnswerEditMode(false)}>취소</button>
+					</>
+				)}
           </div>
           <div style={{ color: "#aaa", fontSize: 13 }}>
             {!answerEditMode && qna.answerDate && (
@@ -547,12 +612,18 @@ const handleReport = async () => {
         <span style={{ color: '#bbb', fontWeight: 700 }}>|</span>
         <button className="qna-detail-report-btn" onClick={handleReport}>신고</button>
       </div>
+
+		
 	  {/* 6. 수정/삭제/목록 (맨 하단) */}
       <div className="qna-detail-actions" style={{ marginTop: 34 }}>
+		{isAdmin && qna.isReported && (
+			<button onClick={handleRestore} className="qna-action-btn">복원</button>
+		)}
         <button className="qna-action-btn" onClick={handleEdit}>✏️ 수정</button>
         <button className="qna-action-btn" onClick={handleDelete}>🗑 삭제</button>
         <button className="qna-action-btn" onClick={() => navigate('/customer/qna')}>← 목록</button>
       </div>
+
       {/* 7. 댓글 */}
       <div style={{ margin: "35px 0 0 0" }}>
   <h4 style={{ marginBottom: 12, fontWeight: 700, fontSize: 17 }}>
@@ -611,17 +682,25 @@ const handleReport = async () => {
               <span style={{ fontWeight: 700 }}>이전글</span>
               {/* 신고글, 비밀글, 구분자 */}
               {prev.isReported && (
-                <span className="nav-reported" style={{ color: "#ff7676", fontWeight: 700, cursor: 'pointer', marginLeft: 4 }}
-                  onClick={() => 
-					showAlert && showAlert({
-						title: '🚫 관리자 검토중',
-						text: '신고가 누적된 글입니다.',
-						imageUrl: process.env.PUBLIC_URL + '/img/badCat.jpg',   // ← 확장자 포함!
-						imageWidth: 300,
-						imageHeight: 300,
-						imageAlt: '조져쓰',
-						icon: 'warning', // 주의: imageUrl이 있으면 icon은 무시됨!
-				})}
+                <span
+                  className="nav-reported"
+                  style={{
+                    color: "#ff7676",
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    marginLeft: 4
+                  }}
+                  onClick={() => {
+                    if (isAdmin) {
+                      navigate(`/customer/qna/${prev.id}`);
+                    } else {
+                      showAlert && showAlert({
+                        title: '🚫 관리자 검토중',
+                        text: '신고가 누적된 글입니다.',
+                        icon: 'warning',
+                      });
+                    }
+                  }}
                 >신고글</span>
               )}
               {prev.isReported && prev.isSecret && <span style={{ color: '#bbb' }}> | </span>}
@@ -648,17 +727,27 @@ const handleReport = async () => {
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
               <span style={{ fontWeight: 700 }}>다음글</span>
               {next.isReported && (
-                <span className="nav-reported" style={{ color: "#ff7676", fontWeight: 700, cursor: 'pointer', marginLeft: 4 }}
-                  onClick={() => 
-                    showAlert && showAlert({
-                      title: '🚫 관리자 검토중',
-                      text: '신고가 누적된 글입니다.',
-                      imageUrl: process.env.PUBLIC_URL + '/img/badCat.jpg',   // ← 확장자 포함!
-                      imageWidth: 300,
-                      imageHeight: 300,
-                      imageAlt: '조져쓰',
-                      icon: 'warning', // 주의: imageUrl이 있으면 icon은 무시됨!
-                  })}
+                <span
+                  className="nav-reported"
+                  style={{
+                    color: "#ff7676",
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    marginLeft: 4
+                  }}
+                  onClick={() => {
+                    if (isAdmin) {
+                      // 👇 어드민은 이동
+                      navigate(`/customer/qna/${next.id}`);
+                    } else {
+                      // 👇 일반 유저는 경고
+                      showAlert && showAlert({
+                        title: '🚫 관리자 검토중',
+                        text: '신고가 누적된 글입니다.',
+                        icon: 'warning',
+                      });
+                    }
+                  }}
                 >신고글</span>
               )}
               {next.isReported && next.isSecret && <span style={{ color: '#bbb' }}> | </span>}

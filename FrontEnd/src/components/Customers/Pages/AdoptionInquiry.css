@@ -33,13 +33,6 @@
   padding: 0;
 }
 
-.customer-modal-overlay {
-  position: fixed;
-  left: 0; top: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.3);
-  z-index: 1000;
-}
-
 /* 슬라이드 썸네일 */
 .customer-slide-thumbnails {
   display: flex;
@@ -51,7 +44,7 @@
 }
 .customer-slide-thumb {
   width: 800px;
-  height: 2137px;
+  height: 100%;
   border-radius: 8px;
   object-fit: cover;
   border: 2px solid #eee;

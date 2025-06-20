@@ -4,7 +4,7 @@ import ReactQuill from 'react-quill';
 import { useAlert } from '../../../Context/AlertContext';
 import 'react-quill/dist/quill.snow.css';
 import '../../WriteButton.css';
-import '../../QnADetail.css';
+import './AdminDetail.css';
 
 const FAQForm = () => {
   const [title, setTitle] = useState('');
@@ -57,7 +57,7 @@ const FAQForm = () => {
     <div className="faq-form">
       <h2>FAQ 글쓰기</h2>
       <form onSubmit={handleSubmit}>
-        <div className="qna-form-title">
+        <div className="faq-form-title">
           <label>제목</label><br />
           <input
             type="text"

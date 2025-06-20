@@ -4,19 +4,19 @@ import './BoardLayout.css';
 const BoardLayout = () => {
 
     return (
-        <div className="board-layout">
+        <div>
             {/* 헤더 */}
-            <div className="board-header-container">
-                <div className="board-header-left">
-                    <h1 className="board-title">게시판</h1>
+            <div className="boardLayout-header-container">
+                <div className="boardLayout-header-left">
+                    <h1 className="boardLayout-title">게시판</h1>
                 </div>
-            <div className="board-header-right">
+            <div className="boardLayout-header-right">
                 
             </div>       
         </div>
 
         {/* 탭 메뉴 */}
-        <nav className="mini-tab-bar">
+        <nav className="boardLayout-tab-bar">
             <NavLink
                 to="/board" end
                 className={({ isActive }) => isActive ? 'active' : ''}
@@ -50,7 +50,7 @@ const BoardLayout = () => {
         </nav>
 
         {/* 라우트 출력 영역 */}
-        <main className="board-content">
+        <main className="boardLayout-content">
             <Outlet />
         </main>
         </div>

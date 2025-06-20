@@ -47,13 +47,20 @@
     cursor: pointer;
 }
 
-.write-btn {
-    background-color: #b19cd9;
-    color: white;
+.board-options {
+    color: #5d70ca;
+    border: 1px solid #5d70ca;
+    height: 35px;
+    width: 75px;
+}
+
+.board-write-btn {
+    background-color: #fff;
+    color: #5d70ca;
     padding: 8px 16px;
-    border: none;
+    border: 1px solid #5d70ca;
     border-radius: 6px;
-    font-weight: bold;
+    /* font-weight: bold; */
     cursor: pointer;
 }
 

@@ -55,11 +55,28 @@ const secretReviews = Array.from({ length: 13 }, () =>
 
 const initialReviewList = [...publicReviews, ...secretReviews];
 
+
+
 export const ChatProvider = ({ children }) => {
     const [notice, setNotice] = useState(initialNotice);
     const [chats, setChats] = useState(initialChatList);
     const [review, setReview] = useState(initialReviewList);
-    return <ChatContext.Provider value={{ notice, setNotice, chats, setChats, review, setReview }}>{children}</ChatContext.Provider>;
+
+    const editPost = (id, editPost) => {
+        const edit = (posts) => {
+          return posts.map((post) => (post.id === id ? {...post, ...editPost} : post));
+        }
+
+        if(editPost.type === 'notice'){
+            setNotice((prev) => edit(prev));
+        } else if (editPost.type === 'chat') {
+            setChats((prev) => edit(prev));
+        } else if (editPost.type === 'review') {
+            setReview((prev) => edit(prev));
+        }
+    }
+
+    return <ChatContext.Provider value={{ notice, setNotice, chats, setChats, review, setReview, editPost }}>{children}</ChatContext.Provider>;
 };
 
 export const useChat = () => useContext(ChatContext);

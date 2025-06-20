@@ -135,7 +135,7 @@ const AllBoard = () => {
         {/* <h1 className="board-title">전체 게시판</h1> */}
 
         <div className="board-controls">
-            <select 
+            <select className='board-options'
                 value={sortOption} 
                 onChange={(e) => {
                     setSortOption(e.target.value); 
@@ -146,7 +146,7 @@ const AllBoard = () => {
             <option value='views'>조회순</option>
             <option value='likes'>추천순</option>
             </select>
-            <button className="write-btn" onClick={handleWrite}>글쓰기</button>
+            <button className="board-write-btn" onClick={handleWrite}>글쓰기</button>
         </div>
 
         <table className="board-table">

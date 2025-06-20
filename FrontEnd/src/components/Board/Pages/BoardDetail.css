@@ -82,3 +82,18 @@
 .board-detail-table-container td:nth-child(6){
     border-right: 1px solid #ccc;
 }
+
+.board-detail-submit-button {
+    /* background: #fff; */
+    background: #000;
+    /* border: 1px solid #b19cd9; */
+    border: none;
+    /* color: #b19cd9; */
+    color: #fff;
+    font-weight: 700;
+    border-radius: 7px;
+    padding: 7px 20px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}

@@ -55,6 +55,10 @@ export const DetailBody = () => {
                     variant="contained"
                     className="DBButton"
                     color="inherit"
+                    sx={{
+                        marginLeft:'20px',
+                        marginTop:'37px'
+                    }}
                     onClick={()=>{
                         setShow(!show)
 
@@ -84,19 +88,7 @@ export const DetailBody = () => {
                             <h1 className="DBboard-title">게시판</h1>
                         </div>
                         <div className="DBboard-header-center">
-                            <select className='DBboard-search-select'>
-                                <option>제목</option>
-                                <option>작성자</option>
-                                <option>내용</option>
-                            </select>
-                            <input
-                                className="DBboard-search-input"
-                                type="text"
-                                placeholder="검색"
-                            />
-                            <button className="DBboard-search-button">
-                            🔍
-                            </button>
+                           
                         </div>
                         <div className="DBboard-header-right">
                             
@@ -105,7 +97,16 @@ export const DetailBody = () => {
 
                     {/* 탭 메뉴 */}
                     <nav className="DBmini-tab-bar">
-                    
+                        <div className="DBboard-header-center">
+                            <input
+                                className="DBboard-search-input"
+                                type="text"
+                                placeholder="통합검색"
+                            />
+                            <button className="DBboard-search-button">
+                            🔍
+                            </button>
+                        </div>
                     </nav>
 
                  </div>

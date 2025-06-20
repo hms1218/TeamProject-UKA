@@ -8,7 +8,7 @@ export const CardComponent = ({img,title,description,url='',row=false}) => {
     if(!row){
         return(
             // 카드(세로)
-        <Card sx={{ maxWidth: 345, flex:'0 0 30%'}} raised={true} >
+        <Card sx={{ flex:'0 0 18%'}} raised={true} >
             <CardActionArea onClick={()=>{
                 navigate('/about/select' + url)
                 window.scrollTo(0,0)
@@ -17,7 +17,7 @@ export const CardComponent = ({img,title,description,url='',row=false}) => {
                 >
                 <CardMedia
                 component="img"
-                height="200"
+                height="auto"
                 image={img}
                 />
                 <CardContent>
@@ -34,8 +34,8 @@ export const CardComponent = ({img,title,description,url='',row=false}) => {
     }
 
     return(
-        // 미디어 카드(가로)
-        <Card sx={{ maxWidth: 350}} raised={true}>
+        // 미디어 카드(가로) maxWidth: 350,
+        <Card sx={{ flex:'0 0 33%'}} raised={true}>
             <CardActionArea onClick={()=>{
                 navigate('/about/select' + url)
                 window.scrollTo(0,0)
@@ -44,9 +44,9 @@ export const CardComponent = ({img,title,description,url='',row=false}) => {
                 >
                 <CardMedia
                 component="img"
-                height="150"
+                height="auto"
                 image={img}
-                />
+            />
                 <CardContent
                     sx={{width:200}}
                 >

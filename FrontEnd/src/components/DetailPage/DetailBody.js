@@ -3,7 +3,7 @@ import img from "../../assets/test1.jpg"
 import './DetailBody.css'
 
 import { CardComponent } from "./CardComponent";
-import { Button } from "@mui/material";
+import { Box, Button, InputLabel, Select } from "@mui/material";
 
 export const DetailBody = () => {
 
@@ -70,6 +70,7 @@ export const DetailBody = () => {
             <div className="DBtop">
                 {/* 여기에 지도 들어갈 것 같아요. */}
                 <div className="DBmap">
+                    지도할라고
                     {/* <KoreaMapSection 
                         // onRegionSelect={handleRegionSelect}
                         //     selectedRegionId={selectedRegionId}
@@ -80,16 +81,64 @@ export const DetailBody = () => {
                 </div>
 
                 
-                {/* 보드에서 가져온 헤더 */}
+                
+
+                
+            </div>{/* end top */}
+
+            
+
+            {/* 보드에서 가져온 헤더 */}
                 <div className="DBboard-layout">
                 
                     <div className="DBboard-header-container">
                         <div className="DBboard-header-left">
-                            <h1 className="DBboard-title">게시판</h1>
+                            <h1 className="DBboard-title">상세검색</h1>
                         </div>
                         <div className="DBboard-header-center">
-                           
+                            <div >
+                            <select>
+                                <optgroup label="견종" >
+                                    <option >안돼</option>
+                                </optgroup>
+                            </select>
+
+                            <select>
+                                <optgroup label="견종" >
+                                    <option >안돼</option>
+                                </optgroup>
+                            </select>
+
+                            <select>
+                                <optgroup label="견종" >
+                                    <option >안돼</option>
+                                </optgroup>
+                            </select>
+
+                            <select>
+                                <optgroup label="견종" >
+                                    <option >안돼</option>
+                                </optgroup>
+                            </select>
+
+                            <select>
+                                <optgroup label="견종" >
+                                    <option >안돼</option>
+                                </optgroup>
+                            </select>
+
+                           </div>
                         </div>
+                         <Button 
+                            variant="contained"
+                            className="DBButton"
+                            color="inherit"
+                         
+                            onClick={()=>{
+                                setShow(!show)
+
+                            }}>검색하기
+                        </Button>
                         <div className="DBboard-header-right">
                             
                         </div>   
@@ -111,8 +160,9 @@ export const DetailBody = () => {
 
                  </div>
 
-                
-            </div>{/* end top */}
+
+
+
 {/* ================================================================================================ */}
             {/* 지역선택하면 값을 받아서 렌더링하게 설정할것(지금은 일단 보임.) */}
             <div className="DBbottom">
@@ -140,7 +190,7 @@ export const DetailBody = () => {
 
 
                 {/* 상세정보 하나 들어가는 박스 */}
-                {show&&<div className="DBdetail-box">
+                {show&&<Box className="DBdetail-box">
                     {/* 상세정보하나 */}
                     <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
                     <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
@@ -156,7 +206,42 @@ export const DetailBody = () => {
                     <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
                     <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
                     <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
-                </div>}
+
+
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+
+
+
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+
+
+
+
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+
+                    
+                </Box>}
             </div>{/* end bottom */}
             
 

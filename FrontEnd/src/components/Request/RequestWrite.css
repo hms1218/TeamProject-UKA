@@ -1,16 +1,44 @@
-/* 메인컨테이너 */
+ 메인컨테이너 */
 .RWcontainer {
     border-radius: 10px;
     min-width: 850px;
+
+    
+    display: flex;
+    margin-top: 20px;
 }
 
 /* 본문 위쪽 */
 .RWtop{
     border: 1px solid #cceeff;
     border-radius: 10px;
+    margin-top: 20px;
+    padding: 20px;
+
+    display: flex;
+    justify-content: center;
 }
 
-.RWbottom{
+/* 작성내용이 바로 반영되는 카드 */
+.RWex{
+   
+   
+}
+
+/* 내용 작성 div */
+.RWwrite{
     border: 1px solid #cceeff;
     border-radius: 10px;
+    margin-top: 20px;
+    padding: 20px;
+
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+}
+
+.RWinput{
+    flex:0 0 29%;
+    
 }

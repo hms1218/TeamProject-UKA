@@ -5,6 +5,7 @@ import { useState, useContext } from 'react';
 import { AuthContext } from '../../AuthContext';
 
 import './MainHeader.css';
+import { useAdmin } from '../Board/Context/AdminContext';
 
 const MainHeaders = () => {
 
@@ -12,6 +13,7 @@ const MainHeaders = () => {
     const [supportDropdown, setSupportDropdown] = useState(false);
 
     const { user, logout } = useContext(AuthContext);
+    const { isAdmin, setIsAdmin } = useAdmin(); // 어드민 테스트중
     const navigate = useNavigate();
 
     const handleLogout = () => {
@@ -34,6 +36,25 @@ const MainHeaders = () => {
 
             <div className="right-section">
                 <div className="auth-buttons">
+                    {/* 가운데 발바닥 아이콘 */}
+                    {/* <div className="middle-section">
+                        <img src={DogFootPrint} alt="Dog Footprint" className="footprint-icon" />
+                    </div> */}
+                    {/* 관리자 토글 버튼 추가 */}
+                <button
+                    onClick={() => setIsAdmin(v => !v)}
+                    style={{
+                        background: isAdmin ? "#ffe066" : "#e9ecef",
+                        border: "1px solid #adb5bd",
+                        borderRadius: 8,
+                        marginRight: 10,
+                        padding: "4px 10px",
+                        cursor: "pointer"
+                    }}
+                >
+                    {isAdmin ? "관리자 모드" : "일반 모드"}
+                </button>
+                {/* 여기 위 까지 관리자 테스트 */}
                     {user ? (
                         <>
                             {/* /profile */}
@@ -57,8 +78,8 @@ const MainHeaders = () => {
                 </div>
                 
                 <nav className="nav-links">
-                    <Link to="/about">입양하고싶어요</Link>
-                    <Link to="/find">찾고있어요</Link>
+                    <Link to="/about" style={{marginRight : 25}}>입양하고싶어요</Link>
+                    <Link to="/find" style={{marginRight : 10}}>찾고있어요</Link>
 
                     <div className="dropdown"
                          onMouseEnter={() => setBoardDropdown(true)}
@@ -70,11 +91,10 @@ const MainHeaders = () => {
                         </span>
                         {boardDropdown && (
                             <div className="dropdown-menu">
-                                <Link to="/board">전체게시판</Link>
+                                <Link to="/board/all">전체게시판</Link>
                                 <Link to="/board/notice">공지사항</Link>
                                 <Link to="/board/chat">속닥속닥</Link>
                                 <Link to="/board/adoptionReview">입양후기</Link>
-                                <Link to="/board/infoShare">새끼분양</Link>
                             </div>
                         )}
                     </div>

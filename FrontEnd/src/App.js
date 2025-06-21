@@ -32,8 +32,7 @@ import ReviewForm from './components/Board/Pages/ReviewForm';
 import AdoptionReviewDetail from './components/Board/Pages/AdoptionReviewDetail';
 import ReviewEdit from './components/Board/Pages/ReviewEdit';
 import { ChatProvider } from './components/Board/Context/ChatContext';
-
-import TestDetail from './components/Board/Pages/TestDetail';
+import { useEffect } from 'react';
 
 // 고객센터 관련
 import CustomerLayout from './components/Customers/Pages/CustomerLayout';
@@ -57,6 +56,13 @@ import AdminQnADetail from './components/Customers/Pages/Admin/AdminQnADetail';
 
 
 function App() {
+
+    //게시판 유저 확인용
+    useEffect(() => {
+        if (!localStorage.getItem("username")) {
+            localStorage.setItem("username", "me");
+        }
+    }, []);
 
     return (
         <div className="App" style={{ padding: "20px"}}>
@@ -93,10 +99,9 @@ function App() {
                     >
                         <Route index element={<AllBoard />} />
                         <Route path="all" element={<AllBoard />} />
-                        <Route path="all/new" element={<AllBoardForm />} />
-                        <Route path="all/:id" element={<AllBoardDetail />} />
-                        {/* <Route path="all/:id" element={<TestDetail />} /> */}
-                        <Route path="all/:id/new" element={<AllBoardEdit />} />
+                        <Route path="all/form" element={<AllBoardForm />} />
+                        <Route path="all/detail/:id" element={<AllBoardDetail />} />
+                        <Route path="all/edit/:type/:id" element={<AllBoardEdit />} />
                         <Route path="notice" element={<Notice />} />
                         <Route path="notice/new" element={<NoticeForm />} />
                         <Route path="notice/:id" element={<NoticeDetail />} />

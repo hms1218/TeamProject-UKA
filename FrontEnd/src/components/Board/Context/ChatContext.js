@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 
 const ChatContext = createContext();
 const now = new Date();
@@ -6,10 +6,15 @@ const getRandomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) +
 
 let postIdCounter = 1;
 
-const generatePost = (baseTitle, author, baseContent, isSecret = false) => {
+const authors = ['user1', 'user2', 'admin', 'guest', 'memberA', 'memberB']; //임의의 작성자
+const getRandomAuthor = () => authors[Math.floor(Math.random() * authors.length)];
+
+const generatePost = (baseTitle, author, baseContent) => {
     const minutesAgo = getRandomInt(1, 10000);
     const date = new Date(now.getTime() - 1000 * 60 * minutesAgo);
     const id = postIdCounter++;
+
+    
 
     const randomNumTitle = getRandomInt(1, 100);
     const randomNumContent = getRandomInt(1, 1000);
@@ -25,58 +30,99 @@ const generatePost = (baseTitle, author, baseContent, isSecret = false) => {
         views: getRandomInt(1, 20000),
         likes: getRandomInt(0, 5000),
         content,
-        isSecret,
-        ...(isSecret && { password: "1234" }),
         createdAt: date,
     }
 };
 
 const initialNotice = Array.from({ length: 4 }, () =>
-    generatePost('최신 공지사항', '관리자', '공지사항')
+    generatePost('최신 공지사항', 'admin', '공지사항')
 );
 
 const publicChats = Array.from({ length: 15 }, () =>
-    generatePost('속닥', '속닥맨', '자유게시판')
+    generatePost('속닥', getRandomAuthor(), '자유게시판')
 );
 
 const secretChats = Array.from({ length: 15 }, () =>
-    generatePost('속닥', '속닥맨', '자유게시판', true)
+    generatePost('속닥', getRandomAuthor(), '자유게시판', true)
 );
 
 const initialChatList = [...publicChats, ...secretChats];
 
 const publicReviews = Array.from({ length: 12 }, () =>
-  generatePost('입양', '후기맨', '입양후기')
+  generatePost('입양', getRandomAuthor(), '입양후기')
 );
 
 const secretReviews = Array.from({ length: 13 }, () =>
-  generatePost('입양', '후기맨', '입양후기', true)
+  generatePost('입양', getRandomAuthor(), '입양후기', true)
 );
 
 const initialReviewList = [...publicReviews, ...secretReviews];
 
-
-
 export const ChatProvider = ({ children }) => {
-    const [notice, setNotice] = useState(initialNotice);
-    const [chats, setChats] = useState(initialChatList);
-    const [review, setReview] = useState(initialReviewList);
 
-    const editPost = (id, editPost) => {
-        const edit = (posts) => {
-          return posts.map((post) => (post.id === id ? {...post, ...editPost} : post));
-        }
+    // 로컬스토리지에서 불러오기
+    const getStoredData = (key, fallback) => {
+        const saved = localStorage.getItem(key);
+        return saved ? JSON.parse(saved) : fallback;
+    };
 
-        if(editPost.type === 'notice'){
-            setNotice((prev) => edit(prev));
-        } else if (editPost.type === 'chat') {
-            setChats((prev) => edit(prev));
-        } else if (editPost.type === 'review') {
-            setReview((prev) => edit(prev));
+    const [notice, setNotice] = useState(() => getStoredData('notice', initialNotice));
+    const [chats, setChats] = useState(() => getStoredData('chats', initialChatList));
+    const [review, setReview] = useState(() => getStoredData('review', initialReviewList));
+
+    // 저장 함수
+    const saveToStorage = (key, data) => {
+        localStorage.setItem(key, JSON.stringify(data));
+    };
+
+    useEffect(() => saveToStorage('notice', notice), [notice]);
+    useEffect(() => saveToStorage('chats', chats), [chats]);
+    useEffect(() => saveToStorage('review', review), [review]);
+
+    const addChat = (newPost, postType) => {
+        const currentUser = localStorage.getItem("username") || "me";
+
+        const postWithId = {
+            ...newPost,
+            id: postIdCounter++,
+            author: currentUser,
+            createdAt: new Date().toISOString(),
+            comment: getRandomInt(0, 1000),
+            views: getRandomInt(1, 20000),
+            likes: getRandomInt(0, 5000),
+            type: postType,
+        };
+
+        if(postType === 'notice'){
+            setNotice(prev => [postWithId, ...prev]);
+        } else if(postType === 'review'){
+            setReview(prev => [postWithId, ...prev]);
+        } else if(postType === 'chat'){
+            setChats(prev => [postWithId, ...prev]);
         }
     }
 
-    return <ChatContext.Provider value={{ notice, setNotice, chats, setChats, review, setReview, editPost }}>{children}</ChatContext.Provider>;
+    const updateChat = (updatedPost, type) => {
+        if (type === 'chat') {
+            setChats((prev) => prev.map(p => p.id === updatedPost.id ? updatedPost : p));
+        } else if (type === 'notice') {
+            setNotice((prev) => prev.map(p => p.id === updatedPost.id ? updatedPost : p));
+        } else if (type === 'review') {
+            setReview((prev) => prev.map(p => p.id === updatedPost.id ? updatedPost : p));
+        }
+    };
+
+    const deletePostById = (type, id) => {
+        if (type === 'chat') {
+            setChats(prev => prev.filter(p => p.id !== id));
+        } else if (type === 'review') {
+            setReview(prev => prev.filter(p => p.id !== id));
+        } else if (type === 'notice') {
+            setNotice(prev => prev.filter(p => p.id !== id));
+        }
+    };
+
+    return <ChatContext.Provider value={{ notice, chats, review, addChat, updateChat, deletePostById }}>{children}</ChatContext.Provider>;
 };
 
 export const useChat = () => useContext(ChatContext);

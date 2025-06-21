@@ -64,23 +64,58 @@
     border-color: #00aaff;
 }
 
+.board-detail-title-container {
+    /* height: 50px; */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* border: 1px solid #ededed; */
+    /* background-color: #f8f6ff;  */
+}
+
 .board-detail-table-container {
-    border-collapse: collapse;
-    width: 100%;
-    border-top: 1px solid #ccc;
-    border-bottom: 1px solid #ccc;
+    background-color: '#fafbfc';
+    border: '1px solid #ededed';
+    border-radius: 7;
+    margin-bottom: 10;
+    font-size: 15;
+    color: '#444';
+    border-collapse: 'collapse';
 }
 
-.board-detail-table-container td:nth-child(2){
-    border-right: 1px solid #ccc;
+.board-detail-content {
+    font-size: 16px;
+    line-height: 1.6;
+    word-break: break-word;
+    white-space: pre-wrap;
 }
 
+.board-detail-table-container td:nth-child(1),
+.board-detail-table-container td:nth-child(3),
+.board-detail-table-container td:nth-child(5),
+.board-detail-table-container td:nth-child(7){
+    background-color: #ccc;
+    width: 8%;
+    padding: 9px;
+    font-weight: 700px;
+}
+
+/* 작성자, 조회,추천 */
+.board-detail-table-container td:nth-child(2),
+.board-detail-table-container td:nth-child(6),
+.board-detail-table-container td:nth-child(8){
+    background-color: #fff;
+    width: 10%;
+    padding: 9px;
+    font-weight: 700px;
+}
+
+/* 작성일 */
 .board-detail-table-container td:nth-child(4){
-    border-right: 1px solid #ccc;
-}
-
-.board-detail-table-container td:nth-child(6){
-    border-right: 1px solid #ccc;
+    background-color: #fff;
+    width: auto;
+    padding: 9px;
+    font-weight: 700px;
 }
 
 .board-detail-submit-button {
@@ -96,4 +131,13 @@
     font-size: 15px;
     cursor: pointer;
     transition: background 0.15s, color 0.15s;
+}
+
+.board-detail-comment-button {
+    margin-left: 4px;
+    padding: 4px;
+    width: 50px;
+    background-color: #000;
+    color: #fff;
+    border-radius: 5px;
 }

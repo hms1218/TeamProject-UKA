@@ -1,52 +1,60 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useChat } from '../Context/ChatContext';
 import './AllBoard.css';
 import Swal from 'sweetalert2';
+import { useAdmin } from '../Context/AdminContext';
 
 const AllBoard = () => {
     const { chats, notice, review } = useChat();
+
     const [currentPage, setCurrentPage] = useState(1);
     const navigate = useNavigate();
     const [sortOption, setSortOption] = useState('latest');
     const [sortAsc, setSortAsc] = useState(false); // 오름차순/내림차순
 
+    const [searchKeyword, setSearchKeyword] = useState(''); //키워드
+    const [filteredPosts, setFilteredPosts] = useState([]); //검색된 게시글 배열
+    const [isSearching, setIsSearching] = useState(false);
+
     const itemsPerPage = 10;
 
-	//공지사항 글 매핑
-    const noticedChats = [...notice.map(post => ({ ...post, type: 'notice' }))].sort((a, b) => {
-        const order = sortAsc ? -1 : 1; // 정렬 방향 설정
+    // 정렬 함수
+    const sortPosts = (posts) => {
+        const order = sortAsc ? -1 : 1;
 
-        if(sortOption === 'latest'){
-            return order * (new Date(b.createdAt) - new Date(a.createdAt));
-        } else if(sortOption === 'comment'){
-            return order * (b.comment - a.comment);
-        } else if(sortOption === 'views'){
-            return order * (b.views - a.views);
-        } else if(sortOption === 'likes'){
-            return order * (b.likes - a.likes);
-        }
-    });
+        return [...posts].sort((a, b) => {
+            if (sortOption === 'latest') return order * (new Date(b.createdAt) - new Date(a.createdAt));
+            if (sortOption === 'views') return order * (b.views - a.views);
+            if (sortOption === 'likes') return order * (b.likes - a.likes);
+            if (sortOption === 'comment') return order * (b.comment - a.comment);
+            return 0;
+        });
+    };
 
-	//일반게시글 매핑
-    const combinedPosts = [
-        ...chats.map(post => ({ ...post, type: 'chat' })),
-        ...review.map(post => ({ ...post, type: 'review' })),
-    ].sort((a, b) => {
-        const order = sortAsc ? -1 : 1; // 정렬 방향 설정
+	//정렬된 공지사항
+    const noticedChats = useMemo(() =>
+        sortPosts(notice.map(post => ({ ...post, type: 'notice' }))), [notice, sortOption, sortAsc]
+    );
 
-        if(sortOption === 'latest'){
-            return order * (new Date(b.createdAt) - new Date(a.createdAt));
-        } else if(sortOption === 'comment'){
-            return order * (b.comment - a.comment);
-        } else if(sortOption === 'views'){
-            return order * (b.views - a.views);
-        } else if(sortOption === 'likes'){
-            return order * (b.likes - a.likes);
-        }
-    });
+	//정렬된 일반게시글
+    const combinedPosts = useMemo(() =>
+        sortPosts([
+            ...chats.map(post => ({ ...post, type: 'chat' })),
+            ...review.map(post => ({ ...post, type: 'review' })),
+        ]), [chats, review, sortOption, sortAsc]);
 
-    const totalPages = Math.ceil(combinedPosts.length / itemsPerPage);
+    // 정렬된 검색 결과
+    const sortedFilteredPosts = useMemo(() =>
+        sortPosts(filteredPosts), [filteredPosts, sortOption, sortAsc]);
+
+    // 현재 페이지에 보여줄 게시글
+    const paginatedPosts = isSearching ? sortedFilteredPosts : combinedPosts;
+    const displayedPosts = paginatedPosts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+    //searching 여부에 따라 페이징
+    const totalPages = Math.max(1, Math.ceil(
+        (isSearching ? filteredPosts.length : combinedPosts.length) / itemsPerPage));
 
 	// 현재 페이지의 게시글만 추출
     const currentPosts = combinedPosts.slice(
@@ -66,59 +74,36 @@ const AllBoard = () => {
 
 	//타이틀 클릭시
     const handleTitleClick = (post) => {
-        if (post.isSecret) {
-            Swal.fire({
-                title: '🔒 비밀글입니다',
-                text: '비밀번호를 입력해주세요',
-                input: 'password',
-                inputPlaceholder: '비밀번호',
-                showCancelButton: true,
-                confirmButtonColor: '#6c5ce7',  // 보라색 확인 버튼
-                cancelButtonColor: '#636e72',   // 회색 취소 버튼
-                confirmButtonText: '확인',
-                cancelButtonText: '취소',
-                inputAttributes: {
-                autocapitalize: 'off',
-                autocorrect: 'off'
-            },
-            preConfirm: (password) => {
-                if (!password) {
-                    Swal.showValidationMessage('비밀번호를 입력해주세요!');
-                }
-                    return password;
-            }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    const inputPassword = result.value;
-                        if (handlePasswordConfirm(inputPassword, post)) {
-                            navigate(`/board/all/${post.id}`, { state: { postType: post.type } });
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: '비밀번호가 틀렸습니다',
-                                confirmButtonColor: '#d63031',
-                            });
-                        }
-                }
-            });
-        } else {
-            navigate(`/board/all/${post.id}`, { state: { postType: post.type } });
-        }
-    };
-
-	//비밀번호 확인
-    const handlePasswordConfirm = (inputPassword, post) => {
-        if (inputPassword.trim() === post.password) {
-            window.sessionStorage.setItem(`chat_access_${post.id}`, 'true');
-            return true;
-        }
-        return false;
+        navigate(`/board/all/detail/${post.id}`, { state: { postType: post.type } });
     };
 
 	//글쓰기 버튼
     const handleWrite = () => {
-        navigate('/board/all/new');
+        navigate('/board/all/form');
     };
+
+    //검색 함수
+    const handleSearch = () => {
+        const keyword = searchKeyword.trim();
+
+        if(keyword.length < 2){
+            Swal.fire({
+                icon: 'warning',
+                title: '검색어 오류',
+                text: '검색어는 최소 2글자 이상 입력해주세요.'
+            });
+            return;
+        }
+
+        const filtered = combinedPosts.filter(post => {
+            return post.title.toLowerCase().includes(keyword.toLowerCase())
+        });
+
+        setFilteredPosts(filtered);
+        setCurrentPage(1); // 검색시 첫 페이지로 이동
+        setIsSearching(true);
+        // setSearchKeyword('')
+    }
 
     // 날짜 포맷 함수
     const formatDate = (date) => {
@@ -142,9 +127,9 @@ const AllBoard = () => {
                     setSortAsc(false);
                 }}>
             <option value='latest' selected>최신순</option>
-            <option value='comment'>댓글순</option>
             <option value='views'>조회순</option>
             <option value='likes'>추천순</option>
+            <option value='comment'>댓글순</option>
             </select>
             <button className="board-write-btn" onClick={handleWrite}>글쓰기</button>
         </div>
@@ -156,19 +141,7 @@ const AllBoard = () => {
                 <th>제목</th>
                 <th>작성자</th>
 				<th className='comment-header'>
-					<button className="filter-btn" onClick={() => {
-                        if(sortOption === 'comment'){
-                            setSortAsc(!sortAsc);
-                        } else{
-                            setSortOption('comment');
-                            setSortAsc(true);
-                        }
-                        }}>
-                        댓글 {sortOption === 'comment' ? (!sortAsc ? '∨' : '∧') : '∨'}
-                    </button>
-				</th>
-				<th>
-					<button className="filter-btn" onClick={() => {
+                    <button className="filter-btn" onClick={() => {
                         if(sortOption === 'views'){
                             setSortAsc(!sortAsc);
                         } else{
@@ -178,7 +151,7 @@ const AllBoard = () => {
                         }}>
                         조회 {sortOption === 'views' ? (!sortAsc ? '∨' : '∧') : '∨'}
                     </button>
-					</th>
+				</th>
 				<th>
 					<button className="filter-btn" onClick={() => {
                         if(sortOption === 'likes'){
@@ -189,6 +162,18 @@ const AllBoard = () => {
                         }
                         }}>
                         추천 {sortOption === 'likes' ? (!sortAsc ? '∨' : '∧') : '∨'}
+                    </button>
+                </th>
+				<th>
+					<button className="filter-btn" onClick={() => {
+                        if(sortOption === 'comment'){
+                            setSortAsc(!sortAsc);
+                        } else{
+                            setSortOption('comment');
+                            setSortAsc(true);
+                        }
+                        }}>
+                        댓글 {sortOption === 'comment' ? (!sortAsc ? '∨' : '∧') : '∨'}
                     </button>
 				</th>
 				<th>
@@ -208,30 +193,38 @@ const AllBoard = () => {
             <tbody>
             {/* 공지사항 매핑 */}
             {noticedChats.map((post) => (
-                <tr key={`notice-${post.id}`} className="notice-row">
+                <tr key={`notice-${post.id}`} className="notice-row" style={{backgroundColor: '#ddd'}}>
                     <td className='notice-tab'>공지사항</td>
                     <td className="notice-title" onClick={() => handleTitleClick(post)}>📢 {post.title}</td>
                     <td className='notice-cell'>{post.author}</td>
-                    <td className='notice-cell'>{post.comment}</td>
                     <td className='notice-cell'>{post.views}</td>
                     <td className='notice-cell'>{post.likes}</td>
+                    <td className='notice-cell'>{post.comment}</td>
                     <td className='notice-cell'>{formatDate(post.createdAt)}</td>
                 </tr>
             ))}
             {/* 일반게시글 매핑 */}
-            {currentPosts.map((post) => (
-            <tr key={`${post.type}-${post.id}`}>
-                    <td>{post.type === 'chat' ? "속닥속닥" : "입양후기"}</td>
-                    <td className="title-cell" onClick={() => handleTitleClick(post)}>
-                    {post.isSecret ? '🔒 ' : ''}{post.title}
-                    </td>
-                    <td>{post.author}</td>
-                    <td>{post.comment}</td>
-                    <td>{post.views}</td>
-                    <td>{post.likes}</td>
-                    <td>{formatDate(post.createdAt)}</td>
-            </tr>           
-            ))}
+            {displayedPosts.length > 0 ? (
+                displayedPosts.map((post) => (
+                <tr key={`${post.type}-${post.id}`}>
+                        <td>{post.type === 'chat' ? "속닥속닥" : "입양후기"}</td>
+                        <td className="title-cell" onClick={() => handleTitleClick(post)}>
+                        {/* {post.isSecret ? '🔒 ' : ''} */}
+                        {post.title}
+                        </td>
+                        <td>{post.author}</td>
+                        <td>{post.views}</td>
+                        <td>{post.likes}</td>
+                        <td>{post.comment}</td>
+                        <td>{formatDate(post.createdAt)}</td>
+                </tr>           
+                ))
+            ) : (
+                <tr>
+                    <td colSpan='7' style={{color: '#999'}}> 🔍 해당 게시글이 없습니다.</td>
+                </tr>
+            )
+        }
             </tbody>
         </table>
 
@@ -272,8 +265,24 @@ const AllBoard = () => {
         </div>
 
         <div className="board-search">   
-            <input type="text" placeholder="검색어를 입력해주세요" />
-            <button className="search-btn">검색</button>                      
+            <input 
+                type="text" 
+                placeholder="검색어를 입력해주세요"
+                value={searchKeyword}
+                onChange={(e) => {
+                    setSearchKeyword(e.target.value);
+                    if(e.target.value.trim().length === 0){
+                        setIsSearching(false);
+                    }
+                }}
+                onKeyDown={(e) => {
+                    if(e.key === 'Enter'){
+                        e.preventDefault();
+                        handleSearch();
+                    }
+                }}
+            />
+            <button className="search-btn" onClick={handleSearch}>검색</button>                      
         </div>
     </div>
     );

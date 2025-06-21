@@ -55,7 +55,7 @@
     padding-right: 16px;
     padding-bottom: 0px;
     border-radius: 12px 12px 0 0;
-    min-width: 1415px;
+    min-width: 1075px;
     box-sizing: border-box;
     position: relative;
 }
@@ -65,10 +65,10 @@
     text-align: left;
 }
 
-.boardLayout-title {
+/* .boardLayout-title {
     background-color: #55bbee;
     width: 15%;
-}
+} */
 
 .boardLayout-header-center {
     flex: 1;

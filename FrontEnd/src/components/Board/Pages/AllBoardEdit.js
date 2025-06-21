@@ -10,76 +10,80 @@ import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-sy
 import { useChat } from '../Context/ChatContext';
 
 const AllBoardEdit = () => {
-    const { id } = useParams();
+    const { id, type } = useParams();
     const navigate = useNavigate();
-
-    const { chats, notice, review, editPost } = useChat();
 
     const titleInputRef = useRef(null);
     const editorRef = useRef(null);
 
     const [title, setTitle] = useState('');
-    const [content, setContent] = useState('');
-    const [foundType, setFoundType] = useState('');
+
+    const {notice, chats, review, updateChat} = useChat();
+
+    let post;
+    if (type === 'chat') {
+        post = chats.find((item) => item.id === Number(id));
+    } else if (type === 'notice') {
+        post = notice.find((item) => item.id === Number(id));
+    } else if (type === 'review') {
+        post = review.find((item) => item.id === Number(id));
+    }
 
     //글쓰기 시 제목 포커스
+    // useEffect(() => {
+    //     titleInputRef.current?.focus();
+    // },[])
+
     useEffect(() => {
-        titleInputRef.current?.focus();
-    },[])
-
-    // 페이지 진입 시 id 기반으로 post 찾기
-    useEffect(() => {
-        const postId = parseInt(id);
-        const allPosts = [
-            ...notice.map(post => ({...post, type: 'notice'})),
-            ...chats.map(post => ({...post, type: 'chat'})),
-            ...review.map(post => ({...post, type: 'review'}))
-        ];
-
-        const found = allPosts.find(post => post.id === postId);
-
-        if (found) {
-            setTitle(found.title);
-            setContent(found.content);
-            setFoundType(found.type);
-
-            // 에디터 초기 내용 강제로 세팅 (초기값과 따로 직접 세팅 필요)
-            setTimeout(() => {
-                const text = new DOMParser().parseFromString(found.content || '', 'text/html').body.textContent || '';
-
-                // 줄바꿈 있는 경우에도 각각 <p>로 감싸기
-                const htmlParagraphs = text.split('\n').map(line => `<p>${line.trim()}<p>`).join('');
-
-                editorRef.current?.getInstance().setHTML(htmlParagraphs);
-            }, 0);
-
-        } else {
-            Swal.fire('오류', '게시글을 찾을 수 없습니다.', 'error');
-            navigate(`/board/all/${id}`);
+        if(post && editorRef.current){
+            setTitle(post.title)
+            editorRef.current.getInstance().setMarkdown(post.content);
         }
-    }, [id, notice, chats, review, navigate]);
+        setTimeout(() => {
+            titleInputRef.current?.focus();
+        }, 0);
+    }, [post]);
+
+    if(!post){
+        return <div>게시글이 없습니다.</div>
+    }
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const html = editorRef.current?.getInstance().getHTML();
-        // const text = new DOMParser().parseFromString(html, 'text/html').body.textContent || ''; //html -> text로 변환
-        const replaceHtml = html
-            .replace(/<\/p>/gi, '\n')        // p 태그 끝나면 줄바꿈
-            .replace(/<br\s*\/?>/gi, '\n')   // br 태그 줄바꿈
-            .replace(/<[^>]*>/g, '');        // 나머지 태그 제거
+        const updatedContent = editorRef.current.getInstance().getMarkdown();
 
-        const text = replaceHtml.trim();
-
-        editPost(parseInt(id), {
-            id: parseInt(id),
+        const updatedPost = {
+            ...post,
             title,
-            content: text,
-            type: foundType,
-        })
+            content: updatedContent,
+            updatedAt: new Date(),
+        }
 
-        alert(`수정 완료: title : ${title}, content: ${text}`);
-        navigate(`/board/all/${id}`);
-    };
+        updateChat(updatedPost, type);
+
+        Swal.fire({
+            title: '게시글 수정',
+            text: '수정하시겠습니까?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#6c5ce7',  // 보라색 확인 버튼
+            cancelButtonColor: '#636e72',   // 회색 취소 버튼
+            confirmButtonText: '확인',
+            cancelButtonText: '취소',
+        }).then((result) => {
+            if(result.isConfirmed){
+                Swal.fire({
+                    title: '수정 완료',
+                    text: '게시글이 수정되었습니다.',
+                    icon: 'success',
+                    confirmButtonColor: '#6c5ce7',
+                    confirmButtonText: '확인'
+                }).then(() => {
+                    navigate(`/board/all/detail/${id}`);
+                });
+            };
+        })
+    }
 
     //취소 버튼
     const handleCancel = () => {
@@ -94,7 +98,7 @@ const AllBoardEdit = () => {
             cancelButtonText: '취소',
         }).then((result) => {
             if(result.isConfirmed){
-                navigate('/board/all/${id}')
+                navigate(`/board/all/detail/${id}`)
             }
         })
     }
@@ -125,10 +129,6 @@ const AllBoardEdit = () => {
                         hideModeSwitch={true}
                         placeholder="내용을 입력하세요."
                         plugins={[color]}
-                        onChange={() => {
-                            const html = editorRef.current?.getInstance().getHTML();
-                            setContent(html); // HTML 상태로 저장
-                        }}
                     />
                 </div>
                 <div className='board-write-button-container'>

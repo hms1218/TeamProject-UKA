@@ -41,12 +41,6 @@ const BoardLayout = () => {
             >
             입양후기
             </NavLink>
-            <NavLink
-                to="/board/infoShare"
-                className={({ isActive }) => isActive ? 'active' : ''}
-            >
-            새끼분양
-            </NavLink>
         </nav>
 
         {/* 라우트 출력 영역 */}

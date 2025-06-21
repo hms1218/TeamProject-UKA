@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import FAQEdit from './FAQEdit';
 import './FAQList.css';
 import { useAlert } from '../Context/AlertContext';
-import { useAdmin } from '../Context/AdminContext';
+import { useAdmin } from '../../../api/AdminContext';
 
 const dummyFaqs = [
   { id: 1, question: '입양 절차는 어떻게 되나요?', answer: '입양 절차는 상담 → 서류 작성 → 방문 순입니다.' },

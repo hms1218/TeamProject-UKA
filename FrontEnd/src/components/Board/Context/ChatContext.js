@@ -1,65 +1,128 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 
 const ChatContext = createContext();
 const now = new Date();
-
 const getRandomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 
-const generatePost = (id, title, author, content, minutesAgo, isSecret = false) => ({
-    id,
-    title,
-    author,
-    comment: getRandomInt(0, 10),
-    views: getRandomInt(1, 200),
-    likes: getRandomInt(0, 50),
-    content,
-    isSecret,
-    ...(isSecret && { password: "1234" }),
-    createdAt: new Date(now.getTime() - 1000 * 60 * minutesAgo)
-});
+let postIdCounter = 1;
 
-const initialNotice = [
-    generatePost(1, '최신 공지사항1', '관리자이이이이이이이', '공지사항1', 5),
-    generatePost(2, '최신 공지사항2', '관리자', '공지사항2', 4),
-    generatePost(3, '최신 공지사항3', '관리자', '공지사항3', 15),
-    generatePost(4, '최신 공지사항4', '관리자', '공지사항4', 60),
-    generatePost(5, '최신 공지사항5', '관리자', '공지사항5', 75),
-    generatePost(6, '최신 공지사항6', '관리자', '공지사항6', 9),
-];
+const authors = ['user1', 'user2', 'admin', 'guest', 'memberA', 'memberB']; //임의의 작성자
+const getRandomAuthor = () => authors[Math.floor(Math.random() * authors.length)];
 
-const initialChatList = [
-    generatePost(1, '속닥1', '속닥맨1', '자유게시판1', 5),
-    generatePost(2, '속닥2', '속닥맨2', '자유게시판2', 7),
-    generatePost(3, '속닥3', '속닥맨3', '자유게시판3', 15),
-    generatePost(4, '속닥4', '속닥맨3', '자유게시판4', 88, true),
-    generatePost(5, '속닥5', '속닥맨3', '자유게시판5', 10),
-    generatePost(6, '속닥6', '속닥맨3', '자유게시판6', 80, true),
-    generatePost(7, '속닥7', '속닥맨3', '자유게시판7', 39),
-    generatePost(8, '속닥8', '속닥맨3', '자유게시판8', 200, true),
-    generatePost(9, '속닥9', '속닥맨3', '자유게시판9', 104),
-    generatePost(10, '속닥10', '속닥맨3', '자유게시판10', 51),
-    generatePost(11, '속닥11', '속닥맨3', '자유게시판11', 95),
-]
+const generatePost = (baseTitle, author, baseContent) => {
+    const minutesAgo = getRandomInt(1, 10000);
+    const date = new Date(now.getTime() - 1000 * 60 * minutesAgo);
+    const id = postIdCounter++;
 
-const initialReviewList = [
-    generatePost(1, '입양1', '후기맨1', '입양후기1', 9),
-    generatePost(2, '입양2', '후기맨2', '입양후기2', 4),
-    generatePost(3, '입양3', '후기맨3', '입양후기3', 5, true),
-    generatePost(4, '입양4', '후기맨3', '입양후기4', 36),
-    generatePost(5, '입양5', '후기맨3', '입양후기5', 39),
-    generatePost(6, '입양6', '후기맨3', '입양후기6', 3, true),
-    generatePost(7, '입양7', '후기맨3', '입양후기7', 19),
-    generatePost(8, '입양8', '후기맨3', '입양후기8', 306),
-    generatePost(9, '입양9', '후기맨3', '입양후기9', 22, true),
-    generatePost(10, '입양10', '후기맨3', '입양후기10', 99),
-    generatePost(11, '입양11', '후기맨3', '입양후기11', 103, true),
-]
+    
+
+    const randomNumTitle = getRandomInt(1, 100);
+    const randomNumContent = getRandomInt(1, 1000);
+
+    const title = `${baseTitle}${randomNumTitle}`;
+    const content = `${baseContent}${randomNumContent}`;
+
+    return{
+        id,
+        title,
+        author,
+        comment: getRandomInt(0, 1000),
+        views: getRandomInt(1, 20000),
+        likes: getRandomInt(0, 5000),
+        content,
+        createdAt: date,
+    }
+};
+
+const initialNotice = Array.from({ length: 4 }, () =>
+    generatePost('최신 공지사항', 'admin', '공지사항')
+);
+
+const publicChats = Array.from({ length: 15 }, () =>
+    generatePost('속닥', getRandomAuthor(), '자유게시판')
+);
+
+const secretChats = Array.from({ length: 15 }, () =>
+    generatePost('속닥', getRandomAuthor(), '자유게시판', true)
+);
+
+const initialChatList = [...publicChats, ...secretChats];
+
+const publicReviews = Array.from({ length: 12 }, () =>
+  generatePost('입양', getRandomAuthor(), '입양후기')
+);
+
+const secretReviews = Array.from({ length: 13 }, () =>
+  generatePost('입양', getRandomAuthor(), '입양후기', true)
+);
+
+const initialReviewList = [...publicReviews, ...secretReviews];
 
 export const ChatProvider = ({ children }) => {
-    const [notice, setNotice] = useState(initialNotice);
-    const [chats, setChats] = useState(initialChatList);
-    const [review, setReview] = useState(initialReviewList);
-    return <ChatContext.Provider value={{ notice, setNotice, chats, setChats, review, setReview }}>{children}</ChatContext.Provider>;
+
+    // 로컬스토리지에서 불러오기
+    const getStoredData = (key, fallback) => {
+        const saved = localStorage.getItem(key);
+        return saved ? JSON.parse(saved) : fallback;
+    };
+
+    const [notice, setNotice] = useState(() => getStoredData('notice', initialNotice));
+    const [chats, setChats] = useState(() => getStoredData('chats', initialChatList));
+    const [review, setReview] = useState(() => getStoredData('review', initialReviewList));
+
+    // 저장 함수
+    const saveToStorage = (key, data) => {
+        localStorage.setItem(key, JSON.stringify(data));
+    };
+
+    useEffect(() => saveToStorage('notice', notice), [notice]);
+    useEffect(() => saveToStorage('chats', chats), [chats]);
+    useEffect(() => saveToStorage('review', review), [review]);
+
+    const addChat = (newPost, postType) => {
+        const currentUser = localStorage.getItem("username") || "me";
+
+        const postWithId = {
+            ...newPost,
+            id: postIdCounter++,
+            author: currentUser,
+            createdAt: new Date().toISOString(),
+            comment: getRandomInt(0, 1000),
+            views: getRandomInt(1, 20000),
+            likes: getRandomInt(0, 5000),
+            type: postType,
+        };
+
+        if(postType === 'notice'){
+            setNotice(prev => [postWithId, ...prev]);
+        } else if(postType === 'review'){
+            setReview(prev => [postWithId, ...prev]);
+        } else if(postType === 'chat'){
+            setChats(prev => [postWithId, ...prev]);
+        }
+    }
+
+    const updateChat = (updatedPost, type) => {
+        if (type === 'chat') {
+            setChats((prev) => prev.map(p => p.id === updatedPost.id ? updatedPost : p));
+        } else if (type === 'notice') {
+            setNotice((prev) => prev.map(p => p.id === updatedPost.id ? updatedPost : p));
+        } else if (type === 'review') {
+            setReview((prev) => prev.map(p => p.id === updatedPost.id ? updatedPost : p));
+        }
+    };
+
+    const deletePostById = (type, id) => {
+        if (type === 'chat') {
+            setChats(prev => prev.filter(p => p.id !== id));
+        } else if (type === 'review') {
+            setReview(prev => prev.filter(p => p.id !== id));
+        } else if (type === 'notice') {
+            setNotice(prev => prev.filter(p => p.id !== id));
+        }
+    };
+
+    return <ChatContext.Provider value={{ notice, chats, review, addChat, updateChat, deletePostById }}>{children}</ChatContext.Provider>;
 };
 
 export const useChat = () => useContext(ChatContext);

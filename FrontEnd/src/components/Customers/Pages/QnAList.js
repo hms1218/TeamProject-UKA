@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useQnA } from '../Context/QnAContext';
 import './QnAList.css';
 import { useAlert } from '../Context/AlertContext';
-import { useAdmin } from '../Context/AdminContext';
+import { useAdmin } from '../../../api/AdminContext';
 
 const ITEMS_PER_PAGE = 10;
 const PAGE_BUTTON_LIMIT = 5;
@@ -131,19 +131,18 @@ const QnAList = () => {
   return (
     <div className="customer-container">
       <div className="customer-controls">
-        <span className="customer-title">QnA 게시판</span>
         <button className="customer-write-btn" onClick={handleWrite}>✏️ 글쓰기</button>
       </div>
       <div className="customer-table-container">
       <table className="customer-table">
         <thead>
           <tr>
-            <th style={{ width: '50px'}}>번호</th>
-            <th style={{ textAlign: 'left', paddingLeft: 22 }}>제목</th>
-            <th style={{ width: '100px'}}>작성자</th>
-            <th style={{ width: '80px'}}>답변</th>
-            <th style={{ width: '100px'}}>상태</th>
-            <th style={{ width: '70px'}}>작성일</th>
+            <th>번호</th>
+            <th>제목</th>
+            <th>작성자</th>
+            <th>답변</th>
+            <th>상태</th>
+            <th>작성일</th>
           </tr>
         </thead>
         <tbody>

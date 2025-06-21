@@ -1,11 +1,11 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useChat } from '../Context/ChatContext';
-import './AllBoard.css';
+import { useQnA } from '../Context/QnAContext';
+import './QnAList.css';
 import Swal from 'sweetalert2';
 
-const AllBoard = () => {
-    const { chats, notice, review } = useChat();
+const QnAList = () => {
+  const { qnas } = useQnA();
 
     const [currentPage, setCurrentPage] = useState(1);
     const navigate = useNavigate();
@@ -31,15 +31,10 @@ const AllBoard = () => {
         });
     };
 
-	//정렬된 공지사항
-    const noticedChats = useMemo(() =>
-        sortPosts(notice.map(post => ({ ...post, type: 'notice' }))), [notice, sortOption, sortAsc]
-    );
 
 	//정렬된 일반게시글
     const combinedPosts = useMemo(() =>
         sortPosts([
-            ...chats.map(post => ({ ...post, type: 'chat' })),
             ...review.map(post => ({ ...post, type: 'review' })),
         ]), [chats, review, sortOption, sortAsc]);
 
@@ -73,12 +68,12 @@ const AllBoard = () => {
 
 	//타이틀 클릭시
     const handleTitleClick = (post) => {
-        navigate(`/board/all/detail/${post.id}`, { state: { postType: post.type } });
+        navigate(`/qna/detail/${post.id}`, { state: { postType: post.type } });
     };
 
 	//글쓰기 버튼
     const handleWrite = () => {
-        navigate('/board/all/form');
+        navigate('/qna/form');
     };
 
     //검색 함수
@@ -115,11 +110,11 @@ const AllBoard = () => {
     };
 
     return (
-        <div className="board-container">
-        {/* <h1 className="board-title">전체 게시판</h1> */}
+        <div className="customer-qna-container">
+        {/* <h1 className="customer-qna-title">전체 게시판</h1> */}
 
-        <div className="board-controls">
-            <select className='board-options'
+        <div className="customer-qna-controls">
+            <select className='customer-qna-options'
                 value={sortOption} 
                 onChange={(e) => {
                     setSortOption(e.target.value); 
@@ -130,10 +125,10 @@ const AllBoard = () => {
             <option value='likes'>추천순</option>
             <option value='comment'>댓글순</option>
             </select>
-            <button className="board-write-btn" onClick={handleWrite}>글쓰기</button>
+            <button className="customer-qna-write-btn" onClick={handleWrite}>글쓰기</button>
         </div>
 
-        <table className="board-table">
+        <table className="customer-qna-table">
             <thead>
             <tr>
                 <th>카테고리</th>
@@ -263,7 +258,7 @@ const AllBoard = () => {
 			</button>
         </div>
 
-        <div className="board-search">   
+        <div className="customer-qna-search">   
             <input 
                 type="text" 
                 placeholder="검색어를 입력해주세요"
@@ -287,4 +282,4 @@ const AllBoard = () => {
     );
 };
 
-export default AllBoard;
+export default QnAList;

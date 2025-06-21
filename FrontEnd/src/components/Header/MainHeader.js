@@ -4,7 +4,7 @@ import { useContext } from 'react';
 import DropDownMenu from './DropDownMenu';
 import { AuthContext } from '../../AuthContext';
 import DogFootPrint from '../../assets/DogFootPrint.png';
-import { useAdmin } from '../Customers/Context/AdminContext';
+import { useAdmin } from '../../api/AdminContext';
 
 import './MainHeader.css';
 

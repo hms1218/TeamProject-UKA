@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAlert } from '../Context/AlertContext';
-import { useAdmin } from '../Context/AdminContext';
+import { useAdmin } from '../../../api/AdminContext';
 import './AdoptionInquiry.css';
 
 const DEFAULT_SLIDE_IMAGES = [

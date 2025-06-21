@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './WriteButton.css';
+import './FormButton.css';
 
 const NoticeForm = () => {
     const [title, setTitle] = useState('');

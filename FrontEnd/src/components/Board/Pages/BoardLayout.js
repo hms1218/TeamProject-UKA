@@ -4,39 +4,24 @@ import './BoardLayout.css';
 const BoardLayout = () => {
 
     return (
-        <div className="board-layout">
+        <div>
             {/* 헤더 */}
-            <div className="board-header-container">
-                <div className="board-header-left">
-                    <h1 className="board-title">게시판</h1>
+            <div className="boardLayout-header-container">
+                <div className="boardLayout-header-left">
+                    <h1 className="boardLayout-title">게시판</h1>
                 </div>
-            <div className="board-header-center">
-                <select className='board-search-select'>
-                    <option>제목</option>
-                    <option>작성자</option>
-                    <option>내용</option>
-                </select>
-                <input
-                    className="board-search-input"
-                    type="text"
-                    placeholder="검색"
-                />
-                <button className="board-search-button">
-                🔍
-                </button>
-            </div>
-            <div className="board-header-right">
+            <div className="boardLayout-header-right">
                 
             </div>       
         </div>
 
         {/* 탭 메뉴 */}
-        <nav className="mini-tab-bar">
+        <nav className="boardLayout-tab-bar">
             <NavLink
                 to="/board" end
                 className={({ isActive }) => isActive ? 'active' : ''}
             >
-            전체
+            전체게시판
             </NavLink>
             <NavLink
                 to="/board/notice"
@@ -56,28 +41,10 @@ const BoardLayout = () => {
             >
             입양후기
             </NavLink>
-            <NavLink
-                to="/board/infoShare"
-                className={({ isActive }) => isActive ? 'active' : ''}
-            >
-            새끼분양
-            </NavLink>
-            <NavLink
-                to="/board/test"
-                className={({ isActive }) => isActive ? 'active' : ''}
-            >
-            테스트
-            </NavLink>
-            <NavLink
-                to="/board/testboard"
-                className={({ isActive }) => isActive ? 'active' : ''}
-            >
-            데이터적용
-            </NavLink>
         </nav>
 
         {/* 라우트 출력 영역 */}
-        <main className="board-content">
+        <main className="boardLayout-content">
             <Outlet />
         </main>
         </div>

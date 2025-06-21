@@ -72,53 +72,53 @@ export const DetailSelect = () => {
                 <h2>센터 정보</h2>
                 <div className='DSinfo-box'>
                     <div className='DSinfo'>
-                        <h3><Chip label="유기 번호" color="primary" /></h3>
+                        <h3><Chip label="유기 번호" className='DSinfo-text' color="primary" /></h3>
                         <p>{data.desertionNo}</p>
                     </div>
 
                     <div className='DSinfo'>
-                        <h3><Chip label="공고 번호" color="primary" /></h3>
+                        <h3><Chip label="공고 번호" className='DSinfo-text' color="primary" /></h3>
                         <p>{data.noticeNo}</p>
                     </div>
 
                     <div className='DSinfo'>
-                        <h3><Chip label="공고 날짜" color="primary" /></h3>
+                        <h3><Chip label="공고 날짜" className='DSinfo-text' color="primary" /></h3>
                         <p>{data.noticeSdt}~{data.noticeEdt}</p>
                     </div>
 
                     <div className='DSinfo'>
-                        <h3><Chip label="보호센터이름" color="primary"/></h3>
+                        <h3><Chip label="보호센터이름" className='DSinfo-text' color="primary"/></h3>
                         <p>{data.careNm}</p>
                     </div>
 
                     <div className='DSinfo'>
-                        <h3><Chip label="보호센터전화번호" color="primary"/></h3>
+                        <h3><Chip label="보호센터전화번호" className='DSinfo-text' color="primary"/></h3>
                         <p>{data.careTel}</p>
                     </div>
 
 
                     <div className='DSinfo'>
-                        <h3><Chip label="보호자닉네임" color="primary"/></h3>
+                        <h3><Chip label="보호자닉네임" className='DSinfo-text' color="primary"/></h3>
                         <p>{data.careOwnerNm}</p>
                     </div>
 
                     <div className='DSinfo'>
-                        <h3><Chip label="보호번호" color="primary"/></h3>
+                        <h3><Chip label="보호번호" className='DSinfo-text' color="primary"/></h3>
                         <p>{data.careRegNo}</p>
                     </div>
 
                     <div className='DSinfo'>
-                        <h3><Chip label="발견일자" color="primary"/></h3>
+                        <h3><Chip label="발견일자" className='DSinfo-text' color="primary"/></h3>
                         <p>{data.happenDt}</p>
                     </div>
 
                     <div className='DSinfo'>
-                        <h3><Chip label="발견장소" color="primary"/></h3>
+                        <h3><Chip label="발견장소" className='DSinfo-text' color="primary"/></h3>
                         <p>{data.happenPlace}</p>
                     </div>
 
                     <div className='DSinfo'>
-                        <h3><Chip label="센터주소" color="primary"/></h3>
+                        <h3><Chip label="센터주소" className='DSinfo-text' color="primary"/></h3>
                         <p>{data.careAddr}</p>
                     </div>
 
@@ -131,42 +131,42 @@ export const DetailSelect = () => {
                 <h2>동물정보</h2>
                 <div className='DSinfo-box'>
                     <div className='DSinfo'>
-                        <h3><Chip label="종류" color="primary"/></h3>
+                        <h3><Chip label="종류" className='DSinfo-text' color="success"/></h3>
                         <p>{data.upKindNm}</p>
                     </div>
 
                     <div className='DSinfo'>
-                        <h3><Chip label="품종" color="primary"/></h3>
+                        <h3><Chip label="품종" className='DSinfo-text' color="success"/></h3>
                         <p>{data.kindNm}</p>
                     </div>
 
                     <div className='DSinfo'>
-                        <h3><Chip label="털색" color="primary"/></h3>
+                        <h3><Chip label="털색" className='DSinfo-text' color="success"/></h3>
                         <p>{data.colorCd}</p>
                     </div>
 
                     <div className='DSinfo'>
-                        <h3><Chip label="출생년도" color="primary"/></h3>
+                        <h3><Chip label="출생년도" className='DSinfo-text' color="success"/></h3>
                         <p>{data.age}</p>
                     </div>
 
                     <div className='DSinfo'>
-                        <h3><Chip label="몸무게" color="primary"/></h3>
+                        <h3><Chip label="몸무게" className='DSinfo-text' color="success"/></h3>
                         <p>{data.weight}</p>
                     </div>
 
                     <div className='DSinfo'>
-                        <h3><Chip label="성별" color="primary"/></h3>
+                        <h3><Chip label="성별" className='DSinfo-text' color="success"/></h3>
                         <p>{data.sexCd==='M'?'수컷':'암컷'}</p>
                     </div>
 
                     <div className='DSinfo'>
-                        <h3><Chip label="보호상태" color="primary"/></h3>
+                        <h3><Chip label="보호상태" className='DSinfo-text' color="success"/></h3>
                         <p>{data.processState}</p>
                     </div>
 
                     <div className='DSinfo'>
-                        <h3><Chip label="특징" color="primary"/></h3>
+                        <h3><Chip label="특징" className='DSinfo-text' color="success"/></h3>
                         <p>{data.specialMark}</p>
                     </div>
 
@@ -176,9 +176,9 @@ export const DetailSelect = () => {
             </div>{/* ent bottom */}
             {/* 고객센터로 값과 함께 전달할 버튼 */}
                 <div className='DSbutton'>
-                    <Button variant="contained" onClick={()=>navigate('/customer/adoption')} >이전 동물</Button>
+                    <Button variant="contained" color='secondary' onClick={()=>navigate('/customer/adoption')} >이전 동물</Button>
                     <Button variant="contained" onClick={()=>navigate('/customer/adoption')} >입양 문의</Button>
-                    <Button variant="contained" onClick={()=>navigate('/customer/adoption')} >다음 동물</Button>
+                    <Button variant="contained" color='secondary' onClick={()=>navigate('/customer/adoption')} >다음 동물</Button>
                 </div>
         </div>//end container
     )

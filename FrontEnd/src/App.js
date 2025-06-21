@@ -13,6 +13,9 @@ import FindPasswordPage from './components/Pages/FindPasswordPage';
 
 import ResetPasswordPage from './components/Pages/ResetPasswordPage';
 
+import {RequestMain} from './components/Request/RequestMain';
+import {RequestWrite} from './components/Request/RequestWrite';
+
 //게시판 관련
 import BoardLayout from './components/Board/Pages/BoardLayout';
 import AllBoard from './components/Board/Pages/AllBoard';
@@ -32,9 +35,7 @@ import ReviewForm from './components/Board/Pages/ReviewForm';
 import AdoptionReviewDetail from './components/Board/Pages/AdoptionReviewDetail';
 import ReviewEdit from './components/Board/Pages/ReviewEdit';
 import { ChatProvider } from './components/Board/Context/ChatContext';
-
-import TestForm from './components/Board/Pages/TestForm';
-import TestBoard from './components/Board/Pages/TestBoard';
+import { useEffect } from 'react';
 
 // 고객센터 관련
 import CustomerLayout from './components/Customers/Pages/CustomerLayout';
@@ -80,6 +81,14 @@ function App() {
 
                     <Route path="/reset-password" element={<ResetPasswordPage />} />
 
+                    {/* 입양하고싶어요 전체 */}
+                    <Route path='/about' element={<DetailBody/>} />
+                    <Route path='/about/select' element={<DetailSelect/>}/>
+                    
+                    {/* 찾고 있어요 전체 */}
+                    <Route path='/request' element={<RequestMain/>} />
+                    <Route path='/request/write' element={<RequestWrite/>}/>
+
                     {/* 상세페이지 전체 */}
                     <Route path='/about' element={<DetailBody/>} />
                     <Route path='/about/select' element={<DetailSelect/>}/>
@@ -93,9 +102,9 @@ function App() {
                     >
                         <Route index element={<AllBoard />} />
                         <Route path="all" element={<AllBoard />} />
-                        <Route path="all/new" element={<AllBoardForm />} />
-                        <Route path="all/:id" element={<AllBoardDetail />} />
-                        <Route path="all/:id/new" element={<AllBoardEdit />} />
+                        <Route path="all/form" element={<AllBoardForm />} />
+                        <Route path="all/detail/:id" element={<AllBoardDetail />} />
+                        <Route path="all/edit/:type/:id" element={<AllBoardEdit />} />
                         <Route path="notice" element={<Notice />} />
                         <Route path="notice/new" element={<NoticeForm />} />
                         <Route path="notice/:id" element={<NoticeDetail />} />
@@ -108,8 +117,6 @@ function App() {
                         <Route path="adoptionReview/new" element={<ReviewForm />} />
                         <Route path="adoptionReview/:id" element={<AdoptionReviewDetail />} />
                         <Route path="adoptionReview/:id/new" element={<ReviewEdit />} />
-                        <Route path="test" element={<TestForm />} />
-                        <Route path="testboard" element={<TestBoard />} />
                     </Route>
                     {/* 고객센터 라우팅 */}
                     <Route path="/customer/*" element={

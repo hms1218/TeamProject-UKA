@@ -2,7 +2,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState, useRef } from 'react';
 import { useQnA } from '../Context/QnAContext';
 import { useAlert } from '../Context/AlertContext';
-import { useAdmin } from '../Context/AdminContext';
+import { useAdmin } from '../../../api/AdminContext';
 import axios from 'axios';
 import './QnADetail.css';
 

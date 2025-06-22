@@ -99,31 +99,37 @@ export const DetailBody = () => {
                             <div >
                             <select>
                                 <optgroup label="견종" >
-                                    <option >안돼</option>
+                                    <option >보호상태</option>
                                 </optgroup>
                             </select>
 
                             <select>
                                 <optgroup label="견종" >
-                                    <option >안돼</option>
+                                    <option >공고날짜</option>
                                 </optgroup>
                             </select>
 
                             <select>
                                 <optgroup label="견종" >
-                                    <option >안돼</option>
+                                    <option >털색</option>
                                 </optgroup>
                             </select>
 
                             <select>
                                 <optgroup label="견종" >
-                                    <option >안돼</option>
+                                    <option >나이</option>
                                 </optgroup>
                             </select>
 
                             <select>
                                 <optgroup label="견종" >
-                                    <option >안돼</option>
+                                    <option >품종</option>
+                                </optgroup>
+                            </select>
+
+                            <select>
+                                <optgroup label="견종" >
+                                    <option >성별</option>
                                 </optgroup>
                             </select>
 
@@ -178,12 +184,12 @@ export const DetailBody = () => {
                     <div className="DBrowbutton"
                         onClick={()=>{setIsRow(false)}} 
                     >
-                        
+                        📱
                     </div>
                     <div className="DBrowbutton"
                         onClick={()=>{setIsRow(true)}} 
                     >
-
+                        🪪
                     </div>
                     
                 </div>

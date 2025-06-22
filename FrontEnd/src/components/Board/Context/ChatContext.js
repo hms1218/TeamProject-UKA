@@ -9,18 +9,17 @@ let postIdCounter = 1;
 const authors = ['user1', 'user2', 'admin', 'guest', 'memberA', 'memberB']; //임의의 작성자
 const getRandomAuthor = () => authors[Math.floor(Math.random() * authors.length)];
 
+//게시글 임시 생성 컴포넌트
 const generatePost = (baseTitle, author, baseContent) => {
     const minutesAgo = getRandomInt(1, 10000);
     const date = new Date(now.getTime() - 1000 * 60 * minutesAgo);
     const id = postIdCounter++;
 
-    
-
     const randomNumTitle = getRandomInt(1, 100);
     const randomNumContent = getRandomInt(1, 1000);
 
-    const title = `${baseTitle}${randomNumTitle}`;
-    const content = `${baseContent}${randomNumContent}`;
+    const title = `${baseTitle}${randomNumTitle}`; //글 제목 + 랜덤숫자
+    const content = `${baseContent}${randomNumContent}`; //글 내용 + 랜덤숫자
 
     return{
         id,
@@ -35,49 +34,37 @@ const generatePost = (baseTitle, author, baseContent) => {
 };
 
 const initialNotice = Array.from({ length: 4 }, () =>
-    generatePost('최신 공지사항', 'admin', '공지사항')
+    generatePost('공지사항', 'admin', '공지사항 내용')
 );
 
-const publicChats = Array.from({ length: 15 }, () =>
-    generatePost('속닥', getRandomAuthor(), '자유게시판')
+const initialChat = Array.from({ length: 60 }, () =>
+    generatePost('속닥', getRandomAuthor(), '속닥 내용')
 );
 
-const secretChats = Array.from({ length: 15 }, () =>
-    generatePost('속닥', getRandomAuthor(), '자유게시판', true)
+const initialReview = Array.from({ length: 60 }, () =>
+  generatePost('입양', getRandomAuthor(), '입양후기 내용')
 );
-
-const initialChatList = [...publicChats, ...secretChats];
-
-const publicReviews = Array.from({ length: 12 }, () =>
-  generatePost('입양', getRandomAuthor(), '입양후기')
-);
-
-const secretReviews = Array.from({ length: 13 }, () =>
-  generatePost('입양', getRandomAuthor(), '입양후기', true)
-);
-
-const initialReviewList = [...publicReviews, ...secretReviews];
 
 export const ChatProvider = ({ children }) => {
 
     // 로컬스토리지에서 불러오기
-    const getStoredData = (key, fallback) => {
-        const saved = localStorage.getItem(key);
-        return saved ? JSON.parse(saved) : fallback;
-    };
+    // const getStoredData = (key, fallback) => {
+    //     const saved = localStorage.getItem(key);
+    //     return saved ? JSON.parse(saved) : fallback;
+    // };
 
-    const [notice, setNotice] = useState(() => getStoredData('notice', initialNotice));
-    const [chats, setChats] = useState(() => getStoredData('chats', initialChatList));
-    const [review, setReview] = useState(() => getStoredData('review', initialReviewList));
+    const [notice, setNotice] = useState(initialNotice);
+    const [chats, setChats] = useState(initialChat);
+    const [review, setReview] = useState(initialReview);
 
     // 저장 함수
-    const saveToStorage = (key, data) => {
-        localStorage.setItem(key, JSON.stringify(data));
-    };
+    // const saveToStorage = (key, data) => {
+    //     localStorage.setItem(key, JSON.stringify(data));
+    // };
 
-    useEffect(() => saveToStorage('notice', notice), [notice]);
-    useEffect(() => saveToStorage('chats', chats), [chats]);
-    useEffect(() => saveToStorage('review', review), [review]);
+    // useEffect(() => saveToStorage('notice', notice), [notice]);
+    // useEffect(() => saveToStorage('chats', chats), [chats]);
+    // useEffect(() => saveToStorage('review', review), [review]);
 
     const addChat = (newPost, postType) => {
         const currentUser = localStorage.getItem("username") || "me";
@@ -102,23 +89,44 @@ export const ChatProvider = ({ children }) => {
         }
     }
 
+    // const updateChat = (updatedPost, type) => {
+    //     if (type === 'chat') {
+    //         setChats((prev) => prev.map(post => post.id === updatedPost.id ? updatedPost : post));
+    //     } else if (type === 'notice') {
+    //         setNotice((prev) => prev.map(post => post.id === updatedPost.id ? updatedPost : post));           
+    //     } else if (type === 'review') {
+    //         setReview((prev) => prev.map(post => post.id === updatedPost.id ? updatedPost : post));
+    //     }
+    // };
+
     const updateChat = (updatedPost, type) => {
-        if (type === 'chat') {
-            setChats((prev) => prev.map(p => p.id === updatedPost.id ? updatedPost : p));
-        } else if (type === 'notice') {
-            setNotice((prev) => prev.map(p => p.id === updatedPost.id ? updatedPost : p));
-        } else if (type === 'review') {
-            setReview((prev) => prev.map(p => p.id === updatedPost.id ? updatedPost : p));
-        }
-    };
+    if (type === 'chat') {
+        setChats((prev) => {
+            console.log('=== 기존 chats 배열 ===');
+            console.log(prev);
+
+            const updatedArray = prev.map(p => {
+                const isTarget = p.id === updatedPost.id;
+                console.log(`p.id: ${p.id}, updatedPost.id: ${updatedPost.id}, 일치 여부: ${isTarget}`);
+                return isTarget ? updatedPost : p;
+            });
+
+            console.log('=== 수정 후 chats 배열 ===');
+            console.log(updatedArray);
+
+            return updatedArray;
+        });
+    } 
+    // 나머지 타입들도 동일하게 콘솔 찍어도 됨
+};
 
     const deletePostById = (type, id) => {
         if (type === 'chat') {
-            setChats(prev => prev.filter(p => p.id !== id));
+            setChats(prev => prev.filter(post => post.id !== id));
         } else if (type === 'review') {
-            setReview(prev => prev.filter(p => p.id !== id));
+            setReview(prev => prev.filter(post => post.id !== id));
         } else if (type === 'notice') {
-            setNotice(prev => prev.filter(p => p.id !== id));
+            setNotice(prev => prev.filter(post => post.id !== id));
         }
     };
 

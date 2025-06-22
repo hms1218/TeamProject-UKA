@@ -70,7 +70,7 @@ const AllBoardDetail = () => {
         setNext(combined[idx + 1] || null);
     }, [id, notice, chats, review]);
 
-    // ✅ 댓글 LocalStorage에서 불러오기
+    // 댓글 LocalStorage에서 불러오기
     useEffect(() => {
         const saved = localStorage.getItem(`comments-${id}`);
         if (saved) {
@@ -80,7 +80,7 @@ const AllBoardDetail = () => {
         }
     }, [id]);
 
-    // ✅ 댓글 LocalStorage에 저장
+    // 댓글 LocalStorage에 저장
     useEffect(() => {
         localStorage.setItem(`comments-${id}`, JSON.stringify(comments));
     }, [comments, id]);
@@ -235,8 +235,15 @@ const AllBoardDetail = () => {
         });
     };
 
+    const category = {
+        notice: '공지사항',
+        chat: '속닥속닥',
+        review: '입양후기',
+    }
+
     return (
         <div style={{minWidth:'1075px'}}>
+            <label>[ {category[postType]} ]</label>
             <div className='board-detail-title-container'>
                 <p style={{fontSize: 30}}>{post.title}</p>
                 <p style={{color: '#ccc'}}>
@@ -247,20 +254,6 @@ const AllBoardDetail = () => {
                 </p>
             </div>
             <hr/>
-            {/* <table className='board-detail-table-container'>
-                <tbody>
-                    <tr>
-                        <td>작성자</td>
-                        <td>{post.author}</td>
-                        <td>등록일</td>
-                        <td>{new Date(post.createdAt).toLocaleString()}</td>
-                        <td>조회수</td>
-                        <td>{post.views ?? 0}</td>
-                        <td>추천수</td>
-                        <td>{post.likes ?? 0}</td>
-                    </tr>
-                </tbody>
-            </table> */}
             <div className='board-detail-content'>
                 <p style={{minHeight: 250, fontSize:18}}>{post.content}</p>
             </div>
@@ -269,7 +262,7 @@ const AllBoardDetail = () => {
                 {((postType === 'notice' && isAdmin) || (postType !== 'notice' && (isAdmin || post.author === currentUser))) && (
                     <>
                         <button className="board-detail-button"
-                            onClick={() => navigate(`/board/all/edit/${post.type}/${post.id}`, { state: post })}
+                            onClick={() => navigate(`/board/all/edit/${postType}/${post.id}`, { state: post })}
                         >
                         ✏️ 수정
                         </button>
@@ -285,7 +278,7 @@ const AllBoardDetail = () => {
                 >
                 ← 목록으로
                 </button>
-                <button onClick={() => alert(`${currentUser}`)}>테스트</button>
+                {/* <button onClick={() => alert(`${currentUser}`)}>테스트</button> */}
             </div>
                 
             

@@ -44,11 +44,12 @@ import AdminPage from './components/Customers/Pages/Admin/AdminPage';
 import AdminQnADetail from './components/Customers/Pages/Admin/AdminQnADetail';
 import AllBoard from './components/Board/Pages/AllBoard';
 
-
 import NoticeBar from './components/Sidebar/NoticeBar';
 import AdBar from './components/Sidebar/AdBar';
 
 import ScrollArrowButtons from './components/Common/ScrollArrowButtons';
+
+import NaverMap from './components/DetailMap/NaverMap';
 
 import './App.css';
 
@@ -71,9 +72,11 @@ function App() {
                         <Route path="/find-password" element={<FindPasswordPage />} />
                         <Route path="/reset-password" element={<ResetPasswordPage />} />
 
+                        <Route path="/svg_map_detail" element={<NaverMap />} />
+
                         {/* 상세페이지 전체 */}
                         <Route path='/about' element={<DetailBody />} />
-                        <Route path='/about/select' element={<DetailSelect />} />
+                        <Route path='/about/select' element={<DetailSelect />} />x
                         
                         {/* 게시판 전체 (MainBodys 제외) */}
                         <Route path="/board/*"

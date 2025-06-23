@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import "./SliderBanner.css";
 import test2 from "../assets/test2.jpg";
+import DogRun2 from "../assets/DogRun2.gif";
 
 const SliderBanner = ({ currentSlide, onPrev, onNext, MainSlides }) => {
     const visibleCount = 2; // 한 번에 보여줄 슬라이드 개수
@@ -12,7 +13,7 @@ const SliderBanner = ({ currentSlide, onPrev, onNext, MainSlides }) => {
             <div className="slider-empty">
                 {/* 대체 이미지 */}
                 <img
-                    src={test2}       // 프로젝트에 맞게 경로 조정
+                    src={DogRun2}       // 프로젝트에 맞게 경로 조정
                     alt="데이터 없음"
                     className="slider-empty-image"
                 />

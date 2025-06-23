@@ -48,7 +48,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #00aaff; opacity: 0.6;
+    /* background-color: #00aaff; opacity: 0.6; */
+    background-color: #4895ff; opacity: 0.8;
     color: white;
     margin-top: 10px;
     padding-left: 16px;

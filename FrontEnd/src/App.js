@@ -169,6 +169,7 @@ function App() {
             <NoticeBar />
             {/* 오른쪽 하단에 화살표 버튼 추가 */}
             <ScrollArrowButtons />
+            <AdBar />
         </div>
     );
 }

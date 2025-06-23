@@ -59,6 +59,13 @@ import AdminQnADetail from './components/Customers/Pages/Admin/AdminQnADetail';
 
 function App() {
 
+    //게시판 유저 확인용
+    useEffect(() => {
+        if (!localStorage.getItem("username")) {
+            localStorage.setItem("username", "me");
+        }
+    }, []);
+
     return (
         <div className="App" style={{ padding: "20px"}}>
             

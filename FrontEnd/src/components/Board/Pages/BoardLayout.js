@@ -18,7 +18,7 @@ const BoardLayout = () => {
         {/* 탭 메뉴 */}
         <nav className="boardLayout-tab-bar">
             <NavLink
-                to="/board" end
+                to="/board/all"
                 className={({ isActive }) => isActive ? 'active' : ''}
             >
             전체게시판

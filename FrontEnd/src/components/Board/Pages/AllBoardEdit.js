@@ -8,6 +8,7 @@ import color from '@toast-ui/editor-plugin-color-syntax'
 import 'tui-color-picker/dist/tui-color-picker.css';
 import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css';
 import { useChat } from '../Context/ChatContext';
+import { useAdmin } from '../../../api/AdminContext';
 
 const AllBoardEdit = () => {
     const { id, type } = useParams();
@@ -16,9 +17,11 @@ const AllBoardEdit = () => {
     const titleInputRef = useRef(null);
     const editorRef = useRef(null);
 
+    const [postType, setPostType] = useState('');
     const [title, setTitle] = useState('');
 
     const {notice, chats, review, updateChat} = useChat();
+    const { isAdmin } = useAdmin();
 
     let post;
     if (type === 'chat') {
@@ -29,14 +32,11 @@ const AllBoardEdit = () => {
         post = review.find((item) => item.id === Number(id));
     }
 
-    //글쓰기 시 제목 포커스
-    // useEffect(() => {
-    //     titleInputRef.current?.focus();
-    // },[])
-
     useEffect(() => {
         if(post && editorRef.current){
-            setTitle(post.title)
+            setTitle(post.title);
+            setPostType(type);
+
             editorRef.current.getInstance().setMarkdown(post.content);
         }
         setTimeout(() => {
@@ -50,16 +50,18 @@ const AllBoardEdit = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        
         const updatedContent = editorRef.current.getInstance().getMarkdown();
 
         const updatedPost = {
             ...post,
             title,
+            type: postType,
             content: updatedContent,
             updatedAt: new Date(),
         }
 
-        updateChat(updatedPost, type);
+        updateChat(updatedPost, postType);
 
         Swal.fire({
             title: '게시글 수정',
@@ -98,6 +100,10 @@ const AllBoardEdit = () => {
             cancelButtonText: '취소',
         }).then((result) => {
             if(result.isConfirmed){
+                setTitle(post.title);
+                setPostType(type);
+                editorRef.current?.getInstance().setMarkdown(post.content);
+
                 navigate(`/board/all/detail/${id}`)
             }
         })
@@ -107,6 +113,19 @@ const AllBoardEdit = () => {
         <div>
             <h2>게시글 수정하기</h2>
             <form onSubmit={handleSubmit}>
+                <div>
+                    <label style={{marginRight:10, fontWeight: 'bold'}}>카테고리</label>
+                    <select 
+                        style={{marginBottom: 16, padding: 5}} 
+                        value={postType} 
+                        onChange={(e) => setPostType(e.target.value)}
+                        // required
+                        >
+                        {isAdmin && <option value='notice'>공지사항</option>} {/* 관리자만 공지사항 글쓰기 가능 */}
+                        <option value='chat'>속닥속닥</option>
+                        <option value='review'>입양후기</option>                  
+                    </select>
+                </div>
                 <div>
                     <label>제목</label><br />
                     <input

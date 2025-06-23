@@ -7,6 +7,7 @@ import DogFootPrint from '../../assets/DogFootPrint.png';
 import { useAdmin } from '../../api/AdminContext';
 
 import './MainHeader.css';
+import { useAdmin } from '../Board/Context/AdminContext';
 
 const MainHeaders = () => {
     const { user, logout } = useContext(AuthContext);
@@ -81,11 +82,10 @@ const MainHeaders = () => {
                         title="게시판"
                         to="/board"
                         items={[
-                            { label: '전체', to: '/board' },
+                            { label: '전체', to: '/board/all' },
                             { label: '공지사항', to: '/board/notice' },
                             { label: '속닥속닥', to: '/board/chat' },
                             { label: '입양후기', to: '/board/adoptionReview' },
-                            { label: '새끼분양', to: '/board/infoShare' },
                         ]}
                     />
                     <DropDownMenu

@@ -78,6 +78,8 @@ const MainHeaders = () => {
                 <nav className="header-nav-links">
                     <Link to="/about" style={{marginRight : 25}}>입양하고싶어요</Link>
                     <Link to="/find" style={{marginRight : 10}}>찾고있어요</Link>
+                    <Link to="/svg_map_detail" style={{marginRight : 10}}>테스트하고있어요</Link>
+                    
                     <DropDownMenu
                         title="게시판"
                         to="/board"

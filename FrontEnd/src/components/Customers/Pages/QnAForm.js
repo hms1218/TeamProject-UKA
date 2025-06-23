@@ -1,15 +1,20 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+<<<<<<< HEAD
 import ReactQuill from 'react-quill';
 import { useAlert } from '../Context/AlertContext';
 import 'react-quill/dist/quill.snow.css';
 import './WriteButton.css';
 import './QnADetail.css';
+=======
+import './WriteButton.css';
+>>>>>>> origin/sehyun
 
 const QnAForm = () => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const navigate = useNavigate();
+<<<<<<< HEAD
   const { showAlert } = useAlert();
 
   const handleSubmit = async (e) => {
@@ -46,24 +51,44 @@ const QnAForm = () => {
       showConfirmButton: false,
     });
 
+=======
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log('QnA 작성됨:', { title, content });
+>>>>>>> origin/sehyun
     navigate('/customer/qna');
   };
 
   return (
+<<<<<<< HEAD
     <div className="qna-form">
       <h2>QnA 글쓰기</h2>
       <form onSubmit={handleSubmit}>
         <div className="qna-form-title">
+=======
+    <div className="faq-form">
+      <h2>QnA 글쓰기</h2>
+      <form onSubmit={handleSubmit}>
+        <div>
+>>>>>>> origin/sehyun
           <label>제목</label><br />
           <input
             type="text"
             value={title}
+<<<<<<< HEAD
             onChange={e => setTitle(e.target.value)}
             required
+=======
+            onChange={(e) => setTitle(e.target.value)}
+            required
+            style={{ width: '100%', padding: '10px', marginBottom: '16px' }}
+>>>>>>> origin/sehyun
           />
         </div>
         <div>
           <label>내용</label><br />
+<<<<<<< HEAD
           {/* Quill 에디터로 대체 */}
           <ReactQuill
             value={content}
@@ -78,9 +103,24 @@ const QnAForm = () => {
           />
         </div>
         <button type="submit" className="customer-write-button">등록</button>
+=======
+          <textarea
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            rows="6"
+            required
+            style={{ width: '100%', padding: '10px' }}
+          />
+        </div>
+        <button type="submit" className="write-button">등록</button>
+>>>>>>> origin/sehyun
       </form>
     </div>
   );
 };
 
+<<<<<<< HEAD
 export default QnAForm;
+=======
+export default QnAForm;
+>>>>>>> origin/sehyun

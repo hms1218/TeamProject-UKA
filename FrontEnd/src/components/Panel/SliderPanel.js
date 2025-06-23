@@ -7,10 +7,7 @@ const SliderPanel = ({
     onNext,
 }) => (
     <div className="bottom-panel">
-        <div className="slider-panel-title">
-            <span role="img" aria-label="paw">🐾</span>
-            <span className="slider-title-text">새로 들어온 동물들</span>
-        </div>
+        <h3 style={{textAlign : "center", marginTop : 0}}>새로 들어온 동물들 🐾</h3>
         <SliderBanner
             MainSlides={MainSlides}
             currentSlide={currentSlide}

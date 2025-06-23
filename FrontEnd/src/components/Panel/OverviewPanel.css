@@ -1,5 +1,5 @@
 .chart-container {
-
+    position: relative;
 }
 
 .pie-chart-container {
@@ -63,11 +63,11 @@
     flex-direction: column;
     justify-content: space-between;
     background-color: #ffffff;
-    height: 800px;
+    height: 850px;
     border: 1px solid #cceeff;
     border-radius: 10px;
     padding: 10px;
-    box-shadow: none;
+    /* box-shadow: 0 4px 12px rgba(0, 170, 255, 0.15); */
 }
 
 /* 지도 색상 호버 */
@@ -90,7 +90,7 @@ path:hover {
     flex: 1;
     display: flex;
     flex-direction: column;
-    height: 820px;
+    height: 870px;
     gap: 10px;
     font-family: 'Segoe UI', sans-serif;
     color: #333;
@@ -98,33 +98,32 @@ path:hover {
 
 /* 전체 현황판 */
 .info-top {
-    flex: 4;
+    flex: 4.5;
     background-color: #ffffff;
     border: 1px solid #cceeff;;
     padding: 10px;
     border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 170, 255, 0.15);
+    /* box-shadow: 0 4px 12px rgba(0, 170, 255, 0.15); */
     font-size: 15px;
 }
 
 /* 지역 현황판 */
 .info-middle {
-    flex: 4;
+    flex: 4.5;
     background-color: #ffffff;
     border: 1px solid #cceeff;;
     padding: 10px;
     border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 170, 255, 0.15);
+    /* box-shadow: 0 4px 12px rgba(0, 170, 255, 0.15); */
     font-size: 15px;
 }
 
 /* 선택 지역 유기동물 찾기 */
 .info-bottom {
-    flex: 2;
+    flex: 1;
     border: 1px solid #cceeff;
     border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 170, 255, 0.15);
-    gap: 12px; /* 제목과 버튼 사이 간격 */
+    /* box-shadow: 0 4px 12px rgba(0, 170, 255, 0.15); */
     width: 100%;
     box-sizing: border-box;
     display: flex;
@@ -132,11 +131,21 @@ path:hover {
     align-items: center;
 }
 
+.info-bottom h4 {
+    margin-top : 10; 
+    height :10;
+}
+
 /* 선택 지역 유기동물 찾기 select + button 만 가로 정렬 */
 .bottom-actions {
     display: flex;
-    justify-content: center; /* 가로 중앙에 모으기 */
-    margin: -10px;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0; /* ★ 음수 마진 삭제 */
+    margin-bottom: 10px;
 }
 
 /* 선택 지역 유기동물 찾기 콤보박스 */

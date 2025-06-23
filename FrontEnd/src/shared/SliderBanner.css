@@ -1,140 +1,112 @@
 /* 하단 패널 */
-.slider-panel-title {
-  display: flex;
-  align-items: center;
-  justify-content: center;    /* <- 중앙 정렬 */
-  gap: 10px;
-  width: 100%;
-  font-size: 1.35rem;
-  font-weight: 700;
-  color: #00aaff;
-  margin-top: 18px;
-  /* border-bottom: 1px solid #cceeff; */
-  /* padding-bottom: 8px; */
-  /* text-align: center;         혹시모를 자식 inline 요소까지 */
-}
-
-.slider-title-text {
-  font-size: 1.28em;
-  font-weight: 700;
-  color: #00aaff;
-  letter-spacing: -0.5px;
-  margin: 0;
-  line-height: 1.3;
+.bottom-panel {
+    height: 200px;
+    background-color: #ffffff;
+    margin-top: 16px;
+    border: 1px solid #cceeff;
+    padding: 10px;
+    
 }
 
 /* 슬라이더 컨테이너 */
 .main-slider-container {
-  position: relative;
-  overflow: hidden;
-  width: 100%;
-  min-height: 240px;
-  background: #f9fcff;
-  border-radius: 18px;
-  border: 2px solid #cceeff;
-  box-shadow: 0 4px 16px rgba(44, 62, 80, 0.09);
-  padding: 32px 0;
-  margin-top: 10px;
+    display: grid;
+    grid-template-columns: 40px 1fr 40px;
+    align-items: center;
+    width: 100%;
+    max-width: 100%;
 }
 
-/* 슬라이드들을 가로로 나열 */
+.slider-viewport {
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+}
+
 .slider-content {
-  display: flex;
-  transition: transform 0.5s cubic-bezier(.52,.04,.35,1.59);
-  height: 240px;
-  will-change: transform;
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+    height: 100%;
 }
 
-/* 한 슬라이드가 전체의 50% 차지 */
 .slide {
-  flex: 0 0 44%;   /* 한 번에 2개 보여주기, 여백 포함 */
-  margin: 0 1%;
-  display: flex;
-  align-items: center;
-  flex-direction: row; 
-  background: #f7fbfd;
-  border-radius: 14px;
-  box-shadow: 0 1px 10px rgba(0,170,255,0.04);
-  padding: 22px 24px;
-  min-width: 0;
+    flex: 0 0 50%;
+    min-width: 0;
+    display: flex;
+    align-items: flex-start;
+    box-sizing: border-box;
+    padding: 0 10px;
+    height: 150px;
+
 }
 
-/* 이미지 영역 */
 .slide-image-wrapper {
-  flex: 0 0 auto;
-  width: 120px;
-  height: 120px;
-  border-radius: 14px;
-  overflow: hidden;
-  background: #fff;
-  box-shadow: 0 2px 8px rgba(44,62,80,0.04);
-  margin-right: 32px;
+    flex: 0 0 auto;
+    width: 150px;
+    height: 150px;
+    overflow: hidden;
+    margin-right: 16px;
 }
 
-/* 이미지 스타일 */
 .slide-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 150px;
 }
 
-/* 텍스트 정보 영역 */
 .slide-info {
-  flex: 1;
-  min-width: 0;
-  text-align: left;
+    flex: 1;
+    min-width: 0;
+    font-size: 14px;
+    color: #000;
+
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+.slide-info p {
+    margin-top: 8px;
+}
+
+.main-slider-button {
+    background: rgba(0, 0, 0, 0.5);
+    border: none;
+    color: #fff;
+    font-size: 1rem;
+    width: 100%;
+    height: 25%;
+    cursor: pointer;
+    transform: translateY(-50%);
+}
+
+.main-slider-button.prev {
+    justify-self: start;
+}
+
+.main-slider-button.next {
+    justify-self: end;
+}
+
+/* 데이터 없을 때 보여줄 영역 */
+.slider-empty {
   display: flex;
   flex-direction: column;
-  gap: 7px;
-}
-
-.slide-info h3 {
-  margin: 0 0 6px 0;
-  font-size: 20px;
-  color: #007fc7;
-  font-weight: bold;
-  line-height: 1.2;
-}
-
-
-.slide-info p {
-  margin: 0;
-  font-size: 15px;
-  color: #222;
-  line-height: 1.5;
-}
-
-.slide-info strong {
-  color: #00aaff;
-  font-weight: 700;
-}
-
-/* 네비게이션 버튼 */
-.main-slider-button {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: #00aaffcc;
-  border: none;
-  color: #fff;
-  font-size: 2.2rem;
-  width: 46px;
-  height: 46px;
-  border-radius: 50%;
-  cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0, 170, 255, 0.10);
-  z-index: 10;
-  transition: background 0.17s;
-  display: flex;
   align-items: center;
   justify-content: center;
+  height: 100%;            /* 부모 컨테이너 전체를 채우도록 */
+  color: #666;
 }
 
+.slider-empty-image {
+  width: 300px;             /* 적당한 크기로 조절 */
+  height: 100px;
+  margin-bottom: 8px;
+  opacity: 0.5;
+}
 
-.main-slider-button.prev { left: 12px; }
-.main-slider-button.next { right: 12px; }
-
-.main-slider-button:hover {
-  background: #007fc7;
+.slider-empty-text {
+  font-size: 14px;
+  text-align: center;
 }

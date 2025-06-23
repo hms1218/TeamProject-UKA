@@ -8,6 +8,9 @@
     border-radius: 0 0 12px 12px;
     min-width: 1075px;
 }
+.header-left-section {
+    cursor : pointer;
+}
 
 .header-left-section .logo {
     height: 72px;

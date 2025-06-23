@@ -1,7 +1,7 @@
 /* 전체 div */
 .dashboard-container {
     width: 100%;
-    min-width: 800px;
+    min-width: 1075px;
     display: flex;
     flex-direction: column;
     box-sizing: border-box;

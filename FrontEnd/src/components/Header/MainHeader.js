@@ -26,7 +26,7 @@ const MainHeaders = () => {
 
     return (
         <header className="main-header">
-            <div className="header-left-section" style={{cursor : "pointer"}}>
+            <div className="header-left-section">
                 <Link to="/">
                     <img src={MainLogo} alt="Logo" className="logo" />
                 </Link>

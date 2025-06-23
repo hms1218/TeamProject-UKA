@@ -96,7 +96,7 @@ export default function OverviewPanel({ allRegionData, regionData, regionNm, set
                     <p style={{textAlign:"center", fontSize : 14, marginTop : -10}}>전체 동물 수 : {overallData.animalCount} | 전체 센터 수 : {overallData.centerCount}</p>
                     {/* 스타일 적용된 차트 */}
                     <div className="chart-container">
-                        <ResponsiveContainer width="100%" height={235}>
+                        <ResponsiveContainer width="100%" height={250}>
                             <BarChart data={chartAllData} margin={{ top: 10, right: 20, left: -15, bottom: -10 }}>
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis dataKey="name" tick={{ fontSize: 14, fill: "#555" }} />
@@ -160,10 +160,10 @@ export default function OverviewPanel({ allRegionData, regionData, regionNm, set
                                 alt="센터 로고"
                                 className="center-img"
                             />
-                            <ResponsiveContainer width="100%" height={235}>
+                            <ResponsiveContainer width="100%" height={250}>
                                 {/* margin을 넉넉히 줘서 라벨이 짤리지 않도록 */}
                                 <PieChart 
-                                    margin={{ top: 12, right: 20, left: 20, bottom: 0 }}
+                                    margin={{ top: 12, right: 20, left: 20, bottom: 10 }}
                                     style={{ outline: 'none' }}
                                 >
                                     <Pie
@@ -216,8 +216,8 @@ export default function OverviewPanel({ allRegionData, regionData, regionNm, set
                 </div>
             </div>
 
-                <div className="info-bottom">
-                <h4 style={{marginTop : 10}}>선택 지역 유기동물 찾기</h4>
+            <div className="info-bottom">
+                <h4>선택 지역 유기동물 찾기</h4>
 
                 {/* select + button 을 묶는 컨테이너 */}
                 <div className="bottom-actions">
@@ -243,7 +243,6 @@ export default function OverviewPanel({ allRegionData, regionData, regionNm, set
                     </button>
                 </div>
             </div>
-
         </div>
     );
 }

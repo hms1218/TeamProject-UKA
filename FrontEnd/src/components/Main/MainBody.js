@@ -39,8 +39,17 @@ const MainBodys = () => {
     useSliderAutoPlay(setCurrentSlide, MainSlides.length);
 
     // 슬라이드 전환
-    const handlePrev = useCallback(() => setCurrentSlide(prev => (prev - 1 + MainSlides.length) % MainSlides.length), []);
-    const handleNext = useCallback(() => setCurrentSlide(prev => (prev + 1) % MainSlides.length), []);
+    const slideCount = MainSlides.length;
+
+    const handlePrev = useCallback(() => {
+        if (slideCount === 0) return;
+            setCurrentSlide(prev => (prev - 1 + slideCount) % slideCount);
+    }, [slideCount]);
+
+    const handleNext = useCallback(() => {
+        if (slideCount === 0) return;
+            setCurrentSlide(prev => (prev + 1) % slideCount);
+    }, [slideCount]);
 
     // 지역 선택 시 orgNm 설정
     const handleRegionSelect = useCallback((orgdownNm) => {
@@ -86,18 +95,20 @@ const MainBodys = () => {
 
         // happenDt가 "YYYYMMDD"라 가정하고 하이픈 넣어서 비교
         const filtered = rawData.filter(item => {
-            
-        if (typeof item.happenDt !== 'string' || item.happenDt.length !== 8) return false;
-        
-        const itemDateStr = 
-            `${item.happenDt.slice(0,4)}-${item.happenDt.slice(4,6)}-${item.happenDt.slice(6,8)}`;
-            return itemDateStr >= sevenAgoStr && itemDateStr <= todayStr;
+            // happenDt 체크
+            if (typeof item.happenDt !== 'string' || item.happenDt.length !== 8) return false;
+
+            // processState가 "보호중"인 것만
+            if (item.processState !== '보호중') return false;
+
+            const itemDateStr = 
+                `${item.happenDt.slice(0,4)}-${item.happenDt.slice(4,6)}-${item.happenDt.slice(6,8)}`;
+                return itemDateStr >= sevenAgoStr && itemDateStr <= todayStr;
         });
 
         // 필터링한 결과를 상태에 저장
         setMainSlides(filtered);
     }, [rawData]);
-    console.log(MainSlides);
     if (loading) return <Loading />;
     if (error) return <Error type={error.type} detail={error.detail} />;
 

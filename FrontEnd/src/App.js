@@ -49,6 +49,7 @@ import AdminQnADetail from './components/Customers/Pages/Admin/AdminQnADetail';
 import AllBoard from './components/Board/Pages/AllBoard';
 import { RequestMain } from './components/Request/RequestMain';
 import { RequestWrite } from './components/Request/RequestWrite';
+import SvgPolygonMap from './components/DetailMap/SvgPolygonMap';
 
 function App() {
 
@@ -77,6 +78,7 @@ function App() {
                     {/* 입양하고싶어요 전체 */}
                     <Route path='/about' element={<DetailBody/>} />
                     <Route path='/about/select' element={<DetailSelect/>}/>
+                    <Route path="/svg_map_detail" element={<SvgPolygonMap />} />
                     
                     {/* 찾고 있어요 전체 */}
                     <Route path='/request' element={<RequestMain/>} />

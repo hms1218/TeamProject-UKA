@@ -59,6 +59,7 @@ const MainHeaders = () => {
                 <nav className="nav-links">
                     <Link to="/about">입양하고싶어요</Link>
                     <Link to="/request">찾고있어요</Link>
+                    <Link to="/svg_map_detail" style={{marginRight : 10}}>테스트하고있어요</Link>
 
                     <div className="dropdown"
                          onMouseEnter={() => setBoardDropdown(true)}

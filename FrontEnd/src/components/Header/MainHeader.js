@@ -7,7 +7,6 @@ import DogFootPrint from '../../assets/DogFootPrint.png';
 import { useAdmin } from '../../api/AdminContext';
 
 import './MainHeader.css';
-import { useAdmin } from '../Board/Context/AdminContext';
 
 const MainHeaders = () => {
     const { user, logout } = useContext(AuthContext);

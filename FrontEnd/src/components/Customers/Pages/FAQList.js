@@ -1,18 +1,13 @@
 import { useState } from 'react';
-<<<<<<< HEAD
 import { useNavigate } from 'react-router-dom';
 import FAQEdit from './FAQEdit';
 import './FAQList.css';
 import { useAlert } from '../Context/AlertContext';
 import { useAdmin } from '../../../api/AdminContext';
-=======
-import './FAQList.css';
->>>>>>> origin/sehyun
 
 const dummyFaqs = [
   { id: 1, question: '입양 절차는 어떻게 되나요?', answer: '입양 절차는 상담 → 서류 작성 → 방문 순입니다.' },
   { id: 2, question: '봉사 신청은 어디서 하나요?', answer: '봉사 신청은 마이페이지 → 봉사 신청 탭에서 가능합니다.' },
-<<<<<<< HEAD
   { id: 3, question: '입양 시 준비물은 무엇이 있나요?', answer: '배변패드, 침대쿠션, 밥그릇, 물그릇, 이전에 먹던 사료, 약간의 간식 등이 있습니다.' },
   { id: 4, question: '제게 맞는 견종은 어떻게 알 수 있나요?', answer: '입양하기에서 자체 진단표를 통해 확인하실 수 있습니다.' },
   { id: 5, question: '입양 시 서류는 무엇이 필요한가요?', answer: '반려동물 매매계약서를 비롯해 허가증을 보아야 합니다.' },
@@ -35,19 +30,11 @@ const FAQList = ({ faqs = [], onDelete = () => {} }) => {
 
   // 테스트용
   const { isAdmin, setIsAdmin } = useAdmin();
-=======
-  { id: 3, question: '후원은 어떻게 하나요?', answer: '후원은 후원하기 메뉴를 통해 가능합니다.' },
-];
-
-const FAQList = () => {
-  const [openId, setOpenId] = useState(null);
->>>>>>> origin/sehyun
 
   const toggle = (id) => {
     setOpenId(prev => (prev === id ? null : id));
   };
 
-<<<<<<< HEAD
     // 수정 버튼 클릭 시 모달 열기 or 페이지 이동
     const handleEdit = (faq) => {
       // 모달로 띄울 경우
@@ -139,33 +126,6 @@ const handleDelete = async (id) => {
           />
         </div>
       )}
-=======
-  return (
-    <div className="faq-list">
-      {dummyFaqs.map((faq) => (
-        <div key={faq.id} className="faq-item">
-          <div className="faq-question" onClick={() => toggle(faq.id)}>
-            <div className="faq-question-left">
-              <span className="faq-label">Q</span>
-              <span className="faq-text">{faq.question}</span>
-            </div>
-            <button
-              className={`faq-toggle-button ${openId === faq.id ? 'open' : ''}`}
-              aria-label="토글"
-            >
-              {openId === faq.id ? '▲' : '▼'}
-            </button>
-          </div>
-
-          {openId === faq.id && (
-            <div className="faq-answer">
-              <span className="faq-label">A</span>
-              <span className="faq-text">{faq.answer}</span>
-            </div>
-          )}
-        </div>
-      ))}
->>>>>>> origin/sehyun
     </div>
   );
 };

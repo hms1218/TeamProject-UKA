@@ -1,21 +1,11 @@
 /* 메인컨테이너 */
-<<<<<<< HEAD
 .DScontainer {
     border-radius: 10px;
     min-width: 850px;
-=======
-.container {
-    border-radius: 10px;
-    
-    width: 100px;
-    height: 1800px;
-    min-width: 1415px;
->>>>>>> origin/sehyun
 }
 
 
 /* 본문 위쪽 */
-<<<<<<< HEAD
 .DStop{
     border: 1px solid #cceeff;
     border-radius: 10px;
@@ -36,57 +26,6 @@
 
 /* 본문 아래쪽 */
 .DSbottom{
-=======
-.top{
-    border: 1px solid #cceeff;
-    border-radius: 10px;
-    
-    display: flex;
-    flex-direction: column;
-
-    justify-content: flex-start;
-    align-items: center;
-}
-
-/* 캐러셀 */
-.carousel{
-    margin-top: 10px;
-    width: 70%;
-    border-radius: 40px;
-    background-color: #f5f5f5;
-}
-
-.carousel img{
-    height:650px;
-    object-fit: contain;
-}
-
-/* 캐러셀 아래의 서브 이미지 */
-.subimg{
-    margin-top: 10px;
-    border: 1px solid #cceeff;
-    border-radius: 10px;
-    width: 70%;
-    opacity: 0.7;
-    margin-bottom: 10px;
-}
-
-.subimg img::selection{
-    opacity: 1;
-}
-
-.subimg img{
-    height:150px;
-    
-    margin-right: 20px;
-    cursor: pointer;
-    border-radius: 10px;
-}
-
-
-/* 본문 아래쪽 */
-.bottom{
->>>>>>> origin/sehyun
     border: 1px solid #cceeff;
     border-radius: 10px;
 
@@ -96,11 +35,7 @@
     margin-top: 20px;
 }
 
-<<<<<<< HEAD
 .DSbottom h2{
-=======
-.bottom h2{
->>>>>>> origin/sehyun
     color: #66ccff;
     text-align: center;
     margin-top: 10px;
@@ -108,11 +43,7 @@
 
 
 /* 정보 전부 들어있는 박스 */
-<<<<<<< HEAD
 .DSinfo-box{
-=======
-.info-box{
->>>>>>> origin/sehyun
     display: flex;
 
     flex-wrap: wrap;
@@ -123,17 +54,12 @@
 
 
 /* 정보 한칸 */
-<<<<<<< HEAD
 .DSinfo{
-=======
-.info{
->>>>>>> origin/sehyun
     border: 1px #cceeff solid;
     border-radius: 8px;
 
     flex : 0 0 24%;
     text-align: center;
-<<<<<<< HEAD
     padding : 10px;
 }
 
@@ -252,21 +178,3 @@
     transition: all 0.2s ease;
     box-shadow: 0 4px 15px rgba(238, 90, 82, 0.4); 
   };
-=======
-    padding : 20px;
-}
-
-/* 정보의 글자 */
-.info p{
-    font-size: 20px;
-}
-
-
-
-/* 입양하기 버튼 */
-.button{
-    height: 30px;
-    
-    align-self: center;
-}
->>>>>>> origin/sehyun

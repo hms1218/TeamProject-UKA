@@ -12,9 +12,6 @@ import FindPasswordPage from './components/Pages/FindPasswordPage';
 
 import ResetPasswordPage from './components/Pages/ResetPasswordPage';
 
-import {RequestMain} from './components/Request/RequestMain';
-import {RequestWrite} from './components/Request/RequestWrite';
-
 //게시판 관련
 import BoardLayout from './components/Board/Pages/BoardLayout';
 import AllBoard from './components/Board/Pages/AllBoard';
@@ -53,7 +50,6 @@ import { DetailSelect } from './components/DetailPage/DetailSelect';
 // 관리자 화면
 import AdminPage from './components/Customers/Pages/Admin/AdminPage';
 import AdminQnADetail from './components/Customers/Pages/Admin/AdminQnADetail';
-import AllBoard from './components/Board/Pages/AllBoard';
 
 import { RequestMain } from './components/Request/RequestMain';
 import { RequestWrite } from './components/Request/RequestWrite';

@@ -1,15 +1,10 @@
-<<<<<<< HEAD
 .DBtext{
-=======
-.text{
->>>>>>> origin/sehyun
   color: white;
   font-size: 26px;
   padding : 10px;
 }
 
 /* 메인컨테이너 */
-<<<<<<< HEAD
 .DBcontainer {
     border-radius: 10px;
 
@@ -170,53 +165,11 @@
 
 /* 위쪽 지역 선택 콤보 박스 */
 .DBcombobox{
-=======
-.container {
-    border-radius: 10px;
-
-    width: 100vw;
-    min-width: 1415px;
-    display: flex;
-    flex-direction: column;
-
-    
-    margin-top: 20px;
-    height: 1800px;
-}
-
-
-/* 본문 위쪽 */
-.top{
-    border: 1px solid #cceeff;
-    border-radius: 10px;
-
-    height : 50%;
-    /* display: flex; */
-    flex-direction: column;
-    /* align-items: center; */
-}
-
-/* 본문 위쪽 지도 */
-.map{
-    border: 1px solid #cceeff;
-    border-radius: 10px;
-    flex:1;
-    display: flex;
-    height:50%;
-}
-
-
-/* 위쪽 지역 선택 콤보 박스 */
-.combobox{
->>>>>>> origin/sehyun
     flex: 0 0 20%;
     border: 1px solid #cceeff;
     border-radius: 10px;
     
-<<<<<<< HEAD
     width: 100%;
-=======
->>>>>>> origin/sehyun
     display: flex;
     flex-direction: row;
     background-color:#00aaff;
@@ -226,26 +179,17 @@
     align-self: center;
 }
 
-<<<<<<< HEAD
 /* 콤보박스 안 select */
 .DBcombobox select{
     text-align: center;
     font-size: 24px;
     margin:5px;
     width: 100%;
-=======
-.combobox select{
-    text-align: center;
-    font-size: 24px;
-    margin:5px;
-    width: 300px;
->>>>>>> origin/sehyun
     text-align: left;
     padding:5px 10px;
     border-radius: 8px;
 }
 
-<<<<<<< HEAD
 /* 콤보박스 안 '검색하기' 버튼 */
 .DBButton{
     
@@ -254,10 +198,6 @@
 
 /* 본문 아래쪽 */
 .DBbottom{
-=======
-/* 본문 아래쪽 */
-.bottom{
->>>>>>> origin/sehyun
     border: 1px solid #cceeff;
     border-radius: 10px;
 
@@ -269,16 +209,11 @@
 
 
 /* 페이징 드롭다운 */
-<<<<<<< HEAD
 .DBdropdown{
-=======
-.dropdown{
->>>>>>> origin/sehyun
     display: flex;
     justify-content: end;
     padding : 20px;
 }
-<<<<<<< HEAD
 .DBbottom select{
     text-align: center;
     font-size: 19px;
@@ -302,51 +237,3 @@
     gap:30px;
 }
 /* 개별 css는 CardComponent에 있음. */
-=======
-.bottom select{
-    text-align: center;
-    font-size: 25px;
-}
-
-
-/* 상세정보 담는 박스 */
-.detail-box{
-    display: flex;
-    flex-wrap: wrap;
-    margin:10px;
-    gap:20px;
-}
-
-/* 상세정보 하나 */
-/* .detail{
-    border: 1px solid #cceeff;
-    border-radius: 10px;
-
-    background-color: #eafaff;
-    width:20%;
-    height:30%;
-    margin : 30px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;    
-}
-
-.detail img{
-    border-radius: 10px;
-    margin : 20px;
-    height:50%;
-    width: auto;
-}
-
-
-.detail-content{
-    background-color: white;
-    border-radius: 10px;
-    padding : 5px 20px;
-    text-align: center;
-}
-
-.detail a{
-    text-decoration: none;
-} */
->>>>>>> origin/sehyun

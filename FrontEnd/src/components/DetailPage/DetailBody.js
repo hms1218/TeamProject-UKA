@@ -1,14 +1,9 @@
 import { useEffect, useState } from "react"
 import img from "../../assets/test1.jpg"
-import KoreaMapSection from "../Map/KoreaMapSection";
 import './DetailBody.css'
-import { Link } from "react-router-dom";
 
-// 부트스트랩
-import {Carousel,Button, Card} from 'react-bootstrap'
-
-// import 'bootstrap/dist/css/bootstrap.min.css';
 import { CardComponent } from "./CardComponent";
+import { Box, Button, InputLabel, Select } from "@mui/material";
 
 export const DetailBody = () => {
 
@@ -19,6 +14,9 @@ export const DetailBody = () => {
     const [center,setCenter] = useState('');
     const [regionInfo, setRegionInfo] = useState([]);
 
+    const [isRow,setIsRow] = useState(false);
+    const [show,setShow] = useState(false);
+
     //지도 데이터 로딩용
     useEffect(()=>{
         
@@ -26,101 +24,230 @@ export const DetailBody = () => {
 
 
     return(
-        <div className="container">
-            <div className="top">
-                <div className="map">
-                    <KoreaMapSection 
+        <div className="DBcontainer">
+
+            {/* 헤더 */}
+            <div className="DBcombobox">
+                {/* 시 */}
+                <div style={{}}>
+                    <label className="DBtext" for="si" >시 선택</label> 
+                    <select id='si'title="시입니다">                        
+                    {<option value={si}>시</option>}
+                    </select>
+                </div>
+
+                {/* 군 */}
+                <div style={{}}>
+                    <label className="DBtext" for="gun" >군 선택</label>
+                    <select>
+                        <option id="gun" value={gun}>군</option>
+                    </select>
+                </div>
+
+                {/* 구 */}
+                <div style={{}}>
+                    <label className="DBtext" for="gu" >구 선택</label>
+                    <select>
+                        <option id='gu' value={gu}>구</option>
+                    </select>
+                </div>
+                <Button 
+                    variant="contained"
+                    className="DBButton"
+                    color="inherit"
+                    sx={{
+                        marginLeft:'20px',
+                        marginTop:'37px'
+                    }}
+                    onClick={()=>{
+                        setShow(!show)
+
+                    }}>검색하기
+                </Button>
+            </div>
+
+            {/* 상단 div */}
+            <div className="DBtop">
+                {/* 여기에 지도 들어갈 것 같아요. */}
+                <div className="DBmap">
+                    지도할라고
+                    {/* <KoreaMapSection 
                         // onRegionSelect={handleRegionSelect}
                         //     selectedRegionId={selectedRegionId}
                         //     tooltipContent={tooltipContent}
                         //     setTooltipContent={setTooltipContent}
                             regionInfo={regionInfo}
-                    />
+                    /> */}
                 </div>
 
-                <div className="combobox">
-                    {/* 시 */}
-                    <div style={{display:'flex', flexDirection:'column'}}>
-                        <label className="text" for="si" >시 선택</label> 
-                        <select id='si'title="시입니다">                        
-                        {<option value={si}>시</option>}
-                        </select>
-                    </div>
+                
+                
 
-                    {/* 군 */}
-                    <div style={{display:'flex', flexDirection:'column'}}>
-                        <label className="text" for="gun" >군 선택</label>
-                        <select>
-                            <option id="gun" value={gun}>군</option>
-                        </select>
-                    </div>
-
-                    {/* 구 */}
-                    <div style={{display:'flex', flexDirection:'column'}}>
-                        <label className="text" for="gu" >구 선택</label>
-                        <select>
-                            <option id='gu' value={gu}>구</option>
-                        </select>
-                    </div>
-                </div>
                 
             </div>{/* end top */}
+
+            
+
+            {/* 보드에서 가져온 헤더 */}
+                <div className="DBboard-layout">
+                
+                    <div className="DBboard-header-container">
+                        <div className="DBboard-header-left">
+                            <h1 className="DBboard-title">상세검색</h1>
+                        </div>
+                        <div className="DBboard-header-center">
+                            <div >
+                            <select>
+                                <optgroup label="견종" >
+                                    <option >보호상태</option>
+                                </optgroup>
+                            </select>
+
+                            <select>
+                                <optgroup label="견종" >
+                                    <option >공고날짜</option>
+                                </optgroup>
+                            </select>
+
+                            <select>
+                                <optgroup label="견종" >
+                                    <option >털색</option>
+                                </optgroup>
+                            </select>
+
+                            <select>
+                                <optgroup label="견종" >
+                                    <option >나이</option>
+                                </optgroup>
+                            </select>
+
+                            <select>
+                                <optgroup label="견종" >
+                                    <option >품종</option>
+                                </optgroup>
+                            </select>
+
+                            <select>
+                                <optgroup label="견종" >
+                                    <option >성별</option>
+                                </optgroup>
+                            </select>
+
+                           </div>
+                        </div>
+                         <Button 
+                            variant="contained"
+                            className="DBButton"
+                            color="inherit"
+                         
+                            onClick={()=>{
+                                setShow(!show)
+
+                            }}>검색하기
+                        </Button>
+                        <div className="DBboard-header-right">
+                            
+                        </div>   
+                    </div>
+
+                    {/* 탭 메뉴 */}
+                    <nav className="DBmini-tab-bar">
+                        <div className="DBboard-header-center">
+                            <input
+                                className="DBboard-search-input"
+                                type="text"
+                                placeholder="통합검색"
+                            />
+                            <button className="DBboard-search-button">
+                            🔍
+                            </button>
+                        </div>
+                    </nav>
+
+                 </div>
+
+
+
+
 {/* ================================================================================================ */}
             {/* 지역선택하면 값을 받아서 렌더링하게 설정할것(지금은 일단 보임.) */}
-            <div className="bottom">
-                {/* 렌더링 개수 정하는 드롭다운. */}
-                <div className="dropdown">
-                    <select>
-                        <option value='8'>8</option>
-                        <option value='12'>12</option>
-                        <option value='16'>16</option>
+            <div className="DBbottom">
+                {/* 렌더링 방식 정하는 드롭다운. */}
+                <div className="DBdropdown">
+                    <select value={isRow} onChange={(e)=>{
+                        setIsRow(e.target.value==='true') 
+                        }}>
+                        <option value='false'>세로</option>
+                        <option value='true'>가로</option>
                     </select>
+
+                    <div className="DBrowbutton"
+                        onClick={()=>{setIsRow(false)}} 
+                    >
+                        📱
+                    </div>
+                    <div className="DBrowbutton"
+                        onClick={()=>{setIsRow(true)}} 
+                    >
+                        🪪
+                    </div>
+                    
                 </div>
 
 
                 {/* 상세정보 하나 들어가는 박스 */}
-                <div className="detail-box">
-
+                {show&&<Box className="DBdetail-box">
                     {/* 상세정보하나 */}
-                    <CardComponent img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
 
-                    {/* 상세정보하나 */}
-                    <CardComponent img={img} description={'간략한 정보'} title={'제목'}/>
-
-                    {/* 상세정보하나 */}
-                    <CardComponent img={img} description={'간략한 정보'} title={'제목'}/>
-
-                    {/* 상세정보하나 */}
-                    <CardComponent img={img} description={'간략한 정보'} title={'제목'}/>
-
-                    {/* 상세정보하나 */}
-                    <CardComponent img={img} description={'간략한 정보'} title={'제목'}/>
-
-                    {/* 상세정보하나 */}
-                    <CardComponent img={img} description={'간략한 정보'} title={'제목'}/>
-
-                    {/* 상세정보하나 */}
-                    <CardComponent img={img} description={'간략한 정보'} title={'제목'}/>
-
-                    {/* 상세정보하나 */}
-                    <CardComponent img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
 
 
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
 
-                    {/* 상세정보 하나 들어가는 박스 */}
-                    {/* <div className="detail"> */}
-                    {/* 이미지 */}
-                        {/* <img src={img} alt="테스트 이미지"/> */}
-                        
-                        {/* <div className="detail-content"> */}
-                            {/* 간략한 정보(하이퍼 링크) */}
-                            {/* <h3><Link to="/about/select">간략한 정보(하이퍼링크O)</Link></h3> */}
-                        {/* </div> */}
-                    {/* </div> */}
+
+
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+
+
+
+
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
+                    <CardComponent row={isRow} img={img} description={'간략한 정보'} title={'제목'}/>
 
                     
-
-                </div>
+                </Box>}
             </div>{/* end bottom */}
             
 

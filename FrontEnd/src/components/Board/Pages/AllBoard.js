@@ -1,11 +1,11 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useChat } from '../Context/ChatContext';
 import './AllBoard.css';
 import Swal from 'sweetalert2';
 
 const AllBoard = () => {
-    const { chats, notice, review } = useChat();
+    const { chats, notice, review, postTypeLabels } = useChat();
 
     const [currentPage, setCurrentPage] = useState(1);
     const navigate = useNavigate();
@@ -73,7 +73,7 @@ const AllBoard = () => {
 
 	//타이틀 클릭시
     const handleTitleClick = (post) => {
-        navigate(`/board/all/detail/${post.id}`, { state: { postType: post.type } });
+        navigate(`/board/all/detail/${post.type}/${post.id}`, { state: { postType: post.type } });
     };
 
 	//글쓰기 버튼
@@ -84,6 +84,13 @@ const AllBoard = () => {
     //검색 함수
     const handleSearch = () => {
         const keyword = searchKeyword.trim();
+
+        if(keyword.length === 0){
+            setIsSearching(false);
+            setFilteredPosts([]);
+            setCurrentPage(1);
+            return;
+        }
 
         if(keyword.length < 2){
             Swal.fire({
@@ -151,7 +158,7 @@ const AllBoard = () => {
                         조회 {sortOption === 'views' ? (!sortAsc ? '∨' : '∧') : '∨'}
                     </button>
 				</th>
-				<th>
+				<th className='comment-header'>
 					<button className="filter-btn" onClick={() => {
                         if(sortOption === 'likes'){
                             setSortAsc(!sortAsc);
@@ -163,7 +170,7 @@ const AllBoard = () => {
                         추천 {sortOption === 'likes' ? (!sortAsc ? '∨' : '∧') : '∨'}
                     </button>
                 </th>
-				<th>
+				<th className='comment-header'>
 					<button className="filter-btn" onClick={() => {
                         if(sortOption === 'comment'){
                             setSortAsc(!sortAsc);
@@ -175,7 +182,7 @@ const AllBoard = () => {
                         댓글 {sortOption === 'comment' ? (!sortAsc ? '∨' : '∧') : '∨'}
                     </button>
 				</th>
-				<th>
+				<th className='comment-header'>
 					<button className="filter-btn" onClick={() => {
                         if(sortOption === 'latest'){
                             setSortAsc(!sortAsc);
@@ -193,29 +200,55 @@ const AllBoard = () => {
             {/* 공지사항 매핑 */}
             {noticedChats?.map((post) => (
                 <tr key={`notice-${post.id}`} className="notice-row" style={{backgroundColor: '#ddd'}}>
-                    <td className='notice-tab'>공지사항</td>
-                    <td className="notice-title" onClick={() => handleTitleClick(post)}>📢 {post.title}</td>
-                    <td className='notice-cell'>{post.author}</td>
-                    <td className='notice-cell'>{post.views}</td>
-                    <td className='notice-cell'>{post.likes}</td>
-                    <td className='notice-cell'>{post.comment}</td>
-                    <td className='notice-cell'>{formatDate(post.createdAt)}</td>
+                    <td className='notice-tab'>
+                        <div className='cell-text'>{postTypeLabels[post.type]}</div>
+                    </td>
+                    <td className="notice-title" onClick={() => handleTitleClick(post)}> 
+                        <div className='cell-text'>📢{post.title}</div>
+                    </td>
+                    <td className='notice-cell'>
+                        <div className='cell-text'>{post.author}</div>
+                    </td>
+                    <td className='notice-cell'>
+                        <div className='cell-text'>{post.views}</div>
+                    </td>
+                    <td className='notice-cell'>
+                        <div className='cell-text'>{post.likes}</div>
+                    </td>
+                    <td className='notice-cell'>
+                        <div className='cell-text'>{post.comment}</div>
+                    </td>
+                    <td className='notice-cell'>
+                        <div className='cell-text'>{formatDate(post.createdAt)}</div>
+                    </td>
                 </tr>
             ))}
             {/* 일반게시글 매핑 */}
             {displayedPosts.length > 0 ? (
                 displayedPosts.map((post) => (
                 <tr key={`${post.type}-${post.id}`}>
-                        <td>{post.type === 'chat' ? "속닥속닥" : "입양후기"}</td>
+                        <td>
+                            <div className='cell-text'>{postTypeLabels[post.type]}</div>
+                        </td>
                         <td className="title-cell" onClick={() => handleTitleClick(post)}>
                         {/* {post.isSecret ? '🔒 ' : ''} */}
-                        {post.title}
+                        <div className='cell-text'>{post.title}</div>
                         </td>
-                        <td>{post.author}</td>
-                        <td>{post.views}</td>
-                        <td>{post.likes}</td>
-                        <td>{post.comment}</td>
-                        <td>{formatDate(post.createdAt)}</td>
+                        <td>
+                            <div className='cell-text'>{post.author}</div>
+                        </td>
+                        <td>
+                            <div className='cell-text'>{post.views}</div>
+                        </td>
+                        <td>
+                            <div className='cell-text'>{post.likes}</div>
+                        </td>
+                        <td>
+                            <div className='cell-text'>{post.comment}</div>
+                        </td>
+                        <td>
+                            <div className='cell-text'>{formatDate(post.createdAt)}</div>
+                        </td>
                 </tr>           
                 ))
             ) : (
@@ -227,11 +260,11 @@ const AllBoard = () => {
             </tbody>
         </table>
 
-        <div className="pagination">
+        <div className="board-pagination">
 			<button
 				onClick={() => {
-					const prevGroupStart = Math.ceil((currentPage - 1) / 5 - 1) * 5;
-					//ex) currentPage = 14 -> ceil((14-1)/5-1) = 2 , 2*5 = 10page
+					const prevGroupStart = Math.ceil((currentPage) / 5 - 1) * 5; //currentPage-1 -> currentPage로 수정
+					//ex) currentPage = 14 -> ceil((14/5)-1) = 2 , 2*5 = 10page
 					const prevGroupPage = Math.max(prevGroupStart, 1); //둘중에 최댓값의 페이지로 이동
 					setCurrentPage(prevGroupPage);
 				}}
@@ -270,9 +303,6 @@ const AllBoard = () => {
                 value={searchKeyword}
                 onChange={(e) => {
                     setSearchKeyword(e.target.value);
-                    if(e.target.value.trim().length === 0){
-                        setIsSearching(false);
-                    }
                 }}
                 onKeyDown={(e) => {
                     if(e.key === 'Enter'){

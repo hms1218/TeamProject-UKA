@@ -1,4 +1,4 @@
-// src/pages/FindPasswordPage.js
+// FindPasswordPage.js
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -12,7 +12,7 @@ export default function FindPasswordPage() {
             e.preventDefault();
             setError(''); setInfo('');
             try {
-                const res = await fetch('/api/auth/reset-password-request', {
+                const res = await fetch('http://localhost:8888/api/auth/reset-password-request', {
                     method: 'POST',
                     headers: {'Content-Type':'application/json'},
                     body: JSON.stringify({ email })

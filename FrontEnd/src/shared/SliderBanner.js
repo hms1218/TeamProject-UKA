@@ -1,24 +1,83 @@
-const SliderBanner = ({ slides, currentSlide, onPrev, onNext, isPlaying, togglePlay }) => (
-	
-    <div className="slider-container">
-        <div className="slider-content" style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
-            {/* slides가 undefined 또는 null이면 map이 호출되지 않음 */}
-            {slides?.map((text, index) => (
-                <div key={index} className="slide">{text}</div>
-            ))}
-        </div>
-        <div className="slider-buttons">
-            <button onClick={onPrev}>◀</button>
-            <div className="indicator-dots">
-                {/* 마찬가지로 slides가 undefined 또는 null이면 map이 호출되지 않음 */}
-                {slides?.map((_, idx) => (
-                    <div key={idx} className={`dot ${currentSlide === idx ? "active" : ""}`} />
-                ))}
+import { Link } from "react-router-dom";
+import "./SliderBanner.css";
+import test2 from "../assets/test2.jpg";
+import DogRun2 from "../assets/DogRun2.gif";
+
+const SliderBanner = ({ currentSlide, onPrev, onNext, MainSlides }) => {
+    const visibleCount = 2; // 한 번에 보여줄 슬라이드 개수
+    const translatePercent = (currentSlide * 100) / visibleCount;
+
+    // 1) MainSlides가 비어 있을 때
+    if (!MainSlides || MainSlides.length === 0) {
+        return (
+            <div className="slider-empty">
+                {/* 대체 이미지 */}
+                <img
+                    src={DogRun2}       // 프로젝트에 맞게 경로 조정
+                    alt="데이터 없음"
+                    className="slider-empty-image"
+                />
+                {/* 대체 텍스트 */}
+                <p className="slider-empty-text">새로 들어온 동물이 없습니다.</p>
             </div>
-            <button onClick={onNext}>▶</button>
-            <button onClick={togglePlay}>{isPlaying ? "⏸" : "▶"}</button>
+        );
+    }
+
+    return (
+        <div className="main-slider-container">
+            {/* 1. 왼쪽 버튼 */}
+            <button
+                className="main-slider-button prev"
+                onClick={onPrev}
+                aria-label="Previous Slide"
+            > ◀ </button>
+            {/* 2. 슬라이드 뷰포트 */}
+        <div className="slider-viewport">
+            <div
+                className="slider-content"
+                style={{ transform: `translateX(-${translatePercent}%)` }}
+            >
+                {MainSlides.map(slide => {
+                    // "[고양이] 한국 고양이" → "한국 고양이"
+                    const displayName = slide.kindFullNm.replace(/^\[.*?\]\s*/, '');
+
+                    return (
+                        <div className="slide" key={slide.desertionNo}>
+                            <div className="slide-image-wrapper">
+                                <img
+                                    src={slide.popfile1}
+                                    alt={slide.kindNm}
+                                    className="slide-image"
+                                />
+                            </div>
+                            <div className="slide-info">
+                                <Link
+                                    to={`/animal/${slide.desertionNo}`}
+                                    className="slide-link"
+                                    style={{ textDecoration: 'none', fontSize : 16}}
+                                >
+                                    {displayName}
+                                </Link>
+                                <p><strong>발견장소 : </strong>{slide.happenPlace}</p>
+                                <p><strong>특이사항 : </strong>{slide.specialMark}</p>
+                                <p><strong>보호장소 : </strong>{slide.careAddr}</p>
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
         </div>
-    </div>
-);
+
+        {/* 3. 오른쪽 버튼 */}
+        <button
+            className="main-slider-button next"
+            onClick={onNext}
+            aria-label="Next Slide"
+        >
+            ▶
+        </button>
+        </div>
+    );
+};
 
 export default SliderBanner;

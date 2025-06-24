@@ -1,23 +1,20 @@
 import SliderBanner from "../../shared/SliderBanner";
-import { MainSlides } from "../../data/constants";
 
 const SliderPanel = ({
+    MainSlides,
     currentSlide,
     onPrev,
     onNext,
-    isPlaying,
-    togglePlay,
-    }) => (
-        <div className="bottom-panel">
-            <SliderBanner
-                slides={MainSlides}
-                currentSlide={currentSlide}
-                onPrev={onPrev}
-                onNext={onNext}
-                isPlaying={isPlaying}
-                togglePlay={togglePlay}
-            />
-        </div>
+}) => (
+    <div className="bottom-panel">
+        <h3 style={{textAlign : "center", marginTop : 0}}>새로 들어온 동물들 🐾</h3>
+        <SliderBanner
+            MainSlides={MainSlides}
+            currentSlide={currentSlide}
+            onPrev={onPrev}
+            onNext={onNext}
+        />
+    </div>
 );
 
 export default SliderPanel;

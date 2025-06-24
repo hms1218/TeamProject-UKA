@@ -8,7 +8,7 @@ import color from '@toast-ui/editor-plugin-color-syntax'
 import 'tui-color-picker/dist/tui-color-picker.css';
 import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css';
 import Swal from 'sweetalert2';
-import { useAdmin } from '../Context/AdminContext';
+import { useAdmin } from '../../../api/AdminContext';
 
 
 const AllBoardForm = () => {
@@ -50,6 +50,8 @@ const AllBoardForm = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
 
+        const content = editorRef.current?.getInstance().getMarkdown();
+
         if(!postType){
             Swal.fire({
                 icon: 'warning',
@@ -68,7 +70,14 @@ const AllBoardForm = () => {
             return;
         }
 
-        const content = editorRef.current?.getInstance().getMarkdown();
+        if(!content || content.trim() === ''){
+            Swal.fire({
+                icon: 'warning',
+                title: '내용을 입력해주세요',
+                confirmButtonColor: '#6c5ce7',
+            });
+            return;
+        }
 
         const newPost = {
             title,
@@ -128,20 +137,20 @@ const AllBoardForm = () => {
     }
 
     //임시저장 버튼
-    const handleTempSave = () => {
-        const content = editorRef.current?.getInstance().getMarkdown();
-        localStorage.setItem('post-title', title);
-        localStorage.setItem('post-type', postType);
-        localStorage.setItem('post-content', content);
+    // const handleTempSave = () => {
+    //     const content = editorRef.current?.getInstance().getMarkdown();
+    //     localStorage.setItem('post-title', title);
+    //     localStorage.setItem('post-type', postType);
+    //     localStorage.setItem('post-content', content);
 
-        Swal.fire({
-            title: '임시 저장 완료',
-            text: '작성 중인 글이 임시 저장되었습니다.',
-            icon: 'success',
-            confirmButtonColor: '#6c5ce7',
-            confirmButtonText: '확인'
-        });
-    }
+    //     Swal.fire({
+    //         title: '임시 저장 완료',
+    //         text: '작성 중인 글이 임시 저장되었습니다.',
+    //         icon: 'success',
+    //         confirmButtonColor: '#6c5ce7',
+    //         confirmButtonText: '확인'
+    //     });
+    // }
 
     return (
         <div>
@@ -153,7 +162,6 @@ const AllBoardForm = () => {
                         style={{marginBottom: 16, padding: 5}} 
                         value={postType} 
                         onChange={(e) => setPostType(e.target.value)}
-                        // required
                         >
                         <option value=''>선택</option>
                         {isAdmin && <option value='notice'>공지사항</option>} {/* 관리자만 공지사항 글쓰기 가능 */}
@@ -169,7 +177,6 @@ const AllBoardForm = () => {
                         type="text"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
-                        // required
                         style={{ width: '50%', padding: '10px', marginBottom: '16px' }}
                         onKeyDown={(e) => {
                             if(e.key === 'Enter'){
@@ -193,7 +200,7 @@ const AllBoardForm = () => {
                 </div>
                 <div className='board-write-button-container'>
                     <button type="submit" className="board-write-button">등록</button>
-                    <button type="button" className="board-write-button" onClick={handleTempSave}>임시 저장</button>
+                    {/* <button type="button" className="board-write-button" onClick={handleTempSave}>임시 저장</button> */}
                     <button type="button" className="board-write-button" onClick={handleCancel}>취소</button>
                 </div>
             </form>

@@ -11,7 +11,7 @@ export default function FindIdPage() {
         e.preventDefault();
         setError(''); setResult(null);
         try {
-            const res = await fetch('/api/auth/find-username', {
+            const res = await fetch('http://localhost:8888/api/auth/find-username', {
                 method: 'POST',
                 headers: {'Content-Type':'application/json'},
                 body: JSON.stringify({ email })

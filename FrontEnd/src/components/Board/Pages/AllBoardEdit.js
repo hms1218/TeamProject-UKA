@@ -8,84 +8,88 @@ import color from '@toast-ui/editor-plugin-color-syntax'
 import 'tui-color-picker/dist/tui-color-picker.css';
 import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css';
 import { useChat } from '../Context/ChatContext';
-import { useAdmin } from '../Context/AdminContext';
+import { useAdmin } from '../../../api/AdminContext';
 
 const AllBoardEdit = () => {
+    const {notice, chats, review, updateChat, postTypeLabels} = useChat();
+
     const { id, type } = useParams();
     const navigate = useNavigate();
 
     const titleInputRef = useRef(null);
     const editorRef = useRef(null);
 
-    const [postType, setPostType] = useState('');
-    const [title, setTitle] = useState('');
-
-    const {notice, chats, review, updateChat} = useChat();
     const { isAdmin } = useAdmin();
 
-    let post;
-    if (type === 'chat') {
-        post = chats.find((item) => item.id === Number(id));
-    } else if (type === 'notice') {
-        post = notice.find((item) => item.id === Number(id));
-    } else if (type === 'review') {
-        post = review.find((item) => item.id === Number(id));
-    }
+    // 게시글 찾기
+    const postListByType = { chat: chats, review: review, notice: notice };
+    const rawPost = postListByType[type]?.find((item) => item.id === Number(id));
+    const post = rawPost ? { ...rawPost, type } : null;
+
+    const [selectedType, setSelectedType] = useState('');
+    const [title, setTitle] = useState('');
 
     useEffect(() => {
         if(post && editorRef.current){
+            console.log('🎯 useEffect triggered with post:', post);
             setTitle(post.title);
-            setPostType(type);
+            setSelectedType(post.type);
 
             editorRef.current.getInstance().setMarkdown(post.content);
         }
         setTimeout(() => {
             titleInputRef.current?.focus();
         }, 0);
-    }, [post]);
+    }, [post?.id]);
 
     if(!post){
         return <div>게시글이 없습니다.</div>
     }
 
-    const handleSubmit = (e) => {
+    console.log('🚀 [DEBUG] post:', post);
+    console.log('🚀 [DEBUG] post.type:', post?.type);
+    console.log('🚀 [DEBUG] selectedType:', selectedType);
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        
-        const updatedContent = editorRef.current.getInstance().getMarkdown();
 
-        const updatedPost = {
-            ...post,
-            title,
-            type: postType,
-            content: updatedContent,
-            updatedAt: new Date(),
-        }
-
-        updateChat(updatedPost, postType);
-
-        Swal.fire({
+        const result = await Swal.fire({
             title: '게시글 수정',
             text: '수정하시겠습니까?',
             icon: 'question',
             showCancelButton: true,
-            confirmButtonColor: '#6c5ce7',  // 보라색 확인 버튼
-            cancelButtonColor: '#636e72',   // 회색 취소 버튼
+            confirmButtonColor: '#6c5ce7',
+            cancelButtonColor: '#636e72',
             confirmButtonText: '확인',
             cancelButtonText: '취소',
-        }).then((result) => {
-            if(result.isConfirmed){
-                Swal.fire({
-                    title: '수정 완료',
-                    text: '게시글이 수정되었습니다.',
-                    icon: 'success',
-                    confirmButtonColor: '#6c5ce7',
-                    confirmButtonText: '확인'
-                }).then(() => {
-                    navigate(`/board/all/detail/${id}`);
-                });
+        });
+
+        if(result.isConfirmed){
+            const updatedContent = editorRef.current.getInstance().getMarkdown();
+            const actualType = selectedType;
+
+            const updatedPost = {
+            ...post,
+            title,
+            type: actualType,
+            content: updatedContent,
+            updatedAt: new Date(),
             };
-        })
-    }
+
+            await updateChat(updatedPost, actualType);  // 상태 업데이트 완료 대기
+
+            await Swal.fire({
+            title: '수정 완료',
+            text: '게시글이 수정되었습니다.',
+            icon: 'success',
+            confirmButtonColor: '#6c5ce7',
+            confirmButtonText: '확인'
+            });
+
+            navigate(`/board/all/detail/${actualType}/${id}`);
+                
+        }
+    };
 
     //취소 버튼
     const handleCancel = () => {
@@ -101,10 +105,13 @@ const AllBoardEdit = () => {
         }).then((result) => {
             if(result.isConfirmed){
                 setTitle(post.title);
-                setPostType(type);
+                setSelectedType(post.type);
                 editorRef.current?.getInstance().setMarkdown(post.content);
+                console.log(post.type)
 
-                navigate(`/board/all/detail/${id}`)
+                console.log('🌀 [취소버튼] post.type:', post?.type);
+            console.log('🌀 [취소버튼] selectedType:', selectedType);
+                navigate(`/board/all/detail/${post.type}/${id}`)
             }
         })
     }
@@ -117,13 +124,13 @@ const AllBoardEdit = () => {
                     <label style={{marginRight:10, fontWeight: 'bold'}}>카테고리</label>
                     <select 
                         style={{marginBottom: 16, padding: 5}} 
-                        value={postType} 
-                        onChange={(e) => setPostType(e.target.value)}
+                        value={selectedType} 
+                        onChange={(e) => setSelectedType(e.target.value)}
                         // required
                         >
-                        {isAdmin && <option value='notice'>공지사항</option>} {/* 관리자만 공지사항 글쓰기 가능 */}
-                        <option value='chat'>속닥속닥</option>
-                        <option value='review'>입양후기</option>                  
+                        {isAdmin && <option value="notice">{postTypeLabels.notice}</option>} {/* 관리자만 공지사항 글쓰기 가능 */}
+                        <option value="chat">{postTypeLabels.chat}</option>
+                        <option value="review">{postTypeLabels.review}</option>                  
                     </select>
                 </div>
                 <div>

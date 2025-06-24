@@ -29,6 +29,7 @@ const generatePost = (baseTitle, author, baseContent) => {
         views: getRandomInt(1, 20000),
         likes: getRandomInt(0, 5000),
         content,
+        report : 0,
         createdAt: date,
     }
 };
@@ -47,24 +48,15 @@ const initialReview = Array.from({ length: 60 }, () =>
 
 export const ChatProvider = ({ children }) => {
 
-    // 로컬스토리지에서 불러오기
-    // const getStoredData = (key, fallback) => {
-    //     const saved = localStorage.getItem(key);
-    //     return saved ? JSON.parse(saved) : fallback;
-    // };
-
     const [notice, setNotice] = useState(initialNotice);
     const [chats, setChats] = useState(initialChat);
     const [review, setReview] = useState(initialReview);
 
-    // 저장 함수
-    // const saveToStorage = (key, data) => {
-    //     localStorage.setItem(key, JSON.stringify(data));
-    // };
-
-    // useEffect(() => saveToStorage('notice', notice), [notice]);
-    // useEffect(() => saveToStorage('chats', chats), [chats]);
-    // useEffect(() => saveToStorage('review', review), [review]);
+    const postTypeLabels = {
+        notice: '공지사항',
+        chat: '속닥속닥',
+        review: '입양후기',
+    };
 
     const addChat = (newPost, postType) => {
         const currentUser = localStorage.getItem("username") || "me";
@@ -77,6 +69,7 @@ export const ChatProvider = ({ children }) => {
             comment: getRandomInt(0, 1000),
             views: getRandomInt(1, 20000),
             likes: getRandomInt(0, 5000),
+            report : 0,
             type: postType,
         };
 
@@ -89,36 +82,22 @@ export const ChatProvider = ({ children }) => {
         }
     }
 
-    // const updateChat = (updatedPost, type) => {
-    //     if (type === 'chat') {
-    //         setChats((prev) => prev.map(post => post.id === updatedPost.id ? updatedPost : post));
-    //     } else if (type === 'notice') {
-    //         setNotice((prev) => prev.map(post => post.id === updatedPost.id ? updatedPost : post));           
-    //     } else if (type === 'review') {
-    //         setReview((prev) => prev.map(post => post.id === updatedPost.id ? updatedPost : post));
-    //     }
-    // };
-
-    const updateChat = (updatedPost, type) => {
-    if (type === 'chat') {
-        setChats((prev) => {
-            console.log('=== 기존 chats 배열 ===');
-            console.log(prev);
-
-            const updatedArray = prev.map(p => {
-                const isTarget = p.id === updatedPost.id;
-                console.log(`p.id: ${p.id}, updatedPost.id: ${updatedPost.id}, 일치 여부: ${isTarget}`);
-                return isTarget ? updatedPost : p;
-            });
-
-            console.log('=== 수정 후 chats 배열 ===');
-            console.log(updatedArray);
-
-            return updatedArray;
+    const updateChat = (updatedPost, newType) => {
+        setChats(prev => {
+            const filtered = prev.filter(post => post.id !== updatedPost.id);
+            return newType === 'chat' ? [...filtered, updatedPost] : filtered;
         });
-    } 
-    // 나머지 타입들도 동일하게 콘솔 찍어도 됨
-};
+
+        setNotice(prev => {
+            const filtered = prev.filter(post => post.id !== updatedPost.id);
+            return newType === 'notice' ? [...filtered, updatedPost] : filtered;
+        });
+
+        setReview(prev => {
+            const filtered = prev.filter(post => post.id !== updatedPost.id);
+            return newType === 'review' ? [...filtered, updatedPost] : filtered;
+        });
+    };
 
     const deletePostById = (type, id) => {
         if (type === 'chat') {
@@ -130,7 +109,7 @@ export const ChatProvider = ({ children }) => {
         }
     };
 
-    return <ChatContext.Provider value={{ notice, chats, review, addChat, updateChat, deletePostById }}>{children}</ChatContext.Provider>;
+    return <ChatContext.Provider value={{ notice, chats, review, updateChat, addChat, deletePostById, postTypeLabels }}>{children}</ChatContext.Provider>;
 };
 
 export const useChat = () => useContext(ChatContext);

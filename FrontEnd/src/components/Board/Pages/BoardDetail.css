@@ -64,6 +64,24 @@
     border-color: #00aaff;
 }
 
+.board-detail-report-button {
+    background-color: white;
+    color: black;
+    padding: 10px 16px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+.board-detail-report-button:hover {
+    background-color: #e0f7ff;
+    /* color: #00aaff; */
+    border-color: red;
+}
+
+
 .board-detail-title-container {
     /* height: 50px; */
     display: flex;

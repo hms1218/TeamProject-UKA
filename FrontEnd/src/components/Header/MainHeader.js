@@ -25,7 +25,7 @@ const MainHeaders = () => {
 
     return (
         <header className="main-header">
-            <div className="header-left-section" style={{cursor : "pointer"}}>
+            <div className="header-left-section">
                 <Link to="/">
                     <img src={MainLogo} alt="Logo" className="logo" />
                 </Link>
@@ -76,16 +76,17 @@ const MainHeaders = () => {
                 
                 <nav className="header-nav-links">
                     <Link to="/about" style={{marginRight : 25}}>입양하고싶어요</Link>
-                    <Link to="/find" style={{marginRight : 10}}>찾고있어요</Link>
+                    <Link to="/request" style={{marginRight : 10}}>찾고있어요</Link>
+                    <Link to="/svg_map_detail" style={{marginRight : 10}}>테스트하고있어요</Link>
+                    
                     <DropDownMenu
                         title="게시판"
                         to="/board"
                         items={[
-                            { label: '전체', to: '/board' },
+                            { label: '전체', to: '/board/all' },
                             { label: '공지사항', to: '/board/notice' },
                             { label: '속닥속닥', to: '/board/chat' },
                             { label: '입양후기', to: '/board/adoptionReview' },
-                            { label: '새끼분양', to: '/board/infoShare' },
                         ]}
                     />
                     <DropDownMenu

@@ -10,8 +10,8 @@ export default function useRegionData() {
     useEffect(() => {
         const loadData = async () => {
             try {
-                const allData = await fetchSavedAnimals();
-                // const allData = MainMockData;
+                // const allData = await fetchSavedAnimals();
+                const allData = MainMockData;
                 setRawData(allData);
                 
                 if (!allData || Object.keys(allData).length === 0) {

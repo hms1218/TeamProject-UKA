@@ -12,8 +12,6 @@ const KoreaMapSection = ({
             {regionList.map((city) => (
                 <path
                     key={city.orgCd}
-                    // city.orgdownNm ===  "부산광역시"
-                    // regionNm === ""
                     className={`${city.className} ${regionNm === city.orgdownNm ? "selected-region" : ""}`}
                     d={city.d}
                     stroke="#333"

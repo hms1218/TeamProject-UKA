@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { signup } from '../../api/auth';
 
 import './Auth.css';
@@ -58,7 +58,18 @@ export default function SignupPage() {
                         required
                     />
                 </label>
+                <label>
+                    비밀번호 확인
+                    <input
+                        type="password"
+                        name="password"
+                        value={form.password}
+                        onChange={handleChange}
+                        required
+                    />
+                </label>
                 <button type="submit">회원가입</button>
+                <Link style={{textDecoration : 'none'}}>아이디가 있으신가요?</Link>
             </form>
         </div>
     );

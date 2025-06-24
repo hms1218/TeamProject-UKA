@@ -56,6 +56,7 @@ export default function LoginPage() {
                     <span> | </span>
                     <Link to="/find-password">비밀번호 찾기</Link>
                 </div>
+                <Link style={{textDecoration : 'none'}}>아이디가 없으신가요?</Link>
             </form>
         </div>
     );

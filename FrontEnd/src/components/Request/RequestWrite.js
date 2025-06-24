@@ -1,4 +1,3 @@
-import ReactQuill from "react-quill";
 import defimg from '../../assets/default.jpg'
 import './RequestWrite.css'
 import { Input, selectClasses, TextField } from "@mui/material";

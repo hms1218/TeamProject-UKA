@@ -32,9 +32,9 @@ const AllBoard = () => {
     };
 
 	//정렬된 공지사항
-    const noticedChats = useMemo(() =>
-        sortPosts(notice.map(post => ({ ...post, type: 'notice' }))), [notice, sortOption, sortAsc]
-    );
+    const noticedChats = useMemo(() => 
+        sortPosts(notice.map(post => ({ ...post, type: 'notice' })))
+    ,[notice, sortOption, sortAsc]);
 
 	//정렬된 일반게시글
     const combinedPosts = useMemo(() =>
@@ -191,7 +191,7 @@ const AllBoard = () => {
             </thead>
             <tbody>
             {/* 공지사항 매핑 */}
-            {noticedChats.map((post) => (
+            {noticedChats?.map((post) => (
                 <tr key={`notice-${post.id}`} className="notice-row" style={{backgroundColor: '#ddd'}}>
                     <td className='notice-tab'>공지사항</td>
                     <td className="notice-title" onClick={() => handleTitleClick(post)}>📢 {post.title}</td>

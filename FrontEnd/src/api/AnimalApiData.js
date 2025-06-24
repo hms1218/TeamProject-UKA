@@ -61,6 +61,7 @@ export const sendDataToBackend = async (data) => {
 // 3. react에서 데이터 호출할때 이걸로 호출
 export const fetchAndSendAnimals = async () => {
     const allData = await fetchRegionData();
+    console.log("allData :: ", allData);
     await sendDataToBackend(allData);
 };
 

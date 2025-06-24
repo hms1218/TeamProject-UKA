@@ -1,4 +1,4 @@
-import { SidoApiData } from '../../../../../api/AnimalCommonApiData';
+import { fetchAndSendAnimals } from "../../../../../api/AnimalApiData";
 
 const DataReset = () => {
   const handleReset = async () => {
@@ -6,7 +6,7 @@ const DataReset = () => {
     if (!confirmSave) return;
 
     try {
-      await SidoApiData();
+      await fetchAndSendAnimals();
       alert('데이터 저장 완료!');
     } catch (error) {
       alert('저장 실패!');

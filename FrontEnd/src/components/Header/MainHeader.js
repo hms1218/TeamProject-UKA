@@ -77,11 +77,10 @@ const MainHeaders = () => {
                 <nav className="header-nav-links">
                     <Link to="/about" style={{marginRight : 25}}>입양하고싶어요</Link>
                     <Link to="/request" style={{marginRight : 10}}>찾고있어요</Link>
-                    <Link to="/svg_map_detail" style={{marginRight : 10}}>테스트하고있어요</Link>
                     
                     <DropDownMenu
                         title="게시판"
-                        to="/board"
+                        to="/board/all"
                         items={[
                             { label: '전체', to: '/board/all' },
                             { label: '공지사항', to: '/board/notice' },
@@ -91,9 +90,9 @@ const MainHeaders = () => {
                     />
                     <DropDownMenu
                         title="고객센터"
-                        to="/customer"
+                        to="/customer/faq"
                         items={[
-                            { label: 'FAQ', to: '/customer' },
+                            { label: 'FAQ', to: '/customer/faq' },
                             { label: 'Q&A', to: '/customer/qna' },
                             { label: '입양문의', to: '/customer/adoption' },
                             ...(isAdmin ? [{ label: '관리자 페이지', to: '/admin/reported' }] : []),

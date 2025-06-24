@@ -7,17 +7,18 @@ import axios from 'axios';
 import './QnADetail.css';
 
 const QnADetail = () => {
-  const { id } = useParams();
-  const navigate = useNavigate();
-  const alreadyRedirected = useRef(false);
-  const [qna, setQna] = useState(null);
-  const [prev, setPrev] = useState(null);
-  const [next, setNext] = useState(null);
-  const [commentInput, setCommentInput] = useState('');
-  const [answerEditMode, setAnswerEditMode] = useState(false);
-  const [answerInput, setAnswerInput] = useState(qna?.answer || "");
-  const isOwner = false; // 임시 추후 삭제 필요
-  const { isAdmin, setIsAdmin } = useAdmin(); // 어드민 임시(추후 삭제 필요)
+    const { id } = useParams();
+    const navigate = useNavigate();
+    const [qna, setQna] = useState(null);
+    const [prev, setPrev] = useState(null);
+    const [next, setNext] = useState(null);
+    const [commentInput, setCommentInput] = useState('');
+    const [answerEditMode, setAnswerEditMode] = useState(false);
+    const [answerInput, setAnswerInput] = useState(qna?.answer || "");
+    const [editCommentId, setEditCommentId] = useState(null);
+    const [editCommentText, setEditCommentText] = useState('');
+    const isOwner = false; // 임시 추후 삭제 필요
+    const { isAdmin} = useAdmin(); // 어드민 임시(추후 삭제 필요)
 
   // 신고
   const [isReported, setIsReported] = useState(false);
@@ -150,6 +151,54 @@ const QnADetail = () => {
 		showConfirmButton: false
 	});
   };
+
+    // 댓글 수정 버튼 클릭 시
+    const handleEditComment = (comment) => {
+        setEditCommentId(comment.id);
+        setEditCommentText(comment.content);
+    };
+
+    const handleSaveEditComment = () => {
+        if (!editCommentText.trim()) return; // 빈 값 방지
+
+        setQnas(prevQnas =>
+            prevQnas.map(item =>
+                item.id === qna.id
+                    ? {
+                        ...item,
+                        comments: item.comments.map(c =>
+                            c.id === editCommentId ? { ...c, content: editCommentText } : c
+                        ),
+                    }
+                    : item
+            )
+        );
+        setEditCommentId(null);
+        setEditCommentText('');
+    };
+
+    const handleDeleteComment = async (commentId) => {
+        const result = await showAlert({
+            title: "댓글 삭제",
+            text: "정말 댓글을 삭제하시겠습니까?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "삭제",
+            cancelButtonText: "취소",
+        });
+        if (!result || !result.isConfirmed) return;
+
+        setQnas(prevQnas =>
+            prevQnas.map(item =>
+                item.id === qna.id
+                    ? {
+                        ...item,
+                        comments: item.comments.filter(c => c.id !== commentId),
+                    }
+                    : item
+            )
+        );
+    };
 
   // 이전/다음글 네비
   const handleSecretNavigate = async (post) => {
@@ -625,51 +674,84 @@ const QnADetail = () => {
       </div>
 
       {/* 7. 댓글 */}
-      <div style={{ margin: "35px 0 0 0" }}>
-  <h4 style={{ marginBottom: 12, fontWeight: 700, fontSize: 17 }}>
-    댓글 <span style={{ color: '#b19cd9' }}>({qna.comments ? qna.comments.length : 0})</span>
-  </h4>
-  <div style={{ marginLeft: 3 }}>
-    {/* qna.comments가 없거나 0개일 때 */}
-    {(!qna.comments || qna.comments.length === 0) && (
-      <div style={{ color: "#aaa" }}>등록된 댓글이 없습니다.</div>
-    )}
+    <div style={{ margin: "35px 0 0 0" }}>
+        <h4 style={{ marginBottom: 12, fontWeight: 700, fontSize: 17 }}>
+            댓글 <span style={{ color: '#b19cd9' }}>({qna.comments ? qna.comments.length : 0})</span>
+        </h4>
+        <div style={{ marginLeft: 3 }}>
+            {/* qna.comments가 없거나 0개일 때 */}
+            {(!qna.comments || qna.comments.length === 0) && (
+            <div style={{ color: "#aaa" }}>등록된 댓글이 없습니다.</div>
+            )}
+            {/* qna.comments가 있을 때 */}
+            {qna.comments && qna.comments.map(c => (
+            <div key={c.id} style={{
+                marginBottom: 10,
+                fontSize: 15,
+                padding: '12px 0',
+                borderBottom: '1px solid #f1f1f1'
+            }}>
+                <b>{c.user || c.author}</b>
+                <span style={{ color: "#bbb", fontSize: 13, marginLeft: 8 }}>{c.date}</span>
+                <div style={{ marginLeft: 2 }}>
+                {editCommentId === c.id ? (
+                    <>
+                    <input
+                        type="text"
+                        value={editCommentText}
+                        onChange={e => setEditCommentText(e.target.value)}
+                        style={{ fontSize: 15, width: '60%', padding: 5 }}
+                    />
+                    <button
+                        style={{ marginLeft: 6 }}
+                        onClick={handleSaveEditComment}
+                    >저장</button>
+                    <button
+                        style={{ marginLeft: 4 }}
+                        onClick={() => setEditCommentId(null)}
+                    >취소</button>
+                    </>
+                ) : (
+                    <>
+                    {c.text || c.content}
+                    {/* 관리자 또는 본인만 수정/삭제 */}
+                    {(isAdmin || c.author === 'me') && (
+                        <>
+                        <button
+                            style={{ marginLeft: 8, background: 'none', border: 'none', color: '#0984e3', cursor: 'pointer' }}
+                            onClick={() => handleEditComment(c)}
+                        >✏️ 수정</button>
+                        <button
+                            style={{ marginLeft: 8, background: 'none', border: 'none', color: '#e17055', cursor: 'pointer' }}
+                            onClick={() => handleDeleteComment(c.id)}
+                        >🗑 삭제</button>
+                        </>
+                    )}
+                    </>
+                )}
+                </div>
+            </div>
+            ))}
+            <form style={{ display: "flex", gap: 8, marginBottom: 18, marginTop: 12 }} onSubmit={handleCommentSubmit}>
+                <input
+                type="text"
+                placeholder="댓글을 입력하세요"
+                value={commentInput}
+                onChange={e => setCommentInput(e.target.value)}
+                style={{
+                    flex: 1,
+                    border: "1px solid #b19cd9",
+                    borderRadius: 7,
+                    fontSize: 16,
+                    padding: "8px 14px"
+                }}
+                />
+                <button type="submit" className="qna-detail-recommend-btn">등록</button>
+            </form>
+        </div>
+    </div>
 
-    {/* qna.comments가 있을 때 */}
-    {qna.comments && qna.comments.map(c => (
-      <div key={c.id} style={{
-        marginBottom: 10,
-        fontSize: 15,
-        padding: '12px 0',
-        borderBottom: '1px solid #f1f1f1'
-      }}>
-        <b>{c.user || c.author}</b>
-        {/* 날짜 필드도 유동적으로 처리 */}
-        <span style={{ color: "#bbb", fontSize: 13, marginLeft: 8 }}>
-          {c.date}
-        </span>
-        <div style={{ marginLeft: 2 }}>{c.text || c.content}</div>
-      </div>
-    ))}
-  </div>
-
-        <form style={{ display: "flex", gap: 8, marginBottom: 18, marginTop: 12 }} onSubmit={handleCommentSubmit}>
-          <input
-            type="text"
-            placeholder="댓글을 입력하세요"
-            value={commentInput}
-            onChange={e => setCommentInput(e.target.value)}
-            style={{
-              flex: 1,
-              border: "1px solid #b19cd9",
-              borderRadius: 7,
-              fontSize: 16,
-              padding: "8px 14px"
-            }}
-          />
-          <button type="submit" className="qna-detail-recommend-btn">등록</button>
-        </form>
-      </div>
+  
       
       {/* 8. 이전/다음글 네비 */}
       <div className="qna-navigation" style={{ marginTop: 36 }}>

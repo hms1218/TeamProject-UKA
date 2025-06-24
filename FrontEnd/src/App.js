@@ -162,14 +162,14 @@ function App() {
                     </Routes>
                     <MainFooter />
                 </div>
-            </Router>
-            {/* 좌측 광고 */}
-            {/* <AdBar /> */}
              {/* 오른쪽(고정) 사이드바 */}
             <NoticeBar />
             {/* 오른쪽 하단에 화살표 버튼 추가 */}
             <ScrollArrowButtons />
-            <AdBar />
+            </Router>
+            {/* 좌측 광고 */}
+            {/* <AdBar /> */}
+            {/* <AdBar /> */}
         </div>
     );
 }

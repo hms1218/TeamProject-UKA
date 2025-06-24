@@ -1,186 +1,90 @@
+// QnAContext.js (혹은 QnAProvider.js)
 import { createContext, useContext, useState } from 'react';
+
+// ▶️ 랜덤 유틸
+function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+function randomPick(arr) {
+    return arr[getRandomInt(0, arr.length - 1)];
+}
+function fixedDate(idx) {
+    // idx=0: 2025-01-01, idx=1: 2025-01-02, ...
+    const base = new Date(2025, 0, 1); // 2025-01-01
+    base.setDate(base.getDate() + idx);
+    // 랜덤 시간을 쓰고 싶으면 아래 주석 풀기
+    // const hh = String(getRandomInt(8, 23)).padStart(2, '0');
+    // const mm = String(getRandomInt(0, 59)).padStart(2, '0');
+    // const ss = String(getRandomInt(0, 59)).padStart(2, '0');
+    // return `${yyyy}-${mm}-${dd}T${hh}:${mm}:${ss}`;
+
+    // 고정 시간 (예시: 12:34:56)
+    const yyyy = base.getFullYear();
+    const mm = String(base.getMonth() + 1).padStart(2, '0');
+    const dd = String(base.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}T12:34:56`;
+}
+function randomTitle(idx) {
+    const keywords = ['입양문의', '후원질문', '봉사', '회원탈퇴', '기타', '계정', '공고', '의견', '피드백', '신고'];
+    return `문의${idx+1} - ${randomPick(keywords)}`;
+}
+function randomContent() {
+    const options = [
+        "입양 절차가 궁금합니다.",
+        "정기후원은 어떻게 신청하나요?",
+        "자원봉사 신청 방법이 궁금합니다.",
+        "회원탈퇴는 어디서 하나요?",
+        "비밀번호 변경이 안됩니다.",
+        "강아지 입양 조건이 뭔가요?",
+        "후기 작성은 어떻게 하나요?",
+        "신고 방법을 알려주세요.",
+        "이벤트 참여는 어떻게 하나요?",
+        "서비스가 너무 좋아요!"
+    ];
+    return randomPick(options);
+}
+function randomAnswer() {
+    const answers = [
+        "문의주셔서 감사합니다. 관리자 확인 후 연락드리겠습니다.",
+        "네, 해당 서비스는 마이페이지에서 신청 가능합니다.",
+        "상세 내용은 공지사항을 확인해주세요.",
+        "관리자 검토 후 답변드릴 예정입니다.",
+        "고객센터를 통해 문의주시면 빠르게 처리해드립니다."
+    ];
+    return randomPick(answers);
+}
+function randomAuthor() {
+    return randomPick(['user1', 'user2', 'user3', 'guest', '관리자']);
+}
+
+export function generateDummyQnA(n = 50) {
+    const arr = [];
+    for (let i = 0; i < n; i++) {
+        const id = i + 1;
+        const isSecret = Math.random() < 0.4;
+        const isAnswered = Math.random() < 0.6;
+        arr.push({
+            id,
+            title: randomTitle(i),
+            author: randomAuthor(),
+            content: randomContent(),
+            isSecret,
+            password: isSecret ? "1234" : "",
+            isAnswered,
+            answer: isAnswered ? randomAnswer() : undefined,
+            isReported: Math.random() < 0.15,
+            createdAt: fixedDate(i),    // ← 날짜 순차 증가
+            comments: [],
+        });
+    }
+    return arr;
+}
 
 const QnAContext = createContext();
 
-const initialQnAs = [
-  {
-    id: 1,
-    title: '문의1',
-    author: 'user1',
-    content: '입양에 대해 궁금해요',
-    isSecret: false,
-    isReported: false,
-    createdAt: '2025-06-13T08:30:00',
-    isAnswered: false,
-    comments: [
-      { id: 1, user: "관리자", text: "입양 관련 문의 감사합니다!" },
-      { id: 2, user: "user2", text: "저도 같은 궁금증이 있었어요." }
-    ]
-  },
-  {
-    id: 2,
-    title: '문의2',
-    author: 'user2',
-    content: '정기후원이 가능한가요?',
-    isSecret: true,
-    password: '1234',
-    createdAt: '2025-06-12T10:15:00',
-    isAnswered: true,
-    answer: '네, 정기후원은 마이페이지 > 후원관리에서 신청 가능합니다. 감사합니다.',
-    answerDate: '2025-06-13T10:55:00',
-    comments: [
-      { id: 1, user: "관리자", text: "정기후원 관련 정보는 안내 페이지 참고해 주세요!" }
-    ]
-  },
-  {
-    id: 3,
-    title: '문의3',
-    author: 'user2',
-    content: '입양에 대해 궁금해요',
-    isSecret: true,
-    password: '1234',
-    createdAt: '2025-06-13T07:00:00',
-    isAnswered: false,
-    comments: [
-      { id: 1, user: "관리자", text: "답변 준비 중입니다." }
-    ]
-  },
-  {
-    id: 4,
-    title: '문의4',
-    author: 'user3',
-    content: '입양에 대해 궁금해요',
-    isSecret: false,
-    createdAt: '2025-06-11T09:00:00',
-    comments: [
-      { id: 1, user: "user2", text: "빠른 답변 부탁드려요!" }
-    ]
-  },
-  {
-    id: 5,
-    title: '문의5',
-    author: 'user3',
-    content: '입양에 대해 궁금해요',
-    isSecret: false,
-    isReported: true,
-    createdAt: '2025-06-13T01:20:00',
-    comments: [
-      { id: 1, user: "관리자", text: "신고 관련 확인 후 안내드리겠습니다." }
-    ]
-  },
-  {
-    id: 6,
-    title: '문의6',
-    author: 'user3',
-    content: '입양에 대해 궁금해요',
-    isSecret: false,
-    createdAt: '2025-06-12T22:00:00',
-    comments: [
-      { id: 1, user: "user1", text: "입양 후기는 어디서 볼 수 있나요?" }
-    ]
-  },
-  {
-    id: 7,
-    title: '문의7',
-    author: 'user3',
-    content: '입양에 대해 궁금해요',
-    isSecret: false,
-    createdAt: '2025-06-10T14:00:00',
-    comments: [
-      { id: 1, user: "관리자", text: "문의해 주셔서 감사합니다!" }
-    ]
-  },
-  {
-    id: 8,
-    title: '문의8',
-    author: 'user3',
-    content: '입양에 대해 궁금해요',
-    isSecret: false,
-    createdAt: '2025-06-09T12:30:00',
-    comments: [
-      { id: 1, user: "user2", text: "답변 기다리고 있어요~" }
-    ]
-  },
-  {
-    id: 9,
-    title: '문의9',
-    author: 'user3',
-    content: '입양에 대해 궁금해요',
-    isSecret: false,
-    createdAt: '2025-06-08T18:00:00',
-    comments: [
-      { id: 1, user: "관리자", text: "곧 답변드릴 예정입니다." }
-    ]
-  },
-  {
-    id: 10,
-    title: '문의10',
-    author: 'user2',
-    content: '입양에 대해 궁금해요',
-    isSecret: true,
-    password: '1234',
-    createdAt: '2025-06-12T19:00:00',
-    comments: [
-      { id: 1, user: "user1", text: "문의 감사합니다!" }
-    ]
-  },
-  {
-    id: 11,
-    title: '문의11',
-    author: 'user2',
-    content: '입양에 대해 궁금해요',
-    isSecret: false,
-    password: '',
-    isReported: true,
-    createdAt: '2025-06-12T17:30:00',
-    comments: [
-      { id: 1, user: "관리자", text: "확인 후 안내드릴게요." }
-    ]
-  },
-  {
-    id: 12,
-    title: '문의12',
-    author: 'user2',
-    content: '입양에 대해 궁금해요',
-    isSecret: true,
-    password: '1234',
-    createdAt: '2025-06-11T22:45:00',
-    comments: [
-      { id: 1, user: "user3", text: "답변 잘 받았습니다." }
-    ]
-  },
-  {
-    id: 13,
-    title: '문의13',
-    author: 'user2',
-    content: '입양에 대해 궁금해요',
-    isSecret: true,
-    password: '1234',
-    createdAt: '2025-06-11T10:15:00',
-    comments: [
-      { id: 1, user: "user2", text: "추가 문의도 가능할까요?" }
-    ]
-  },
-  {
-    id: 14,
-    title: '문의14',
-    author: 'user3',
-    content: '입양에 대해 궁금해요',
-    isSecret: false,
-    createdAt: '2025-06-13T02:10:00',
-    isAnswered: true,
-    answer: '네, 정기후원은 마이페이지 > 후원관리에서 신청 가능합니다. 감사합니다.',
-    answerDate: '2025-06-13T10:55:00',
-    comments: [
-      { id: 1, user: "관리자", text: "입양에 대해 궁금한 점 언제든 남겨주세요!" }
-    ]
-  }
-];
-
-
 export const QnAProvider = ({ children }) => {
-  const [qnas, setQnas] = useState(initialQnAs);
-  return <QnAContext.Provider value={{ qnas, setQnas }}>{children}</QnAContext.Provider>;
+    const [qnas, setQnas] = useState(() => generateDummyQnA(150));
+    return <QnAContext.Provider value={{ qnas, setQnas }}>{children}</QnAContext.Provider>;
 };
 
 export const useQnA = () => useContext(QnAContext);

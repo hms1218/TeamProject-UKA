@@ -62,47 +62,76 @@
     border: none;
     border-top: 1px solid #ddd;
     padding: 10px;
-    text-align: center;
+    /* text-align: center; */
 }
 
 .customer-table tr:hover td {
   background: #faf7ff;
 }
 
+.title-cell {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: #222;
+  font-weight: normal;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.title-cell:hover {
+  text-decoration: underline;
+}
+
+.title-cell.reported {
+  color: #ff2e2e;
+  font-weight: bold;
+  text-decoration: line-through;
+}
+
+.title-cell.reported:hover {
+  text-decoration: underline line-through;
+}
+
 /* 각 열의 너비 설정 */
-.customer-table th:nth-child(1), /* 번호 */
-.board-table td:nth-child(1) {
+/* 번호 */
+.customer-table th:nth-child(1) {
     width: 70px;
 }
 
-.customer-table th:nth-child(2), /* 제목 */
-.board-table td:nth-child(2) {
+.customer-table td:nth-child(1){
+    text-align: center;
+}
+
+/* 제목 */
+.customer-table th:nth-child(2) {
     width: auto;
 }
 
-.customer-table th:nth-child(3), /* 작성자 */
-.board-table td:nth-child(3) {
-    width: 150px;
+.customer-table td:nth-child(2){
+    text-align: left;
+}
+/* 작성자 */
+.customer-table th:nth-child(3),
+.customer-table td:nth-child(3) {
+    width: 80px;
 }
 
 .customer-table th:nth-child(4),
-.board-table td:nth-child(4) { /* 댓글 */
-    width: 90px;
+.customer-table td:nth-child(4) { /* 답변 */
+    width: 60px;
+    text-align: center;
 }
 
-.customer-table th:nth-child(5), /* 조회 */
-.board-table td:nth-child(5) {
-    width: 90px;
+.customer-table th:nth-child(5), /* 상태 */
+.customer-table td:nth-child(5) {
+    width: 50px;
 }
 
-.customer-table th:nth-child(6), /* 추천 */
-.board-table td:nth-child(6) {
+.customer-table th:nth-child(6), /* 작성일 */
+.customer-table td:nth-child(6) {
     width: 90px;
-}
-
-.customer-table th:nth-child(7), /* 작성일 */
-.board-table td:nth-child(7) {
-    width: 100px;
+    text-align: center;
 }
 
 /* 패스워드 */
@@ -144,36 +173,28 @@
     border-bottom: 1px solid #ddd;
 }
 
-.customer-table td.notice-tab {
+/* .customer-table td.notice-tab {
     color: red;
     font-weight: bold;
-}
+} */
 
-.customer-table td.notice-title {
+/* .customer-table td.notice-title {
     color: red;
     font-weight: bold;
     text-align: left;
     padding-left: 16px;
     cursor: pointer;
-}
+} */
 
-.customer-table td.notice-cell {
+/* .customer-table td.notice-cell {
     font-weight: bold;
-}
+} */
 
-.customer-table td.title-cell {
-    text-align: left;
-    padding-left: 16px;
-    cursor: pointer;
-}
 
-.customer-table td.title-cell:hover{
-    text-decoration: underline;
-}
 
-.customer-table tr:hover {
+/* .customer-table tr:hover {
     background-color: #f9f9f9;
-}
+} */
 
 .pagination {
     display: flex;
@@ -200,4 +221,30 @@
     background-color: #eee;
     color: #999;
     cursor: not-allowed;
+}
+
+.customer-qna-search {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.customer-qna-search input {
+    padding: 8px 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 280px;
+    height: 18px;
+}
+
+.customer-qna-search-btn {
+    background-color: #fff;
+    color: #5d70ca;
+    padding: 8px 16px;
+    border: 1px solid #5d70ca;
+    border-radius: 6px;
+    cursor: pointer;
+    height: 36px;
 }

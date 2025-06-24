@@ -19,7 +19,7 @@ const NewQnA = () => {
             <li key={qna.id} className="admin-post">
               <div
                 className="admin-post-title"
-                onClick={() => navigate(`/customer/qna/${qna.id}/admin`)}
+                onClick={() => navigate(`/customer/qna/${qna.id}`)}
                 style={{ cursor: 'pointer', textDecoration: 'underline' }}
               >
                 {qna.isSecret ? '🔒' : ''} {qna.title}

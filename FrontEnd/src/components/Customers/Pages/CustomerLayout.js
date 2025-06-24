@@ -43,7 +43,7 @@ const CustomerLayout = ({children}) => {
       </div>
 
       {/* 탭 메뉴 */}
-      <nav className="mini-tab-bar">
+      <nav className="customer-mini-tab-bar">
         <NavLink
           to="/customer/faq"
           className={({ isActive }) => isActive ? 'active' : ''}

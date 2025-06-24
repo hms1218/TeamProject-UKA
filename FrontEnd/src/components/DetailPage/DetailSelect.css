@@ -1,63 +1,31 @@
 /* 메인컨테이너 */
-.container {
+.DScontainer {
     border-radius: 10px;
-    
-    width: 100px;
-    height: 1800px;
-    min-width: 1415px;
+    min-width: 850px;
 }
 
 
 /* 본문 위쪽 */
-.top{
+.DStop{
     border: 1px solid #cceeff;
     border-radius: 10px;
+    margin-top: 20px;
     
     display: flex;
-    flex-direction: column;
-
-    justify-content: flex-start;
-    align-items: center;
+    /* justify-content: center; */
 }
 
-/* 캐러셀 */
-.carousel{
-    margin-top: 10px;
-    width: 70%;
-    border-radius: 40px;
-    background-color: #f5f5f5;
-}
-
-.carousel img{
-    height:650px;
+/* 동물 이미지 */
+.DStop img{
+    padding:20px;
+    height:400px;
+    width: auto;
     object-fit: contain;
-}
-
-/* 캐러셀 아래의 서브 이미지 */
-.subimg{
-    margin-top: 10px;
-    border: 1px solid #cceeff;
-    border-radius: 10px;
-    width: 70%;
-    opacity: 0.7;
-    margin-bottom: 10px;
-}
-
-.subimg img::selection{
-    opacity: 1;
-}
-
-.subimg img{
-    height:150px;
-    
-    margin-right: 20px;
-    cursor: pointer;
-    border-radius: 10px;
 }
 
 
 /* 본문 아래쪽 */
-.bottom{
+.DSbottom{
     border: 1px solid #cceeff;
     border-radius: 10px;
 
@@ -67,7 +35,7 @@
     margin-top: 20px;
 }
 
-.bottom h2{
+.DSbottom h2{
     color: #66ccff;
     text-align: center;
     margin-top: 10px;
@@ -75,7 +43,7 @@
 
 
 /* 정보 전부 들어있는 박스 */
-.info-box{
+.DSinfo-box{
     display: flex;
 
     flex-wrap: wrap;
@@ -86,25 +54,127 @@
 
 
 /* 정보 한칸 */
-.info{
+.DSinfo{
     border: 1px #cceeff solid;
     border-radius: 8px;
 
     flex : 0 0 24%;
     text-align: center;
-    padding : 20px;
+    padding : 10px;
 }
 
 /* 정보의 글자 */
-.info p{
+.DSinfo p{
     font-size: 20px;
+}
+
+.DSinfo-text{
+    font-size: 20px;
+    width: auto;
+    height: 40px;
 }
 
 
 
 /* 입양하기 버튼 */
-.button{
-    height: 30px;
-    
-    align-self: center;
+.DSbutton{
+    margin-top: 20px;
+    height: 40px;
+    display: flex;
+    justify-content: space-around;
 }
+
+
+
+/* //////////////////////////////////////////////////////////////////////// */
+.DScardStyle {
+  min-width: 1000;
+  margin: 0 auto;
+  background-color: white;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.DSheaderStyle {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.DSheaderInfoStyle {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 12px 16px;
+  border-radius: 8px;
+  text-align: right;
+}
+
+.DScontentStyle {
+  padding: 32px;
+}
+
+.DSsectionTitleStyle {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.DSimageStyle {
+  width: 100%;
+  height: 800px;
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  margin-bottom: 32px;
+}
+
+.DSinfoGridStyle {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 32px;
+  margin-bottom: 32px;
+}
+
+.DSinfoItemStyle {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.DSspecialMarkStyle {
+  background-color: #fff3cd;
+  border-left: 4px solid #ffc107;
+  padding: 16px;
+  border-radius: 0 8px 8px 0;
+  margin-bottom: 32px;
+}
+
+.DScenterInfoStyle {
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  padding: 24px;
+}
+
+ .DSbuttonStyle {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+    color: white;
+    border: none;
+    padding: 16px 32px;
+    border-radius: 50px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 15px rgba(238, 90, 82, 0.4); 
+  };

@@ -15,7 +15,7 @@ const NoticeDetail = () => {
   useEffect(() => {
     const noticeId = parseInt(id);
     const sorted = [...notice].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-    const currentIndex = sorted.findIndex((q) => q.id === noticeId);
+    const currentIndex = sorted.findIndex((item) => item.id === noticeId);
     const current = sorted[currentIndex];
 
     setNotices(current);

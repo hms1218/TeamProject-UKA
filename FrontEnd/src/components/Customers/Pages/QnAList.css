@@ -1,165 +1,203 @@
-/* 🔷 전체 컨테이너 */
-.qna-container {
-  position: relative;
-  padding: 20px;
-  min-width: 1350px;
+.customer-container {
+    max-width: 100%;
+    margin: auto;
+    padding: 20px;
+    min-width: 800px;
 }
 
-.qna-header {
-  margin-bottom: 20px;
+.customer-title {
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 20px;
+} 
+
+.customer-controls {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 20px;
 }
 
-.qna-list {
+.customer-search {
   display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-/* 🔹 QnA 항목 박스 */
-.qna-item {
-  display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 14px;
-  background-color: white;
-  border: 2px solid #00aaff;
-  border-radius: 12px;
-  padding: 16px 24px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-  min-width: 1350px;
+  margin: 18px 0 16px 0;
 }
-
-/* 🔒 자물쇠 */
-.lock-wrapper {
-  width: 24px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.lock-icon {
-  font-size: 18px;
-  color: #00aaff;
-}
-
-.lock-placeholder {
-  visibility: hidden;
-}
-
-
-/* 👤 작성자 */
-.qna-author {
-  font-size: 14px;
-  color: #555;
-  white-space: nowrap;
-}
-
-.qna-write-container {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 32px;
-  margin-bottom: 20px;
-}
-
-/* 🖊 글쓰기 버튼 */
-.qna-write-button {
-  background-color: #00aaff;
-  color: white;
+.customer-search-btn {
+  background: #b19cd9;
+  color: #fff;
   border: none;
-  border-radius: 24px;
-  padding: 10px 20px;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: background-color 0.2s ease;
-}
-
-.qna-write-button:hover {
-  background-color: #0094dd;
-}
-
-/* 📝 제목 전체 영역: 텍스트 정렬만 담당 (hover X) */
-.qna-title-link {
-  flex: 1;
-  font-size: 18px;
-  font-weight: bold;
-  color: inherit;
-}
-
-/* 📝 제목 (클릭 가능) */
-.qna-title-text {
-  color: black;
-  cursor: pointer;
-  transition: color 0.2s ease;
-  text-decoration: none;
-}
-
-/* hover 효과 */
-.qna-title-text:hover {
-  color: #00aaff; /* 조금 더 진한 파란색으로 */
-  text-decoration: underline;
-}
-
-/* 비밀번호 박스 */
-.qna-password-box {
-  display: flex;
-  gap: 12px;
-  margin-top: 10px;
-  padding: 12px 24px;
-  border-left: 4px solid #00aaff;
-  background-color: #f8f8f8;
-  border-radius: 8px;
-  margin-bottom: 20px;
-}
-
-.qna-password-box input {
-  width: 160px;
-  padding: 8px;
-  font-size: 16px;
-  border: 1px solid #ccc;
   border-radius: 6px;
+  font-weight: 700;
+  padding: 8px 18px;
+  margin-left: 6px;
+  transition: filter 0.2s;
+}
+.customer-write-btn {
+    background-color: #fff;
+    color: #5d70ca;
+    padding: 8px 16px;
+    border: 1px solid #5d70ca;
+    border-radius: 6px;
+    cursor: pointer;
+}
+/* .customer-write-btn:hover,
+.customer-search-btn:hover {
+  background-color: #5d70ca;
+  transform: translateY(-2px);
+} */
+.customer-table-container{
+  width: 100%;
+}
+.customer-table{
+  width: 100%;
+}
+.customer-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+.customer-table th, .customer-table td {
+    border: none;
+    border-top: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
 }
 
-.qna-password-box button {
+.customer-table tr:hover td {
+  background: #faf7ff;
+}
+
+/* 각 열의 너비 설정 */
+.customer-table th:nth-child(1), /* 번호 */
+.board-table td:nth-child(1) {
+    width: 70px;
+}
+
+.customer-table th:nth-child(2), /* 제목 */
+.board-table td:nth-child(2) {
+    width: auto;
+}
+
+.customer-table th:nth-child(3), /* 작성자 */
+.board-table td:nth-child(3) {
+    width: 150px;
+}
+
+.customer-table th:nth-child(4),
+.board-table td:nth-child(4) { /* 댓글 */
+    width: 90px;
+}
+
+.customer-table th:nth-child(5), /* 조회 */
+.board-table td:nth-child(5) {
+    width: 90px;
+}
+
+.customer-table th:nth-child(6), /* 추천 */
+.board-table td:nth-child(6) {
+    width: 90px;
+}
+
+.customer-table th:nth-child(7), /* 작성일 */
+.board-table td:nth-child(7) {
+    width: 100px;
+}
+
+/* 패스워드 */
+.customer-password-row td {
+  background: #f7f1fd;
+  padding: 18px 0;
+  border-bottom: 1px solid #eee;
+  text-align: center;
+}
+.customer-password-input {
   padding: 8px 16px;
-  font-size: 15px;
-  background-color: #00aaff;
+  font-size: 16px;
+  border: 1px solid #b19cd9;
+  border-radius: 7px;
+  margin-right: 14px;
+}
+.customer-password-btn {
+  padding: 8px 22px;
+  font-size: 16px;
+  background-color: #b19cd9;
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: 7px;
+  font-weight: bold;
   cursor: pointer;
+  box-shadow: 0 1px 4px rgba(177,156,217,0.13);
+}
+.customer-password-btn:hover {
+  background-color: #a082c6;
 }
 
-.qna-password-box button:hover {
-  background-color: #0094dd;
+
+.customer-table th {
+    background-color: #f3f3f3;
+}
+
+/* 게시글 마지막 밑줄 */
+.customer-table tbody tr:last-child td {
+    border-bottom: 1px solid #ddd;
+}
+
+.customer-table td.notice-tab {
+    color: red;
+    font-weight: bold;
+}
+
+.customer-table td.notice-title {
+    color: red;
+    font-weight: bold;
+    text-align: left;
+    padding-left: 16px;
+    cursor: pointer;
+}
+
+.customer-table td.notice-cell {
+    font-weight: bold;
+}
+
+.customer-table td.title-cell {
+    text-align: left;
+    padding-left: 16px;
+    cursor: pointer;
+}
+
+.customer-table td.title-cell:hover{
+    text-decoration: underline;
+}
+
+.customer-table tr:hover {
+    background-color: #f9f9f9;
 }
 
 .pagination {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    font-size: 14px;
 }
 
 .pagination button {
-  margin: 0 4px;
-  padding: 6px 12px;
-  border: none;
-  background-color: #eee;
-  cursor: pointer;
-  border-radius: 4px;
+    padding: 4px 8px;
+    border: 1px solid #ccc;
+    background: white;
+    cursor: pointer;
 }
 
-.pagination button.active {
-  background-color: #00aaff;
-  color: white;
-  font-weight: bold;
+.pagination .active {
+    background-color: #00aaff;
+    color: white;
+    border: none;
+    border-radius: 4px;
 }
 
-.qna-answer-preview {
-  font-size: 0.85rem;
-  color: #666;
-  margin: 4px 0 0 20px;
+.pagination button:disabled {
+    background-color: #eee;
+    color: #999;
+    cursor: not-allowed;
 }

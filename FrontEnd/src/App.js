@@ -9,10 +9,15 @@ import LoginPage from './components/Pages/LoginPage';
 import SignupPage from './components/Pages/SignupPage';
 import FindIdPage from './components/Pages/FindIdPage';
 import FindPasswordPage from './components/Pages/FindPasswordPage';
+
 import ResetPasswordPage from './components/Pages/ResetPasswordPage';
 
 //게시판 관련
 import BoardLayout from './components/Board/Pages/BoardLayout';
+import AllBoard from './components/Board/Pages/AllBoard';
+import AllBoardForm from './components/Board/Pages/AllBoardForm';
+import AllBoardDetail from './components/Board/Pages/AllBoardDetail';
+import AllBoardEdit from './components/Board/Pages/AllBoardEdit';
 import Notice from './components/Board/Pages/Notice';
 import NoticeForm from './components/Board/Pages/NoticeForm';
 import NoticeDetail from './components/Board/Pages/NoticeDetail';
@@ -26,23 +31,30 @@ import ReviewForm from './components/Board/Pages/ReviewForm';
 import AdoptionReviewDetail from './components/Board/Pages/AdoptionReviewDetail';
 import ReviewEdit from './components/Board/Pages/ReviewEdit';
 import { ChatProvider } from './components/Board/Context/ChatContext';
+import { useEffect } from 'react';
 
 // 고객센터 관련
 import CustomerLayout from './components/Customers/Pages/CustomerLayout';
 import FAQList from "./components/Customers/Pages/FAQList";
+import FAQEdit from "./components/Customers/Pages/FAQEdit";
 import QnAList from "./components/Customers/Pages/QnAList";
 import QnAForm from "./components/Customers/Pages/QnAForm";
 import QnADetail from "./components/Customers/Pages/QnADetail";
 import QnAEdit from "./components/Customers/Pages/QnAEdit";
 import AdoptionInquiry from "./components/Customers/Pages/AdoptionInquiry";
 import { QnAProvider } from './components/Customers/Context/QnAContext';
-
+//상세보기 관련
 import { DetailBody } from './components/DetailPage/DetailBody';
 import { DetailSelect } from './components/DetailPage/DetailSelect';
 
+// 관리자 화면
 import AdminPage from './components/Customers/Pages/Admin/AdminPage';
 import AdminQnADetail from './components/Customers/Pages/Admin/AdminQnADetail';
-import AllBoard from './components/Board/Pages/AllBoard';
+
+import { RequestMain } from './components/Request/RequestMain';
+import { RequestWrite } from './components/Request/RequestWrite';
+
+import SvgPolygonMap from './components/DetailMap/SvgPolygonMap';
 
 import NoticeBar from './components/Sidebar/NoticeBar';
 import AdBar from './components/Sidebar/AdBar';
@@ -54,6 +66,14 @@ import NaverMap from './components/DetailMap/NaverMap';
 import './App.css';
 
 function App() {
+
+    //게시판 유저 확인용
+    useEffect(() => {
+        if (!localStorage.getItem("username")) {
+            localStorage.setItem("username", "me");
+        }
+    }, []);
+
     return (
         <div className="app-bg">
             <Router>
@@ -76,8 +96,13 @@ function App() {
 
                         {/* 상세페이지 전체 */}
                         <Route path='/about' element={<DetailBody />} />
-                        <Route path='/about/select' element={<DetailSelect />} />x
+                        <Route path='/about/select' element={<DetailSelect />} />
+                        <Route path="/svg_map_detail" element={<SvgPolygonMap />} />
                         
+                        {/* 찾고 있어요 전체 */}
+                        <Route path='/request' element={<RequestMain/>} />
+                        <Route path='/request/write' element={<RequestWrite/>}/>
+
                         {/* 게시판 전체 (MainBodys 제외) */}
                         <Route path="/board/*"
                             element={
@@ -87,6 +112,10 @@ function App() {
                             }
                         >
                             <Route index element={<AllBoard />} />
+                            <Route path="all" element={<AllBoard />} />
+                            <Route path="all/form" element={<AllBoardForm />} />
+                            <Route path="all/detail/:id" element={<AllBoardDetail />} />
+                            <Route path="all/edit/:type/:id" element={<AllBoardEdit />} />
                             <Route path="notice" element={<Notice />} />
                             <Route path="notice/new" element={<NoticeForm />} />
                             <Route path="notice/:id" element={<NoticeDetail />} />
@@ -108,6 +137,7 @@ function App() {
                         }>
                             <Route index element={<FAQList />} />
                             <Route path="faq" element={<FAQList />} />
+                            <Route path="faq/edit/:id" element={<FAQEdit />} />
                             <Route path="qna" element={<QnAList />} />
                             <Route path="qna/new" element={<QnAForm />} />
                             <Route path="qna/:id" element={<QnADetail />} />
@@ -139,6 +169,7 @@ function App() {
             <NoticeBar />
             {/* 오른쪽 하단에 화살표 버튼 추가 */}
             <ScrollArrowButtons />
+            <AdBar />
         </div>
     );
 }

@@ -42,7 +42,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
                 		"/",
-                		"/api/animals/**",
+                		"/api/animals/",
                         "/api/auth/signup", 
                         "/api/auth/login",
                         "/api/auth/find-username",

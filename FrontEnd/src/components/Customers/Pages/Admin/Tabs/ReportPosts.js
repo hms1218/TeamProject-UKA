@@ -1,10 +1,12 @@
 import React from 'react';
 import { useQnA } from '../../../Context/QnAContext';
 import { useNavigate } from 'react-router-dom';
+import { useAlert } from '../../../Context/AlertContext';
 
 const ReportedPosts = () => {
   const { qnas } = useQnA();
   const navigate = useNavigate();
+  const { showAlert } = useAlert();
 
   const reportedPosts = qnas.filter(q => q.isReported);
 
@@ -25,19 +27,6 @@ const ReportedPosts = () => {
                 [신고 누적] {post.title}
               </div>
               <div className="admin-post-author">by {post.author}</div>
-              <div className="admin-action-buttons">
-                <button className="restore-btn" onClick={() => alert("복원되었습니다.")}>복원</button>
-                <button
-                  className="delete-btn"
-                  onClick={() => {
-                    if (window.confirm("삭제하시겠습니까?")) {
-                      alert("삭제되었습니다.");
-                    }
-                  }}
-                >
-                  삭제
-                </button>
-              </div>
             </li>
           ))}
         </ul>

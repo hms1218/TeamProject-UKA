@@ -42,12 +42,15 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
                 		"/",
-                		"/api/animals/",
+                		"/api/animals/**",
                         "/api/auth/signup", 
                         "/api/auth/login",
                         "/api/auth/find-username",
                         "/api/auth/reset-password-request",
-                        "/api/auth/reset-password"
+                        "/api/auth/reset-password",
+                        
+                        "/request",
+                    	"/request/*"
                 ).permitAll()
                 .anyRequest().authenticated()
             )

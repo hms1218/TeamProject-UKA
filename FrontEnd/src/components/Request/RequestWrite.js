@@ -1,7 +1,9 @@
+import DatePicker from 'react-datepicker';
 import defimg from '../../assets/default.jpg'
+import RequestCardComponent from './RequestCardComponent';
 import './RequestWrite.css'
 import { Button, Card, CardActionArea, CardContent, CardMedia, Input, selectClasses, TextField, Typography } from "@mui/material";
-import { useState } from "react";
+import { forwardRef, useState } from "react";
 
 export const RequestWrite = () => {
 
@@ -13,7 +15,7 @@ export const RequestWrite = () => {
     const [age,setAge] = useState('');
     const [name,setName] = useState('');
 
-    const [time,setTime] = useState('');
+    const [selectedDate,setSelectedDate] = useState('');
     const [local,setLocal] = useState('');
     const [phone,setPhone] = useState('');
     const [descripsion,setDescripsion] = useState('');
@@ -40,11 +42,36 @@ export const RequestWrite = () => {
 
     }
 
+      const [profileData, setProfileData] = useState({
+        lostLocation: '',      // 실종 장소
+        lostTime: '',          // 실종 시간  
+        contactNumber: '',     // 연락수단
+        characteristics: ''    // 특징
+      });
+    
+      // 입력 필드 값 변경 핸들러
+      // 이벤트 객체에서 name과 value를 구조분해할당으로 추출하여 해당 필드만 업데이트합니다
+      const handleInputChange = (event) => {
+        const { name, value } = event.target;
+        setProfileData(prevData => ({
+          ...prevData,
+          [name]: value
+        }));
+      };
+
+        //공고날짜 커스텀 버튼
+        const CustomButton = forwardRef(({ value, onClick }, ref) => (
+            <Button variant="outlined" onClick={onClick} ref={ref} sx={{width:'400px'}}>
+                {selectedDate===""?"날짜 선택":value+' ~'}
+            </Button>
+        ));
+
 
     return(
-        <div className="RWcontainer">
+        <div className="RWmaincontainer">
             {/* 규격화된 신청서 작성하기 */}
             <div className='RWtop'>
+                 {/* <RequestCardComponent/> */}
                 <div className="RWex"
                     onDrop={(e)=>{
                         e.preventDefault();
@@ -56,133 +83,133 @@ export const RequestWrite = () => {
                         e.preventDefault()
                     }}
                 >
-                    <Card sx={{ flex:'0 0 90%',height:'100%'}} raised={true} >
-                        <CardActionArea
-                            sx={{ display: 'flex',height:'100%'}} // 가로 정렬
-                            onClick={handleOnClick}
-                        >
-                            <div style={{display:'flex', flexDirection:'column',width:'60%',height:'100%'}}>
-                            {/* 카드 핵심 내용 */}
-                                <CardMedia
-                                component="img"
-                                height="auto"
-                                image={preview}
-                                sx={{height:'100%'}}
-                                />
-                                <Typography
-                                sx={{backgroundColor:'red', color:'white', textAlign:'center' }}
-                                variant="h5" component="div" >
-                                    {kind} / {sex} / {age} / {name}
-                                </Typography>
+                    <div className="RWcontainer">
+                            {/* 메인 카드 컴포넌트 */}
+                            <div className="RWcard">
+                                
+                                {/* 카드 내부 콘텐츠 영역 */}
+                                <div className="RWcardContent">
+
+                                {/* 좌측 프로필 이미지 섹션 */}
+                                <div className="RWleftSection">
+                                    
+                                    <img style={{height:'400px',borderRadius: '10px'}} src={preview} />
+
+                                </div>
+
+
+                                
+                                {/* 우측 정보 입력 섹션 */}
+
+
+                                <div className='RWbottom'>
+                                {/* 빨간색 바 */}
+                                <div className="RWbottomBar">
+                                    <span className="RWbottomBarText">
+                                        🐾<input
+                                            placeholder='종류'
+                                            value={kind}
+                                            onChange={(e)=>{setKind(e.target.value)}}
+                                            className='RWinput_main'
+                                        />
+                                        | 🧸
+                                        <input
+                                            placeholder='성별'
+                                            value={sex}
+                                            onChange={(e)=>{setSex(e.target.value)}}
+                                            className='RWinput_main'
+                                        />
+                                        | 🕒
+                                        <input
+                                            placeholder='나이'
+                                            value={age}
+                                            onChange={(e)=>{setAge(e.target.value)}}
+                                            className='RWinput_main'
+                                        />
+                                        | 🏷️
+                                        <input
+                                            placeholder='이름'
+                                            value={name}
+                                            onChange={(e)=>{setName(e.target.value)}}
+                                            className='RWinput_main'
+                                        />
+                                        </span>
+                                </div>
+
+                                {/* 작성내용 */}
+                                <div className="RWrightSection">
+                                    {/* 각 입력 필드를 개별 그룹으로 구성 */}
+                                    <div className="RWinputRow">
+                                    <label className="RWlabel">실종 장소:</label>
+                                    <input
+                                        type="text"
+                                        name="lostLocation"
+                                        value={profileData.lostLocation}
+                                        onChange={handleInputChange}
+                                        className="RWinput"
+                                        placeholder="실종된 장소를 입력하세요"
+                                    />
+                                    </div>
+
+                                    <div className="RWinputRow">
+                                    <label className="RWlabel">실종 시간:</label>
+                                    {/* 달력 */}
+                                    <DatePicker
+                                        showIcon
+                                        closeOnScroll={true}
+                                        selected={selectedDate}
+                                        dateFormat="YYYY/MM/dd"
+                                        className='RWinput'
+                                        customInput={
+                                        <CustomButton
+                                            variant="contained"
+                                        >{selectedDate}</CustomButton>
+                                        }
+                                        onChange={(date)=>setSelectedDate(date)}
+                                    />
+
+
+                                    </div>
+
+                                    <div className="RWinputRow">
+                                    <label className="RWlabel">연락수단:</label>
+                                    <input
+                                        type="tel"
+                                        name="contactNumber"
+                                        value={profileData.contactNumber}
+                                        onChange={handleInputChange}
+                                        className="RWinput"
+                                        placeholder="연락 가능한 전화번호"
+                                    />
+                                    </div>
+
+                                    <div className="RWinputRow">
+                                    <label className="RWlabel">특징:</label>
+                                    <textarea
+                                        name="characteristics"
+                                        value={profileData.characteristics}
+                                        onChange={handleInputChange}
+                                        className="RWtextarea"
+                                        placeholder="외모나 특이사항을 입력하세요"
+                                        rows={3}
+                                    />
+                                    </div>
+                                    </div>
+                                </div>
                             </div>
-                            {/* 카드 상세 내용 */}
-                            <div style={{display:'flex', flexDirection:'column',width:'40%',height:'100%'}}>
-                                <CardContent
-                                    sx={{height:'100%'}}
-                                >
-                                    <Typography sx={{fontSize:'20px'}}
-                                    gutterBottom variant="h5" component="div">
-                                    실종 장소: {local}
-                                    </Typography>
-                                    <Typography sx={{fontSize:'20px'}}
-                                    gutterBottom variant="h5" component="div">
-                                    실종 시간: {time}
-                                    </Typography>
-                                    <Typography sx={{fontSize:'20px'}}
-                                    gutterBottom variant="h5" component="div">
-                                    연락수단: {phone}
-                                    </Typography>
-                                    <Typography sx={{fontSize:'20px', whiteSpace:'pre-line' }} 
-                                    gutterBottom variant="h5" component="div">
-                                    특징: {`${descripsion}`}
-                                    </Typography>
-                                </CardContent>
-                            </div>
-                        </CardActionArea>
-                    </Card>
-                </div>
-            </div>{/* end top */}
-            {/* 완료 버튼 */}
-            <div style={{display:'flex',justifyContent:'flex-end'}}>
-                <Button 
-                    onClick={()=>{handleSuccess()}}
-                    variant='contained'>
-                    완료
-                </Button>
-            </div>
-                
-
-
-            <div>
-                <div className="RWwrite">
-                    <input className='RWimageinput'
-                        type="file" 
-                        style={{display:'none'}}
-                        onChange={(e)=>{
-                            handleImgChange(e)   
-                        }}
-                    />
-                    
-                        <TextField className="RWinput" label="종류" 
-                        value={kind}
-                        placeholder="종류"
-                        onChange={(e)=>{
-                            setKind(e.target.value)
-                        }}
-                        variant="outlined" />
-                        <TextField className="RWinput" label="성별" 
-                        value={sex}
-                        placeholder="성별"
-                        onChange={(e)=>{
-                            setSex(e.target.value)
-                        }}
-                        variant="outlined" />
-                        <TextField className="RWinput" label="나이" 
-                        value={age}
-                        placeholder="나이"
-                        onChange={(e)=>{
-                            setAge(e.target.value)
-                        }}
-                        variant="outlined" />
-                        <TextField className="RWinput" label="이름" 
-                        value={name}
-                        placeholder="이름"
-                        onChange={(e)=>{
-                            setName(e.target.value)
-                        }}                    
-                        variant="outlined" />
-
-
-                        <TextField className="RWinput" label="실종 장소" 
-                        value={local}
-                        placeholder="실종 장소"
-                        onChange={(e)=>{
-                            setLocal(e.target.value)
-                        }}
-                        variant="outlined" />
-                        <TextField className="RWinput" label="실종 시간" 
-                        value={time}
-                        placeholder="실종 시간"
-                        onChange={(e)=>{
-                            setTime(e.target.value)
-                        }}
-                        variant="outlined" />
-                        <TextField className="RWinput" label="연락수단(연락처)" 
-                        value={phone}
-                        placeholder="연락처"
-                        onChange={(e)=>{
-                            setPhone(e.target.value)
-                        }}
-                        variant="outlined" />
-                        <TextField className="RWinput" multiline rows={4} label="특징" 
-                        value={descripsion}
-                        placeholder="특징"
-                        onChange={(e)=>{
-                            setDescripsion(e.target.value)
-                        }}
-                        variant="outlined" />
+                        </div>
                     </div>
-                </div>
-            </div>
-    )
+               </div>{/* end ex */}
+                    <Button 
+                        variant="contained"
+                        className="DBButton"
+                        color="primary"
+                        sx={{marginLeft:'auto', marginTop:'20px'}}
+                        onClick={()=>{
+                            window.scrollTo(0,0)
+                        }}>완료
+                    </Button>
+            </div>{/* end top */}
+        </div>//end container
+        )
 }

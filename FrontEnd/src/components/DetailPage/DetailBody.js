@@ -9,15 +9,37 @@ import AppsIcon from '@mui/icons-material/Apps';
 import DatePicker from 'react-datepicker';
 // css검사해보니 모든 클래스들이 react-datepicker로 시작해서 사용해도 괜찮을듯.
 import 'react-datepicker/dist/react-datepicker.css';
-import NaverMap from "../DetailMap/NaverMap";
+
+//전달받음.
+import NaverMap from "../Map/NaverMap.js";
+import SiDoData from "../Map/koreaSiDoData";
+import SiGunGooData from "../Map/KoreaSiGunGooData";
+import { fetchSavedAnimals } from "../../api/AnimalApiData.js";
+
 
 export const DetailBody = () => {
 
     //콤보박스 시군구+센터이름
-    const [sido,setSi] = useState({});
-    const [gungu,setGun] = useState('');
-    const [center,setCenter] = useState('');
-    const [regionInfo, setRegionInfo] = useState([]);
+    const [siDo, setSiDo] = useState('');
+    const [gunGu, setGunGu] = useState('');
+    const [center, setCenter] = useState('');
+    const [allData, setAllData] = useState([]);
+    const [targetAddress, setTargetAddress] = useState('');
+    const [targetCenters, setTargetCenters] = useState([]);
+
+
+    useEffect(() => {
+        async function loadData() {
+            try {
+                const result = await fetchSavedAnimals();
+                setAllData(result);
+            } catch (e) {
+                setAllData([]);
+            }
+        }
+        loadData();
+    }, []);
+
 
     const [kind,setKind] = useState('')
     // 품종 값 선택
@@ -36,13 +58,29 @@ export const DetailBody = () => {
     // 페이징 상태
     const [currentPage,setCurrentPage] = useState(1);
     const itemsPerPage = 11;
+    
+
+    const gunList = siDo ? SiGunGooData.filter(item => item.uprCd === siDo) : [];
+    const siDoName = siDo ? SiDoData.find(x => x.orgCd === siDo)?.orgdownNm : "";
+    const gunGuName = gunGu ? SiGunGooData.find(x => x.orgCd === gunGu)?.orgdownNm : "";
+    const centerOptions = getFilteredCentersByOrgNm(allData, siDoName, gunGuName);
+    const selectedCenterData = center ? allData.find(item => item.careRegNo === center) : null;
 
 
-
-    //지도 데이터 로딩용
-    useEffect(()=>{
-        
-    },[])
+    // 유틸 함수-센터명
+    function getFilteredCentersByOrgNm(allData, siDoName, gunGuName) {
+    if (!Array.isArray(allData) || !siDoName || !gunGuName) return [];
+    const targetNm = `${siDoName} ${gunGuName}`;
+    const unique = {};
+    allData
+        .filter(item => item.orgNm === targetNm)
+        .forEach(item => {
+            if (!unique[item.careRegNo]) unique[item.careRegNo] = item.careNm;
+        });
+    return Object.entries(unique).map(([careRegNo, careNm]) => ({
+        careRegNo, careNm
+    }));
+}
 
     //공고날짜 커스텀 버튼
     const CustomButton = forwardRef(({ value, onClick }, ref) => (
@@ -82,29 +120,93 @@ export const DetailBody = () => {
             {/* 헤더 */}
             <div className="DBcombobox">
                 {/* 시 */}
-                <select id='si'title="시입니다">                        
-                        {<option value={sido}>시도</option>}
-                </select>
-
+                <div>
+                    <label className="DBtext" htmlFor="siDo">시 선택</label>
+                    <select
+                        id="siDo"
+                        value={siDo}
+                        onChange={e => {
+                            setSiDo(e.target.value);
+                            setGunGu("");
+                            setCenter("");
+                            setTargetAddress("");
+                        }}
+                    >
+                        <option value="">시/도 선택</option>
+                        {SiDoData.map(siItem => (
+                            <option key={siItem.orgCd} value={siItem.orgCd}>
+                                {siItem.orgdownNm}
+                            </option>
+                        ))}
+                    </select>
+                </div>
                 {/* 군 */}
-                <select>
-                    <option id="gun" value={gungu}>군구</option>
-                </select>
-
+                <div>
+                    <label className="DBtext" htmlFor="gunGu">군 선택</label>
+                    <select
+                        id="gunGu"
+                        value={gunGu}
+                        onChange={e => {
+                            setGunGu(e.target.value);
+                            setCenter('');
+                            setTargetAddress('');
+                        }}
+                        disabled={!siDo}
+                    >
+                        <option value="">군/구 선택</option>
+                        {gunList.map(item => (
+                            <option key={item.orgCd} value={item.orgCd}>
+                                {item.orgdownNm}
+                            </option>
+                        ))}
+                    </select>
+                </div>
                 {/* 센터 */}
-                <select>
-                    <option id='center' value={center}>센터</option>
-                </select>
+                <div>
+                    <label className="DBtext" htmlFor="center">센터 선택</label>
+                    <select
+                        id="center"
+                        value={center}
+                        onChange={e => setCenter(e.target.value)}
+                        disabled={!gunGu}
+                    >
+                        <option value="">센터 선택</option>
+                        {centerOptions.map(item => (
+                            <option key={item.careRegNo} value={item.careRegNo}>
+                                {item.careNm}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+
+                
    
-                <Button 
+<Button
                     variant="contained"
                     className="DBButton"
-                    color="primary"
-                    fullWidth
-                    sx={{flex:1, color:'white'}}
-                    onClick={()=>{
-                        setShow(!show)
-                    }}>검색하기
+                    color="inherit"
+                    sx={{ marginLeft: '20px', marginTop: '37px' }}
+                    onClick={() => {
+                        let filteredCenters = [];
+                        if (selectedCenterData) {
+                            // 센터 선택 시 1개 센터만 마커 표시
+                            filteredCenters = [selectedCenterData];
+                        } else if (siDoName && gunGuName) {
+                            // 시군구 선택 시 그 지역 내 모든 센터 표시
+                            filteredCenters = allData.filter(
+                                item => item.orgNm === `${siDoName} ${gunGuName}`
+                            );
+                        } else if (siDoName) {
+                            // 시/도 선택 시 그 시도 내 모든 센터 표시
+                            filteredCenters = allData.filter(
+                                item => item.orgNm.startsWith(siDoName)
+                            );
+                        }
+                        setTargetCenters(filteredCenters);
+                        console.log("마커 표시할 센터 목록:", filteredCenters);
+                    }}
+                >
+                    검색하기
                 </Button>
             </div>
 
@@ -112,7 +214,7 @@ export const DetailBody = () => {
             <div className="DBtop">
                 {/* 여기에 지도 들어갈 것 같아요. */}
                 <div className="DBmap">
-                    {/* <NaverMap/> */}
+                    <NaverMap centers={targetCenters} />
                 </div>
             </div>{/* end top */}
 

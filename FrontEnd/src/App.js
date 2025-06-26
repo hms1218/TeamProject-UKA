@@ -54,14 +54,10 @@ import AdminQnADetail from './components/Customers/Pages/Admin/AdminQnADetail';
 import { RequestMain } from './components/Request/RequestMain';
 import { RequestWrite } from './components/Request/RequestWrite';
 
-import SvgPolygonMap from './components/DetailMap/SvgPolygonMap';
-
 import NoticeBar from './components/Sidebar/NoticeBar';
 import AdBar from './components/Sidebar/AdBar';
 
 import ScrollArrowButtons from './components/Common/ScrollArrowButtons';
-
-import NaverMap from './components/DetailMap/NaverMap';
 
 import './App.css';
 
@@ -92,12 +88,10 @@ function App() {
                         <Route path="/find-password" element={<FindPasswordPage />} />
                         <Route path="/reset-password" element={<ResetPasswordPage />} />
 
-                        <Route path="/svg_map_detail" element={<NaverMap />} />
 
                         {/* 상세페이지 전체 */}
                         <Route path='/about' element={<DetailBody />} />
                         <Route path='/about/select' element={<DetailSelect />} />
-                        <Route path="/svg_map_detail" element={<SvgPolygonMap />} />
                         
                         {/* 찾고 있어요 전체 */}
                         <Route path='/request' element={<RequestMain/>} />

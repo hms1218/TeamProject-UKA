@@ -1,6 +1,7 @@
 import { SidoApiData } from '../../../../../api/AnimalCommonApiData';
 import { useAlert } from '../../../Context/AlertContext'; // AlertContext 위치에 맞게 import
 import './AdminDetail.css';
+import { fetchAndSendAnimals, fetchRegionData } from '../../../../../api/AnimalApiData';
 
 const SIDOS = [
   { name: "전체", code: "all" },
@@ -42,7 +43,7 @@ const DataReset = () => {
     if (!result || !result.isConfirmed) return;
 
     try {
-      await SidoApiData(sidoCode); // 필요시 파라미터 사용!
+      await fetchAndSendAnimals(sidoCode); // 필요시 파라미터 사용!
       await showAlert({
         title: `${sidoName} 데이터 불러오기 완료!`,
         imageUrl: process.env.PUBLIC_URL + '/img/goodCat.jpg',

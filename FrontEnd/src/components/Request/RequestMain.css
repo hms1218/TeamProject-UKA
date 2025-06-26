@@ -1,7 +1,7 @@
 /* 메인컨테이너 */
 .RMcontainer {
     border-radius: 10px;
-    min-width: 850px;
+    min-width: 1070px;
 
     display: flex;
     flex-direction: column;
@@ -13,14 +13,29 @@
     border-radius: 10px;
 
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     justify-content: center;
     margin-top: 20px;
-    padding:20px;
-    gap:30px;
+    /* padding:20px; */
+}
+
+.RMone{
+    display: flex;
+    justify-content: center;
+}
+
+.RMhr{
+    display: flex;
+    border-bottom: 1px solid #cceeff;
+    flex:1;
+    margin:20px 0;
+  
 }
 
 .RMbottom{
     border: 1px solid #cceeff;
+    
     border-radius: 10px;
+    width: 100px;
+    height: 1px;
 }

@@ -68,7 +68,7 @@ const DataReset = () => {
     <div>
       <h2>🔄 데이터 새로고침</h2>
       <p>최신 데이터를 다시 불러오려면 아래 버튼을 클릭하세요.</p>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginTop: 18 }}>
+      <div className='button' style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginTop: 18 }}>
         {SIDOS.map((sido) => (
           <button
             key={sido.code}

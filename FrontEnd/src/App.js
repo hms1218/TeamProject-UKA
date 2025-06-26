@@ -42,7 +42,6 @@ import QnAForm from "./components/Customers/Pages/QnAForm";
 import QnADetail from "./components/Customers/Pages/QnADetail";
 import QnAEdit from "./components/Customers/Pages/QnAEdit";
 import AdoptionInquiry from "./components/Customers/Pages/AdoptionInquiry";
-import { QnAProvider } from './components/Customers/Context/QnAContext';
 //상세보기 관련
 import { DetailBody } from './components/DetailPage/DetailBody';
 import { DetailSelect } from './components/DetailPage/DetailSelect';
@@ -131,9 +130,7 @@ function App() {
                         </Route>
                         {/* 고객센터 라우팅 */}
                         <Route path="/customer/*" element={
-                            <QnAProvider>
                                 <CustomerLayout />
-                            </QnAProvider>
                         }>
                             <Route index element={<FAQList />} />
                             <Route path="faq" element={<FAQList />} />
@@ -147,16 +144,12 @@ function App() {
                         {/* 관리자 라우팅 - 독립 경로 */}
                         <Route path="/admin/*"
                             element={
-                                <QnAProvider>
                                     <AdminPage />
-                                </QnAProvider>
                             }
                         />
                         <Route path="/customer/qna/:id/admin"
                             element={
-                                <QnAProvider>
                                     <AdminQnADetail />
-                                </QnAProvider>
                             }
                         />
                     </Routes>

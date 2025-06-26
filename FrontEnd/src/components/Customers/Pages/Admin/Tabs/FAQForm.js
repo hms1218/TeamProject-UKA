@@ -8,6 +8,8 @@ import 'tui-color-picker/dist/tui-color-picker.css';
 import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css';
 import '../../WriteButton.css';
 import '../../Form.css';
+import './AdminDetail.css';
+import { createFaq } from '../../../../../api/CustomerApiData';
 
 const FAQForm = () => {
     const [title, setTitle] = useState('');
@@ -25,19 +27,12 @@ const FAQForm = () => {
 
         const content = editorRef.current?.getInstance().getMarkdown();
 
-        // 제목/내용 비어있으면 경고
         if (!title.trim()) {
-            await showAlert({
-                title: '제목을 입력해주세요.',
-                icon: 'warning',
-            });
+            await showAlert({ title: '제목을 입력해주세요.', icon: 'warning' });
             return;
         }
         if (!content || content.trim() === '') {
-            await showAlert({
-                title: '내용을 입력해주세요.',
-                icon: 'warning',
-            });
+            await showAlert({ title: '내용을 입력해주세요.', icon: 'warning' });
             return;
         }
 
@@ -49,20 +44,32 @@ const FAQForm = () => {
             confirmButtonText: '네',
             cancelButtonText: '아니오',
         });
-
         if (!result || !result.isConfirmed) return;
 
-        // 실제 등록 로직 (API 연동 예정)
+        try {
+            await createFaq({
+                faqQuestion: title,
+                faqAnswer: content,
+                // faqCategory: '', // 옵션 있으면 여기에 추가
+            });
 
-        await showAlert({
-            title: 'FAQ 등록 완료!',
-            icon: 'success',
-            timer: 1500,
-            showConfirmButton: false,
-        });
+            await showAlert({
+                title: 'FAQ 등록 완료!',
+                icon: 'success',
+                timer: 1500,
+                showConfirmButton: false,
+            });
 
-        navigate('/customer/faq');
+            navigate('/customer/faq');
+        } catch (err) {
+            await showAlert({
+                title: '등록 실패',
+                text: '서버 오류가 발생했습니다.',
+                icon: 'error'
+            });
+        }
     };
+
 
         //취소 버튼
         const handleCancel = async () => {
@@ -76,9 +83,6 @@ const FAQForm = () => {
                 confirmButtonText: '확인',
                 cancelButtonText: '취소',
             });
-            if(result.isConfirmed){
-                navigate('/customer/faq')
-            }
         }
 
     return (
@@ -91,7 +95,7 @@ const FAQForm = () => {
                         type="text"
                         value={title}
                         onChange={e => setTitle(e.target.value)}
-                        style={{ width: '97%', padding: '10px', marginBottom: '16px' }}
+                        style={{ width: '683px', padding: '10px', marginBottom: '16px' }}
                         onKeyDown={(e) => {
                             if(e.key === 'Enter'){
                                 e.preventDefault();
@@ -99,7 +103,7 @@ const FAQForm = () => {
                         }}
                     />
                 </div>
-                <div>
+                <div className='customer-write-container'>
                     <label style={{fontWeight: 'bold'}}>내용</label><br />
                     <Editor
                         ref={editorRef}
@@ -112,7 +116,7 @@ const FAQForm = () => {
                         plugins={[color]}
                     />
                 </div>
-                <div className='board-write-button-container'>
+                <div className='customer-write-button-container'>
                     <button type="submit" className="customer-form-write-button">등록</button>
                     <button type="button" className="customer-form-write-button" onClick={handleCancel}>취소</button>
                 </div>

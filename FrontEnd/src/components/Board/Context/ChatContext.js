@@ -34,7 +34,7 @@ const generatePost = (baseTitle, author, baseContent) => {
     }
 };
 
-const initialNotice = Array.from({ length: 4 }, () =>
+const initialNotice = Array.from({ length: 10 }, () =>
     generatePost('공지사항', 'admin', '공지사항 내용')
 );
 

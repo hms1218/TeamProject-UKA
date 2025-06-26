@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import './BoardDetail.css';
 import { useChat } from '../Context/ChatContext';
@@ -13,6 +13,7 @@ const mockComments = [
 const AllBoardDetail = () => {
     const { id, type } = useParams();
     const navigate = useNavigate();
+    const location = useLocation();
 
     const { chats, notice, review, updateChat, deletePostById, postTypeLabels } = useChat();
     const { isAdmin } = useAdmin();
@@ -42,6 +43,8 @@ const AllBoardDetail = () => {
     // const currentUser = localStorage.getItem("username"); //유저 정보
     const currentUser = isAdmin ? "admin" : localStorage.getItem("username") || 'me';
 
+    const filteredList = location.state?.filteredList || null;
+
     useEffect(() => {
         const postId = parseInt(id);
 
@@ -58,10 +61,16 @@ const AllBoardDetail = () => {
         }
 
         // chat + review만 정렬
-        const combined = [
-            ...chats.map(posts => ({ ...posts, type: 'chat' })),
-            ...review.map(posts => ({ ...posts, type: 'review' }))
-        ].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        let combined = [];
+
+        if(filteredList){
+            combined = filteredList;
+        } else {
+            combined = [
+                ...chats.map(posts => ({ ...posts, type: 'chat' })),
+                ...review.map(posts => ({ ...posts, type: 'review' }))
+            ].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        }
 
         const idx = combined.findIndex(posts => posts.id === postId);
         const current = {...combined[idx]};
@@ -70,16 +79,6 @@ const AllBoardDetail = () => {
         setPrev(combined[idx - 1] || null);
         setNext(combined[idx + 1] || null);
     }, [id, notice, chats, review, type]);
-
-    // 댓글 LocalStorage에서 불러오기
-    // useEffect(() => {
-    //     const saved = localStorage.getItem(`comments-${id}`);
-    //     if (saved) {
-    //         setComments(JSON.parse(saved));
-    //     } else {
-    //         setComments(mockComments);
-    //     }
-    // }, [id]);
 
     // 댓글 LocalStorage에 저장
     useEffect(() => {
@@ -130,7 +129,11 @@ const AllBoardDetail = () => {
 
     //이전글, 다음글
     const handleNavigate = (post) => {
-        navigate(`/board/all/detail/${post.type}/${post.id}`);
+        navigate(`/board/all/detail/${post.type}/${post.id}`, {
+            state: {
+                filteredList: filteredList
+            }
+        });
     }
 
     //삭제 버튼
@@ -222,42 +225,42 @@ const AllBoardDetail = () => {
                 {editCommentId === c.id || editReplyId === c.id ? (
                 <>
                     <input
-                    type="text"
-                    value={editCommentId === c.id ? editCommentText : editReplyText}
-                    onChange={e => {
-                        if (editCommentId === c.id) setEditCommentText(e.target.value);
-                        else setEditReplyText(e.target.value);
-                    }}
-                    style={{
-                        fontSize: 14,
-                        padding: "6px 12px",
-                        border: "1px solid #ccc",
-                        borderRadius: 6,
-                        width: "60%",
-                        marginTop: 6,
-                    }}
+                        type="text"
+                        value={editCommentId === c.id ? editCommentText : editReplyText}
+                        onChange={e => {
+                            if (editCommentId === c.id) setEditCommentText(e.target.value);
+                            else setEditReplyText(e.target.value);
+                        }}
+                        style={{
+                            fontSize: 14,
+                            padding: "6px 12px",
+                            border: "1px solid #ccc",
+                            borderRadius: 6,
+                            width: "60%",
+                            marginTop: 6,
+                        }}
                     />
                     <button
-                    className="board-detail-comment-button"
-                    onClick={() => {
-                        if (editCommentId === c.id) saveEditComment();
-                        else saveEditReply();
-                    }}
-                    style={{
-                        cursor: 'pointer',
-                    }}
-                    >
-                    저장
+                        className="board-detail-comment-button"
+                        onClick={() => {
+                            if (editCommentId === c.id) saveEditComment();
+                            else saveEditReply();
+                        }}
+                        style={{
+                            cursor: 'pointer',
+                        }}
+                        >
+                        저장
                     </button>
                     <button
-                    className="board-detail-comment-button"
-                    onClick={() => {
-                        setEditCommentId(null);
-                        setEditReplyId(null);
-                    }}
-                    style={{
-                        cursor: 'pointer',
-                    }}
+                        className="board-detail-comment-button"
+                        onClick={() => {
+                            setEditCommentId(null);
+                            setEditReplyId(null);
+                        }}
+                        style={{
+                            cursor: 'pointer',
+                        }}
                     >
                     취소
                     </button>
@@ -268,36 +271,36 @@ const AllBoardDetail = () => {
                     {(isAdmin || c.author === currentUser) && (
                     <>
                         <button
-                        onClick={() =>
-                            c.parentId
-                            ? EditReply(c)
-                            : EditComment(c)
-                        }
-                        style={{
-                            fontSize: 13,
-                            marginLeft: 4,
-                            background: 'none',
-                            border: 'none',
-                            color: '#0984e3',
-                            cursor: 'pointer',
-                        }}
+                            onClick={() =>
+                                c.parentId
+                                ? EditReply(c)
+                                : EditComment(c)
+                            }
+                            style={{
+                                fontSize: 13,
+                                marginLeft: 4,
+                                background: 'none',
+                                border: 'none',
+                                color: '#0984e3',
+                                cursor: 'pointer',
+                            }}
                         >
                         ✏️ 수정
                         </button>
                         <button
-                        onClick={() =>
-                            c.parentId
-                            ? handleDeleteReply(c.id)
-                            : handleDeleteComment(c.id)
-                        }
-                        style={{
-                            fontSize: 13,
-                            marginLeft: 6,
-                            background: 'none',
-                            border: 'none',
-                            color: '#e17055',
-                            cursor: 'pointer',
-                        }}
+                            onClick={() =>
+                                c.parentId
+                                ? handleDeleteReply(c.id)
+                                : handleDeleteComment(c.id)
+                            }
+                            style={{
+                                fontSize: 13,
+                                marginLeft: 6,
+                                background: 'none',
+                                border: 'none',
+                                color: '#e17055',
+                                cursor: 'pointer',
+                            }}
                         >
                         🗑 삭제
                         </button>
@@ -433,15 +436,9 @@ const AllBoardDetail = () => {
             return newReported;
         });
     };
-
-    // const category = {
-    //     notice: '공지사항',
-    //     chat: '속닥속닥',
-    //     review: '입양후기',
-    // }
     
     return (
-        <div style={{minWidth:'1075px'}}>
+        <div style={{ minWidth:'1075px' }}>
             <div className='board-detail-title-container'>
                 <p style={{marginTop: 20}}>[ {postTypeLabels[post.type]} ]</p>  
                 <div style={{textAlign: 'right', marginTop:15}}>

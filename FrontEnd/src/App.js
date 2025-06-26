@@ -117,17 +117,17 @@ function App() {
                             <Route path="all/detail/:type/:id" element={<AllBoardDetail />} />
                             <Route path="all/edit/:type/:id" element={<AllBoardEdit />} />
                             <Route path="notice" element={<Notice />} />
-                            <Route path="notice/new" element={<NoticeForm />} />
-                            <Route path="notice/:id" element={<NoticeDetail />} />
-                            <Route path="notice/:id/new" element={<NoticeEdit />} />
+                            <Route path="notice/form" element={<NoticeForm />} />
+                            <Route path="notice/detail/:type/:id" element={<NoticeDetail />} />
+                            <Route path="notice/edit/:type/:id" element={<NoticeEdit />} />
                             <Route path="chat" element={<ChatList />} />
-                            <Route path="chat/new" element={<ChatForm />} />
-                            <Route path="chat/:id" element={<ChatDetail />} />
-                            <Route path="chat/:id/new" element={<ChatEdit />} />
+                            <Route path="chat/form" element={<ChatForm />} />
+                            <Route path="chat/detail/:type/:id" element={<ChatDetail />} />
+                            <Route path="chat/edit/:type/:id" element={<ChatEdit />} />
                             <Route path="adoptionReview" element={<AdoptionReview />} />
-                            <Route path="adoptionReview/new" element={<ReviewForm />} />
-                            <Route path="adoptionReview/:id" element={<AdoptionReviewDetail />} />
-                            <Route path="adoptionReview/:id/new" element={<ReviewEdit />} />
+                            <Route path="adoptionReview/form" element={<ReviewForm />} />
+                            <Route path="adoptionReview/detail/:type/:id" element={<AdoptionReviewDetail />} />
+                            <Route path="adoptionReview/edit/:type/:id" element={<ReviewEdit />} />
                         </Route>
                         {/* 고객센터 라우팅 */}
                         <Route path="/customer/*" element={

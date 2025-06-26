@@ -3,9 +3,16 @@ import { useNavigate } from 'react-router-dom';
 import { useChat } from '../Context/ChatContext';
 import './AllBoard.css';
 import Swal from 'sweetalert2';
+import axios from 'axios';
+
+const API_BASE_URL = 'http://localhost:8888';
 
 const AllBoard = () => {
-    const { chats, notice, review, postTypeLabels } = useChat();
+    // const { postTypeLabels } = useChat();
+
+    const [notice, setNotice] = useState([]);
+    const [chat, setChat] = useState([]);
+    const [review, setReview] = useState([]);
 
     const [currentPage, setCurrentPage] = useState(1);
     const navigate = useNavigate();
@@ -15,8 +22,37 @@ const AllBoard = () => {
     const [searchKeyword, setSearchKeyword] = useState(''); //키워드
     const [filteredPosts, setFilteredPosts] = useState([]); //검색된 게시글 배열
     const [isSearching, setIsSearching] = useState(false);
+    const [confirmKeyword, setConfirmKeyword] = useState('');
+    const [searchOption, setSearchOption] = useState('title');
 
     const itemsPerPage = 10;
+
+    const postTypeLabels = {
+        notice: '공지사항',
+        chat: '속닥속닥',
+        review: '입양후기'
+    };
+
+    //전체 게시글 조회
+    useEffect(() => {
+        const fetchBoard = async () => {
+            try {
+                const res = await axios.get(`${API_BASE_URL}/board`);
+                console.log('게시글 데이터:', res.data);
+                setNotice(res.data.filter(post => post.category.toLowerCase() === 'notice'));
+                setChat(res.data.filter(post => post.category.toLowerCase() === 'chat'));
+                setReview(res.data.filter(post => post.category.toLowerCase() === 'review'));
+            } catch (error) {
+                console.error('게시글 불러오기 실패', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: '게시글 불러오기 실패',
+                    text: '서버에서 게시글을 불러오지 못했습니다.'
+                });
+            }
+        }
+        fetchBoard();
+    },[])
 
     // 정렬 함수
     const sortPosts = (posts) => {
@@ -24,7 +60,7 @@ const AllBoard = () => {
 
         return [...posts].sort((a, b) => {
             if (sortOption === 'latest') return order * (new Date(b.createdAt) - new Date(a.createdAt));
-            if (sortOption === 'views') return order * (b.views - a.views);
+            if (sortOption === 'view') return order * (b.view - a.view);
             if (sortOption === 'likes') return order * (b.likes - a.likes);
             if (sortOption === 'comment') return order * (b.comment - a.comment);
             return 0;
@@ -39,13 +75,14 @@ const AllBoard = () => {
 	//정렬된 일반게시글
     const combinedPosts = useMemo(() =>
         sortPosts([
-            ...chats.map(post => ({ ...post, type: 'chat' })),
+            ...chat.map(post => ({ ...post, type: 'chat' })),
             ...review.map(post => ({ ...post, type: 'review' })),
-        ]), [chats, review, sortOption, sortAsc]);
+        ]), [chat, review, sortOption, sortAsc]);
 
     // 정렬된 검색 결과
     const sortedFilteredPosts = useMemo(() =>
-        sortPosts(filteredPosts), [filteredPosts, sortOption, sortAsc]);
+        sortPosts(filteredPosts), [filteredPosts, sortOption, sortAsc]
+    );
 
     // 현재 페이지에 보여줄 게시글
     const paginatedPosts = isSearching ? sortedFilteredPosts : combinedPosts;
@@ -56,10 +93,10 @@ const AllBoard = () => {
         (isSearching ? filteredPosts.length : combinedPosts.length) / itemsPerPage));
 
 	// 현재 페이지의 게시글만 추출
-    const currentPosts = combinedPosts.slice(
-        (currentPage - 1) * itemsPerPage,
-        currentPage * itemsPerPage
-    );
+    // const currentPosts = combinedPosts.slice(
+    //     (currentPage - 1) * itemsPerPage,
+    //     currentPage * itemsPerPage
+    // );
 
 	// 페이지 버튼 생성 로직
     const getPageNumbers = () => {
@@ -73,7 +110,12 @@ const AllBoard = () => {
 
 	//타이틀 클릭시
     const handleTitleClick = (post) => {
-        navigate(`/board/all/detail/${post.type}/${post.id}`, { state: { postType: post.type } });
+        navigate(`/board/all/detail/${post.type}/${post.id}`, { 
+            state: { 
+                postType: post.type,
+                filteredList: isSearching ? sortedFilteredPosts : null,
+            } 
+        });
     };
 
 	//글쓰기 버튼
@@ -102,13 +144,32 @@ const AllBoard = () => {
         }
 
         const filtered = combinedPosts.filter(post => {
-            return post.title.toLowerCase().includes(keyword.toLowerCase())
+            if(searchOption === 'title'){
+                return post.title.toLowerCase().includes(keyword.toLowerCase())
+            }
+            else if(searchOption === 'author'){
+                return post.author.toLowerCase().includes(keyword.toLowerCase())
+            }
+            return false;
         });
 
         setFilteredPosts(filtered);
         setCurrentPage(1); // 검색시 첫 페이지로 이동
         setIsSearching(true);
+        setConfirmKeyword(keyword);
         // setSearchKeyword('')
+    }
+
+    //검색한 키워드 강조
+    const highlightKeyword = (text, keyword) => {
+        if(!keyword) return text;
+
+        const regex = new RegExp(`(${keyword})`, 'gi');
+        const parts = text.split(regex);
+
+        return parts.map((part, index) =>
+            regex.test(part) ? <b key={index}>{part}</b> : <span key={index}>{part}</span>
+        );
     }
 
     // 날짜 포맷 함수
@@ -133,7 +194,7 @@ const AllBoard = () => {
                     setSortAsc(false);
                 }}>
             <option value='latest' selected>최신순</option>
-            <option value='views'>조회순</option>
+            <option value='view'>조회순</option>
             <option value='likes'>추천순</option>
             <option value='comment'>댓글순</option>
             </select>
@@ -148,14 +209,14 @@ const AllBoard = () => {
                 <th>작성자</th>
 				<th className='comment-header'>
                     <button className="filter-btn" onClick={() => {
-                        if(sortOption === 'views'){
+                        if(sortOption === 'view'){
                             setSortAsc(!sortAsc);
                         } else{
-                            setSortOption('views');
+                            setSortOption('view');
                             setSortAsc(true);
                         }
                         }}>
-                        조회 {sortOption === 'views' ? (!sortAsc ? '∨' : '∧') : '∨'}
+                        조회 {sortOption === 'view' ? (!sortAsc ? '∨' : '∧') : '∨'}
                     </button>
 				</th>
 				<th className='comment-header'>
@@ -204,13 +265,24 @@ const AllBoard = () => {
                         <div className='cell-text'>{postTypeLabels[post.type]}</div>
                     </td>
                     <td className="notice-title" onClick={() => handleTitleClick(post)}> 
-                        <div className='cell-text'>📢{post.title}</div>
+                        <div className='cell-text'>
+                            📢
+                            {searchOption === 'title' 
+                                ? highlightKeyword(post.title, isSearching ? confirmKeyword : '')
+                                : post.title
+                            }
+                        </div>
                     </td>
                     <td className='notice-cell'>
-                        <div className='cell-text'>{post.author}</div>
+                        <div className='cell-text'>
+                            {searchOption === 'author' 
+                                ? highlightKeyword(post.author, isSearching ? confirmKeyword : '')
+                                : post.author
+                            }
+                        </div>
                     </td>
                     <td className='notice-cell'>
-                        <div className='cell-text'>{post.views}</div>
+                        <div className='cell-text'>{post.view}</div>
                     </td>
                     <td className='notice-cell'>
                         <div className='cell-text'>{post.likes}</div>
@@ -232,13 +304,23 @@ const AllBoard = () => {
                         </td>
                         <td className="title-cell" onClick={() => handleTitleClick(post)}>
                         {/* {post.isSecret ? '🔒 ' : ''} */}
-                        <div className='cell-text'>{post.title}</div>
+                            <div className='cell-text'>
+                                {searchOption === 'title' 
+                                    ? highlightKeyword(post.title, isSearching ? confirmKeyword : '')
+                                    : post.title
+                                }
+                            </div>
                         </td>
                         <td>
-                            <div className='cell-text'>{post.author}</div>
+                            <div className='cell-text'>
+                                {searchOption === 'author' 
+                                    ? highlightKeyword(post.author, isSearching ? confirmKeyword : '')
+                                    : post.author
+                                }
+                            </div>
                         </td>
                         <td>
-                            <div className='cell-text'>{post.views}</div>
+                            <div className='cell-text'>{post.view}</div>
                         </td>
                         <td>
                             <div className='cell-text'>{post.likes}</div>
@@ -297,6 +379,13 @@ const AllBoard = () => {
         </div>
 
         <div className="board-search">   
+            <select className='board-search-option'
+                value={searchOption}
+                onChange={e => setSearchOption(e.target.value)}
+                >
+                <option value='title' selected>제목</option>
+                <option value='author'>작성자</option>
+            </select>
             <input 
                 type="text" 
                 placeholder="검색어를 입력해주세요"

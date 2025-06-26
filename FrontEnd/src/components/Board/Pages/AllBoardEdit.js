@@ -158,7 +158,7 @@ const AllBoardEdit = () => {
                     />
                 </div>
                 <div className='board-write-button-container'>
-                    <button type="submit" className="board-write-button">완료</button>
+                    <button type="submit" className="board-write-button">수정</button>
                     <button type="button" className="board-write-button" onClick={handleCancel}>취소</button>
                 </div>
             </form>

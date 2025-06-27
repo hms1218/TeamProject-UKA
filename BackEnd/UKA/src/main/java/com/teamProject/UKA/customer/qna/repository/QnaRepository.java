@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.teamProject.UKA.customer.qna.entity.QnaEntity;
 
@@ -17,5 +18,5 @@ public interface QnaRepository extends JpaRepository<QnaEntity, Long> {
     Long findMaxQnaNo();
 
     // qnaNo로 상세 조회
-    Optional<QnaEntity> findByQnaNo(Long qnaNo);
+    Optional<QnaEntity> findByQnaNo(@Param("qnaNo") Long qnaNo);
 }

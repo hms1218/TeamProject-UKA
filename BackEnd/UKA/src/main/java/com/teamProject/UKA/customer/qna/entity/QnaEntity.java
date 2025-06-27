@@ -63,6 +63,9 @@ public class QnaEntity {
 
     @Column(name = "qna_updated_at")
     private LocalDateTime qnaUpdatedAt;
+    
+    @Column(name = "qna_report_count")
+    private Integer qnaReportCount = 0;
 
     @PrePersist
     protected void onCreate() {

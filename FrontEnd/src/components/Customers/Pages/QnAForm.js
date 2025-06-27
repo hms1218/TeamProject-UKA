@@ -8,18 +8,40 @@ import 'tui-color-picker/dist/tui-color-picker.css';
 import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css';
 import './WriteButton.css';
 import './Form.css';
-import showAlert from '../Context/AlertContext'
+import { createQna } from '../../../api/CustomerApiData';
 
 const QnAForm = () => {
     const [title, setTitle] = useState('');
     const navigate = useNavigate();
     const editorRef = useRef(null);
     const { showAlert } = useAlert();
+    const [isSecret, setIsSecret] = useState(false);
+    const [password, setPassword] = useState('');
+
+    // 로그인 유저 정보 가져오기
+    const [user] = useState(() => JSON.parse(localStorage.getItem('user')));
+
+    
+    useEffect(() => {
+        // 로그인 안 되어 있으면 로그인 페이지로 리다이렉트
+        if (!user) {
+            showAlert({
+                title: '로그인이 필요합니다.',
+                icon: 'warning'
+            }).then(() => {
+                navigate('/login'); // 로그인 페이지로 이동
+            });
+        }
+    }, [user, navigate, showAlert]);
+
 
     useEffect(() => {
         // 제목 포커싱
         document.querySelector('.customer-qna-form-title input')?.focus();
     }, []);
+    
+    // 이후 user가 없으면 return null로 렌더링 막기
+    if (!user) return null;
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -53,7 +75,13 @@ const QnAForm = () => {
 
         if (!result || !result.isConfirmed) return;
 
-        // 실제 등록 로직 (API 연동 예정)
+        await createQna({
+            qnaTitle: title,
+            qnaContent: content,
+            qnaIsSecret: isSecret ? 'Y' : 'N',
+            qnaPassword: password,
+            // qnaWriter: user?.nickname // 또는 user.name 등 로그인 정보 기반
+        });
 
         await showAlert({
             title: 'QnA 등록 완료!',
@@ -113,6 +141,29 @@ const QnAForm = () => {
                         plugins={[color]}
                     />
                 </div>
+                <div style={{ marginTop: '16px' }}>
+                    <label>
+                        <input
+                            type="checkbox"
+                            checked={isSecret}
+                            onChange={() => setIsSecret(!isSecret)}
+                        />
+                        비밀글로 등록
+                    </label>
+                </div>
+
+                {isSecret && (
+                    <div style={{ marginTop: '8px' }}>
+                        <label>비밀번호</label><br />
+                        <input
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            placeholder="비밀번호를 입력하세요"
+                            style={{ padding: '10px', width: '98%' }}
+                        />
+                    </div>
+                )}
                 <div className='board-write-button-container'>
                     <button type="submit" className="customer-form-write-button">등록</button>
                     <button type="button" className="customer-form-write-button" onClick={handleCancel}>취소</button>

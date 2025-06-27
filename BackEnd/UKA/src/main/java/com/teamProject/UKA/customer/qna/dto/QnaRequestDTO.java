@@ -13,4 +13,5 @@ public class QnaRequestDTO {
     private String qnaIsReported; // 'Y' / 'N'
     private String qnaAnswer;           // (답변 등록/수정시만)
     private String qnaAnswerWriter;     // (답변 작성자, 필요시)
+    private Integer qnaReportCount;
 }

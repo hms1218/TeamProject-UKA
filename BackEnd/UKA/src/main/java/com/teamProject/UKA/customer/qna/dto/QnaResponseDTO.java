@@ -21,6 +21,7 @@ public class QnaResponseDTO {
     private String qnaAnswerWriter;
     private LocalDateTime qnaCreatedAt;
     private LocalDateTime qnaUpdatedAt;
+    private Integer qnaReportCount;
 
     public static QnaResponseDTO fromEntity(QnaEntity entity) {
         QnaResponseDTO dto = new QnaResponseDTO();
@@ -37,6 +38,7 @@ public class QnaResponseDTO {
         dto.setQnaAnswerWriter(entity.getQnaAnswerWriter());
         dto.setQnaCreatedAt(entity.getQnaCreatedAt());
         dto.setQnaUpdatedAt(entity.getQnaUpdatedAt());
+        dto.setQnaReportCount(entity.getQnaReportCount());
         return dto;
     }
 }

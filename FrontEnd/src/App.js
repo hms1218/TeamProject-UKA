@@ -52,6 +52,9 @@ import AdminQnADetail from './components/Customers/Pages/Admin/AdminQnADetail';
 import { RequestMain } from './components/Request/RequestMain';
 import { RequestWrite } from './components/Request/RequestWrite';
 
+import NaverMap from './components/Map/NaverMap';
+
+
 import './App.css';
 
 function App() {
@@ -119,9 +122,7 @@ function App() {
 
                                     {/* 고객센터 */}
                                     <Route path="/customer/*" element={
-                                        <QnAProvider>
                                             <CustomerLayout />
-                                        </QnAProvider>
                                     }>
                                         <Route index element={<FAQList />} />
                                         <Route path="faq" element={<FAQList />} />

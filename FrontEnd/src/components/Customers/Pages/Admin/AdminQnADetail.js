@@ -2,6 +2,7 @@ import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { fetchQnaDetail } from '../../../../api/CustomerApiData';
 import { useAlert } from '../../Context/AlertContext';
+import { editQna } from '../../../../api/CustomerApiData';
 import './AdminQnADetail.css';
 
 const AdminQnADetail = () => {

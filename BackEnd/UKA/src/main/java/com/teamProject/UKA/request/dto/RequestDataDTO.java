@@ -36,7 +36,7 @@ public class RequestDataDTO {
 		return RequestDataEntity.builder()
 				.no(no)
 				.find(find)
-				.user(User.builder().no(user_no).build())
+				.user(User.builder().seq(user_no).build())
 				
 				.img(img)
 				.kind(kind)

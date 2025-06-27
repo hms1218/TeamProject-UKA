@@ -29,7 +29,7 @@ import AdoptionReview from './components/Board/Pages/AdoptionReview';
 import ReviewForm from './components/Board/Pages/ReviewForm';
 import AdoptionReviewDetail from './components/Board/Pages/AdoptionReviewDetail';
 import ReviewEdit from './components/Board/Pages/ReviewEdit';
-import { ChatProvider } from './components/Board/Context/ChatContext';
+import { BoardProvider } from './components/Board/Context/BoardContext';
 import { useEffect } from 'react';
 
 // 고객센터 관련
@@ -94,28 +94,28 @@ function App() {
                                     {/* 게시판 전체 */}
                                     <Route path="/board/*"
                                         element={
-                                            <ChatProvider>
+                                            <BoardProvider>
                                                 <BoardLayout />
-                                            </ChatProvider>
+                                            </BoardProvider>
                                         }
                                     >
                                         <Route index element={<AllBoard />} />
                                         <Route path="all" element={<AllBoard />} />
                                         <Route path="all/form" element={<AllBoardForm />} />
-                                        <Route path="all/detail/:id" element={<AllBoardDetail />} />
+                                        <Route path="all/detail/:type/:id" element={<AllBoardDetail />} />
                                         <Route path="all/edit/:type/:id" element={<AllBoardEdit />} />
                                         <Route path="notice" element={<Notice />} />
-                                        <Route path="notice/new" element={<NoticeForm />} />
-                                        <Route path="notice/:id" element={<NoticeDetail />} />
-                                        <Route path="notice/:id/new" element={<NoticeEdit />} />
+                                        <Route path="notice/form" element={<NoticeForm />} />
+                                        <Route path="notice/detail/:type/:id" element={<NoticeDetail />} />
+                                        <Route path="notice/edit/:type/:id" element={<NoticeEdit />} />
                                         <Route path="chat" element={<ChatList />} />
-                                        <Route path="chat/new" element={<ChatForm />} />
-                                        <Route path="chat/:id" element={<ChatDetail />} />
-                                        <Route path="chat/:id/new" element={<ChatEdit />} />
+                                        <Route path="chat/form" element={<ChatForm />} />
+                                        <Route path="chat/detail/:type/:id" element={<ChatDetail />} />
+                                        <Route path="chat/edit/:type/:id" element={<ChatEdit />} />
                                         <Route path="adoptionReview" element={<AdoptionReview />} />
-                                        <Route path="adoptionReview/new" element={<ReviewForm />} />
-                                        <Route path="adoptionReview/:id" element={<AdoptionReviewDetail />} />
-                                        <Route path="adoptionReview/:id/new" element={<ReviewEdit />} />
+                                        <Route path="adoptionReview/form" element={<ReviewForm />} />
+                                        <Route path="adoptionReview/detail/:type/:id" element={<AdoptionReviewDetail />} />
+                                        <Route path="adoptionReview/edit/:type/:id" element={<ReviewEdit />} />
                                     </Route>
 
                                     {/* 고객센터 */}

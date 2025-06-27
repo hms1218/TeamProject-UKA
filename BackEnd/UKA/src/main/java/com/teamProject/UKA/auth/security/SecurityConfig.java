@@ -51,6 +51,8 @@ public class SecurityConfig {
                         
                         "/request",
                     	"/request/*"
+                        "/board/**",
+                        "/board-detail/**"
                 ).permitAll()
                 .anyRequest().authenticated()
             )

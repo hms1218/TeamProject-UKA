@@ -18,9 +18,13 @@ public class SignupRequest {
 		@Size - 길이 제한
 		@Email - 이메일 형식 검증
 	*/
+	@NotBlank(message = "username must not be blank")
+	@Size(min = 2, max = 20, message = "userId length must be between 2 and 20")
+	private String userId;
+	
 	@NotBlank(message = "username must not be blank") 
-	@Size(min = 2, max = 20, message = "username length must be between 2 and 20")
-	private String username;
+	@Size(min = 2, max = 10, message = "nickname length must be between 2 and 10")
+	private String nickname;
 	
     @NotBlank(message = "email must not be blank")
     @Email(message = "email must be a well-formed email address")

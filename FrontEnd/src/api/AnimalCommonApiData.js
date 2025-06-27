@@ -7,14 +7,15 @@ const pageIndex = 1;
 export const SidoApiData = async () => {
     const API_URL = process.env.REACT_APP_ALL_SIDO_API_URL;
     
-    
-
     try {
         const params = {
             serviceKey: API_KEY,
             numOfRows: PAGE_SIZE,
             pageNo: pageIndex,
         };
+
+        console.log("API_URL : ", API_URL);
+        console.log("params.serviceKey : ", params.serviceKey);
         const response = await fetch (
             `${API_URL}?serviceKey=${params.serviceKey}&pageNo=${params.pageNo}&numOfRows=${params.numOfRows}&_type=json`
         );

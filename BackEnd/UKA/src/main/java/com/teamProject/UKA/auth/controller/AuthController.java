@@ -41,18 +41,19 @@ public class AuthController {
 		return authService.getMe(Long.valueOf(userId));
 	}
 	
-	@PostMapping("/find-username")
+	@PostMapping("/find-userId")
 	public Map<String,String> findUsername(@RequestBody Map<String,String> req) {
 		String email = req.get("email");
-		String username = authService.findUsernameByEmail(email);
-		return Map.of("username", username);
+		String userId = authService.findUsernameByUserId(email);
+		System.out.println("userId :::: " + userId);
+		return Map.of("userId", userId);
   	}
 
 	@PostMapping("/reset-password-request")
-	public Map<String,String> requestReset(@RequestBody Map<String,String> req) {
-		System.out.println("req ::: " + req);
+	public Map<String,String> requestReset(@RequestBody Map<String, String> req) {
+		String userId = req.get("userId");
 		String email = req.get("email");
-		authService.requestPasswordReset(email);
+		authService.requestPasswordReset(userId, email);
 		return Map.of("message", "Reset link sent");
 	}
 

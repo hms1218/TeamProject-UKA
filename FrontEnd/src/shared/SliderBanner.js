@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import "./SliderBanner.css";
-import test2 from "../assets/test2.jpg";
 import DogRun2 from "../assets/DogRun2.gif";
+import noImage from "../assets/noImage.jpg";
 
 const SliderBanner = ({ currentSlide, onPrev, onNext, MainSlides }) => {
     const visibleCount = 2; // 한 번에 보여줄 슬라이드 개수
@@ -48,6 +48,7 @@ const SliderBanner = ({ currentSlide, onPrev, onNext, MainSlides }) => {
                                     src={slide.popfile1}
                                     alt={slide.kindNm}
                                     className="slide-image"
+                                    onError={e => { e.target.src = noImage; }}
                                 />
                             </div>
                             <div className="slide-info">

@@ -4,7 +4,6 @@ import { fetchQnaDetail } from '../../../../api/CustomerApiData';
 import { useAlert } from '../../Context/AlertContext';
 import './AdminQnADetail.css';
 
-
 const AdminQnADetail = () => {
     const { qnaNo } = useParams(); // 라우터 파라미터
     const [qna, setQna] = useState(null);

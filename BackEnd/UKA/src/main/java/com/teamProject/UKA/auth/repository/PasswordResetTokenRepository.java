@@ -15,6 +15,6 @@ public interface PasswordResetTokenRepository extends JpaRepository<PasswordRese
     
     // 변경 쿼리임을 명시
     @Modifying
-    @Query("delete from PasswordResetToken p where p.user = :user")
-    void deleteByUser(@Param("user") User user);
+    @Query("delete from PasswordResetToken p where p.user = :userId")
+    void deleteByUser(@Param("userId") User userId);
 }

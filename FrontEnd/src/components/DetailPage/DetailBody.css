@@ -8,7 +8,7 @@
 .DBcontainer {
     border-radius: 10px;
 
-    min-width: 850px;
+    min-width: 1075px;
     display: flex;
     flex-direction: column;
     margin-top: 20px;
@@ -19,7 +19,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #00aaff;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
     color: white;
     padding-left: 16px;
     padding-right: 16px;
@@ -83,7 +84,7 @@
     }
 
     .DBboard-header-center {
-    flex: 1;
+    flex: 3;
     display: flex;
     justify-content: center;
     }
@@ -146,6 +147,10 @@
     background-color: #e0f7ff;
     }
 
+    .DBboard-header-center select{
+        flex:1;
+    }
+
 
 /* 본문 위쪽 */
 .DBtop{
@@ -155,7 +160,7 @@
     margin-bottom: 20px;
 
 
-    height:450px;
+    height:600px;
     
     /* flex:0 0 50%; */
     flex-direction: column;
@@ -165,18 +170,14 @@
 
 /* 위쪽 지역 선택 콤보 박스 */
 .DBcombobox{
-    flex: 0 0 20%;
     border: 1px solid #cceeff;
     border-radius: 10px;
-    
-    width: 100%;
+    background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     display: flex;
     flex-direction: row;
-    background-color:#00aaff;
-    justify-content: center;
-    text-align: center;
-    align-items: center;
-    align-self: center;
+  
+    padding : 20px 40px;
+    gap:40px;
 }
 
 /* 콤보박스 안 select */
@@ -188,6 +189,16 @@
     text-align: left;
     padding:5px 10px;
     border-radius: 8px;
+    flex:2;
+}
+
+/* 콤보박스 이미지 */
+.DBdialogimg{
+    width: 50px;       
+    height: 50px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-right: 20px;
 }
 
 /* 콤보박스 안 '검색하기' 버튼 */
@@ -237,3 +248,33 @@
     gap:30px;
 }
 /* 개별 css는 CardComponent에 있음. */
+
+
+/* 보드에서 가져온 페이지 네이션 */
+.DBpagination {
+    display: flex;
+    margin-bottom: 20px;
+    justify-content: center;
+    gap: 6px;
+    font-size: 14px;
+}
+
+.DBpagination button {
+    padding: 4px 8px;
+    border: 1px solid #ccc;
+    background: white;
+    cursor: pointer;
+}
+
+.DBpagination .active {
+    background-color: #b19cd9;
+    color: white;
+    border: none;
+    border-radius: 4px;
+}
+
+.DBpagination button:disabled {
+    background-color: #eee;
+    color: #999;
+    cursor: not-allowed;
+}

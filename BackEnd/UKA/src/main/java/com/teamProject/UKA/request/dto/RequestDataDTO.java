@@ -1,5 +1,8 @@
 package com.teamProject.UKA.request.dto;
 
+import org.springframework.http.RequestEntity;
+
+import com.teamProject.UKA.auth.model.User;
 import com.teamProject.UKA.request.model.RequestDataEntity;
 
 import lombok.AllArgsConstructor;
@@ -27,10 +30,13 @@ public class RequestDataDTO {
 	private String contactNumber;
 	private String detail;
 	
+	private Long user_no;
+	
 	public RequestDataEntity toEntity() {
 		return RequestDataEntity.builder()
 				.no(no)
 				.find(find)
+				.user(User.builder().no(user_no).build())
 				
 				.img(img)
 				.kind(kind)

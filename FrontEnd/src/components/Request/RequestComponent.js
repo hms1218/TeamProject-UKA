@@ -8,28 +8,23 @@ export const RequestComponent = ({img=`${defimg}`,kind='종류',sex='성별',age
 
     return(
         // 미디어 카드(가로) 
-        <Card sx={{ flex:'0 0 95%', display:'flex',flexDirection:'row'}} raised={true} >
+        <Card sx={{ flex:'0 0 95%', display:'flex',flexDirection:'row'}} raised={true}>
                 <div>
                 {/* 카드 사진 내용 */}
-                    <CardMedia
+                    <CardMedia 
                     component="img"
                     height="auto"
-                    image={img}
+                    image={`/img/userimg/${img}`}
                     sx={{ width: 360, height: 300, objectFit: 'cover'}}
                     />
                 </div>
-
-
-
-
-
 
                 <div style={{display:'flex',flexDirection:'column'}}>
                     {/* 빨간 div */}
                     <Typography 
                     sx={{backgroundColor:'red', color:'white', textAlign:'center' }}
                     variant="h5" component="div" >
-                        🐾{kind} | 🧸{sex} | 🕒{age} | 🏷️{name}
+                        🐾{kind} | 🧸{sex===!true?'수컷':'암컷'} | 🕒{age} | 🏷️{name}
                     </Typography>
                     
                     {/* 카드 상세 내용 */}

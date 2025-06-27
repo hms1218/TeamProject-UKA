@@ -45,7 +45,7 @@ public class AuthService {
 	public User signup(SignupRequest req) {
 	    String hash = pwEncoder.encode(req.getPassword());
 	    User u = new User();
-	    u.setUsername(req.getUsername());
+	    u.setNickname(req.getUsername());
 	    u.setEmail(req.getEmail());
 	    u.setPasswordHash(hash);
 	    return userRepo.save(u);
@@ -60,15 +60,16 @@ public class AuthService {
 
 		byte[] keyBytes = Decoders.BASE64.decode(jwtSecret);
 		String token = Jwts.builder()
-				.setSubject(u.getId().toString())
+				.setSubject(u.getUser_id().toString())
 				.setIssuedAt(new Date())
 				.setExpiration(new Date(System.currentTimeMillis() + jwtExpiration))
 				.signWith(Keys.hmacShaKeyFor(keyBytes), SignatureAlgorithm.HS512)
 				.compact();
 
 		UserResponse ur = new UserResponse(
-		    u.getId(), 
-		    u.getUsername(), 
+			u.getNo()
+,		    u.getUser_id(), 
+		    u.getNickname(), 
 		    u.getEmail(), 
 		    u.getPasswordHash(), // 숨길거면 주석
 	    	u.getCreatedAt()
@@ -86,7 +87,7 @@ public class AuthService {
 	public String findUsernameByEmail(String email) {
 		User u = userRepo.findByEmail(email)
 				.orElseThrow(() -> new RuntimeException("등록된 이메일이 없습니다."));
-		return u.getUsername();
+		return u.getNickname();
 	}
 
 	// ② 비밀번호 재설정 요청

@@ -1,9 +1,9 @@
 import DatePicker from 'react-datepicker';
 import defimg from '../../assets/default.jpg'
-import RequestCardComponent from './RequestCardComponent';
 import './RequestWrite.css'
-import { Button, Card, CardActionArea, CardContent, CardMedia, Input, selectClasses, TextField, Typography } from "@mui/material";
+import { Button, Switch} from "@mui/material";
 import { forwardRef, useState } from "react";
+import { useAlert } from '../Customers/Context/AlertContext';
 
 export const RequestWrite = () => {
 
@@ -19,6 +19,8 @@ export const RequestWrite = () => {
     const [local,setLocal] = useState('');
     const [phone,setPhone] = useState('');
     const [descripsion,setDescripsion] = useState('');
+
+    const { showAlert } = useAlert();
 
     //이미지 등록
     const handleImgChange = (e) => {
@@ -38,8 +40,42 @@ export const RequestWrite = () => {
         document.querySelector('.RWimageinput').click();
     }
 
-    const handleSuccess =() => {
+    // 완료 눌렀을 시 동작
+    const handleSuccess = async () => {
+        const result = await showAlert({
+            title:'작성하시겠습니까?',
+            showCancelButton : true,
+            confirmButtonText: '네',
+            cancelButtonText:'아니요',
+        })
 
+        if(result.isConfirmed){
+            const data = {
+                find : false,
+
+                name : '',
+                kind : '',
+                user_no : '',
+                sex : '',              // 
+                detail:'',             // 특징
+                age:'',                // 나이
+                lostLocation: '',      // 실종 장소
+                lostTime: '',          // 실종 시간  
+                contactNumber: '',     // 연락수단
+                characteristics: ''    // 특징
+            }
+
+            const option = {
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json",
+                },
+                body : JSON.stringify(data)
+            }
+
+            const response = fetch('http://www.localhost:8888/request',option)
+
+        }
     }
 
       const [profileData, setProfileData] = useState({
@@ -113,12 +149,13 @@ export const RequestWrite = () => {
                                             className='RWinput_main'
                                         />
                                         | 🧸
-                                        <input
+                                        {/* <input
                                             placeholder='성별'
                                             value={sex}
                                             onChange={(e)=>{setSex(e.target.value)}}
                                             className='RWinput_main'
-                                        />
+                                        /> */}<small>수컷</small>
+                                        <Switch defaultChecked color="default" /><small>암컷</small>
                                         | 🕒
                                         <input
                                             placeholder='나이'
@@ -206,7 +243,7 @@ export const RequestWrite = () => {
                         color="primary"
                         sx={{marginLeft:'auto', marginTop:'20px'}}
                         onClick={()=>{
-                            window.scrollTo(0,0)
+                            handleSuccess();
                         }}>완료
                     </Button>
             </div>{/* end top */}

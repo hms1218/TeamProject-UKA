@@ -10,7 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserResponse {
-	private Long id;
+	private Long no;
+	private String user_id;
 	private String username;
 	private String email;
 	private String password; // 숨길거면 주석

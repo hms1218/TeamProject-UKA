@@ -48,13 +48,13 @@
   border-radius: 8px;
   object-fit: cover;
   border: 2px solid #eee;
-  cursor: pointer;
+  /* cursor: pointer; */
   transition: box-shadow 0.2s, border 0.15s;
 }
-.customer-slide-thumb:hover {
+/* .customer-slide-thumb:hover {
   box-shadow: 0 0 0 2px #00aaff;
   border: 2px solid #00aaff;
-}
+} */
 
 /* 슬라이드 좌우 버튼 */
 .customer-slider-arrow-btn {

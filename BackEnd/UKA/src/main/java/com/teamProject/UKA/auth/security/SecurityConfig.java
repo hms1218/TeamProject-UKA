@@ -53,6 +53,8 @@ public class SecurityConfig {
                     	"/request/*"
                         "/board/**",
                         "/board-detail/**"
+                        "/customer/faq/**",
+                        "/customer/qna/**"
                 ).permitAll()
                 .anyRequest().authenticated()
             )
@@ -68,7 +70,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of("http://localhost:3000"));
-        config.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
+        config.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS", "PATCH"));
         config.setAllowCredentials(true);
         config.setAllowedHeaders(List.of("*"));
 

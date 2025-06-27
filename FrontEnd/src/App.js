@@ -41,7 +41,6 @@ import QnAForm from "./components/Customers/Pages/QnAForm";
 import QnADetail from "./components/Customers/Pages/QnADetail";
 import QnAEdit from "./components/Customers/Pages/QnAEdit";
 import AdoptionInquiry from "./components/Customers/Pages/AdoptionInquiry";
-import { QnAProvider } from './components/Customers/Context/QnAContext';
 //상세보기 관련
 import { DetailBody } from './components/DetailPage/DetailBody';
 import { DetailSelect } from './components/DetailPage/DetailSelect';
@@ -133,26 +132,22 @@ function App() {
                                         <Route path="qna/:id/edit" element={<QnAEdit />} />
                                         <Route path="adoption" element={<AdoptionInquiry />} />
                                     </Route>
-                                    {/* 관리자 */}
+                                    {/* 관리자 라우팅 - 독립 경로 */}
                                     <Route path="/admin/*"
                                         element={
-                                            <QnAProvider>
                                                 <AdminPage />
-                                            </QnAProvider>
                                         }
                                     />
                                     <Route path="/customer/qna/:id/admin"
                                         element={
-                                            <QnAProvider>
                                                 <AdminQnADetail />
-                                            </QnAProvider>
                                         }
                                     />
+                                            </Routes>
+                                        </AppLayout>
+                                    }
+                                    />
                                 </Routes>
-                            </AppLayout>
-                        }
-                    />
-                </Routes>
             </Router>
         </div>
     );

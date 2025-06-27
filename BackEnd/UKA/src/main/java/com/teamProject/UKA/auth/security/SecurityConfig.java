@@ -48,11 +48,10 @@ public class SecurityConfig {
                         "/api/auth/find-userId",
                         "/api/auth/reset-password-request",
                         "/api/auth/reset-password",
-                        
                         "/request",
-                    	"/request/*"
+                    	"/request/*",
                         "/board/**",
-                        "/board-detail/**"
+                        "/board-detail/**",
                         "/customer/faq/**",
                         "/customer/qna/**"
                 ).permitAll()

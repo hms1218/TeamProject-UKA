@@ -11,7 +11,7 @@ export const RequestWrite = () => {
     const [preview,setPreview] = useState(defimg);
 
     const [kind,setKind] = useState('');
-    const [sex,setSex] = useState('');
+    const [sex,setSex] = useState(false);
     const [age,setAge] = useState('');
     const [name,setName] = useState('');
 
@@ -42,6 +42,9 @@ export const RequestWrite = () => {
 
     // 완료 눌렀을 시 동작
     const handleSuccess = async () => {
+        console.log(sex==='on'?true:false)
+
+
         const result = await showAlert({
             title:'작성하시겠습니까?',
             showCancelButton : true,
@@ -155,7 +158,7 @@ export const RequestWrite = () => {
                                             onChange={(e)=>{setSex(e.target.value)}}
                                             className='RWinput_main'
                                         /> */}<small>수컷</small>
-                                        <Switch defaultChecked color="default" /><small>암컷</small>
+                                        <Switch onChange={(e)=>setSex(e.target.value)} defaultChecked color="default" /><small>암컷</small>
                                         | 🕒
                                         <input
                                             placeholder='나이'

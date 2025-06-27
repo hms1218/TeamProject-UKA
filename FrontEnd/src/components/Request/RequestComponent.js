@@ -24,7 +24,7 @@ export const RequestComponent = ({img=`${defimg}`,kind='종류',sex='성별',age
                     <Typography 
                     sx={{backgroundColor:'red', color:'white', textAlign:'center' }}
                     variant="h5" component="div" >
-                        🐾{kind} | 🧸{sex===!true?'수컷':'암컷'} | 🕒{age} | 🏷️{name}
+                        🐾{kind} | 🧸{sex===true?'수컷':'암컷'} | 🕒{age} | 🏷️{name}
                     </Typography>
                     
                     {/* 카드 상세 내용 */}

@@ -52,12 +52,6 @@ export const ChatProvider = ({ children }) => {
     const [chats, setChats] = useState(initialChat);
     const [review, setReview] = useState(initialReview);
 
-    const postTypeLabels = {
-        notice: '공지사항',
-        chat: '속닥속닥',
-        review: '입양후기',
-    };
-
     const addChat = (newPost, postType) => {
         const currentUser = localStorage.getItem("username") || "me";
 
@@ -82,23 +76,6 @@ export const ChatProvider = ({ children }) => {
         }
     }
 
-    const updateChat = (updatedPost, newType) => {
-        setChats(prev => {
-            const filtered = prev.filter(post => post.id !== updatedPost.id);
-            return newType === 'chat' ? [...filtered, updatedPost] : filtered;
-        });
-
-        setNotice(prev => {
-            const filtered = prev.filter(post => post.id !== updatedPost.id);
-            return newType === 'notice' ? [...filtered, updatedPost] : filtered;
-        });
-
-        setReview(prev => {
-            const filtered = prev.filter(post => post.id !== updatedPost.id);
-            return newType === 'review' ? [...filtered, updatedPost] : filtered;
-        });
-    };
-
     const deletePostById = (type, id) => {
         if (type === 'chat') {
             setChats(prev => prev.filter(post => post.id !== id));
@@ -109,7 +86,7 @@ export const ChatProvider = ({ children }) => {
         }
     };
 
-    return <ChatContext.Provider value={{ notice, chats, review, updateChat, addChat, deletePostById, postTypeLabels }}>{children}</ChatContext.Provider>;
+    return <ChatContext.Provider value={{ notice, chats, review, addChat, deletePostById }}>{children}</ChatContext.Provider>;
 };
 
 export const useChat = () => useContext(ChatContext);

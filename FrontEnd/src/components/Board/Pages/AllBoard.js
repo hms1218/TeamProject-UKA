@@ -8,8 +8,6 @@ import axios from 'axios';
 const API_BASE_URL = 'http://localhost:8888';
 
 const AllBoard = () => {
-    // const { postTypeLabels } = useChat();
-
     const [notice, setNotice] = useState([]);
     const [chat, setChat] = useState([]);
     const [review, setReview] = useState([]);
@@ -27,10 +25,10 @@ const AllBoard = () => {
 
     const itemsPerPage = 10;
 
-    const postTypeLabels = {
-        notice: '공지사항',
-        chat: '속닥속닥',
-        review: '입양후기'
+    const categoryLabels = {
+        NOTICE: '공지사항',
+        CHAT: '속닥속닥',
+        REVIEW: '입양후기'
     };
 
     //전체 게시글 조회
@@ -92,12 +90,6 @@ const AllBoard = () => {
     const totalPages = Math.max(1, Math.ceil(
         (isSearching ? filteredPosts.length : combinedPosts.length) / itemsPerPage));
 
-	// 현재 페이지의 게시글만 추출
-    // const currentPosts = combinedPosts.slice(
-    //     (currentPage - 1) * itemsPerPage,
-    //     currentPage * itemsPerPage
-    // );
-
 	// 페이지 버튼 생성 로직
     const getPageNumbers = () => {
         const maxButtons = 5; //페이지 바에서 최대 보여주는 버튼 개수
@@ -112,8 +104,8 @@ const AllBoard = () => {
     const handleTitleClick = (post) => {
         navigate(`/board/all/detail/${post.type}/${post.id}`, { 
             state: { 
-                postType: post.type,
-                filteredList: isSearching ? sortedFilteredPosts : null,
+                // postType: post.type,
+                filteredList: isSearching ? sortedFilteredPosts : combinedPosts,
             } 
         });
     };
@@ -262,7 +254,7 @@ const AllBoard = () => {
             {noticedChats?.map((post) => (
                 <tr key={`notice-${post.id}`} className="notice-row" style={{backgroundColor: '#ddd'}}>
                     <td className='notice-tab'>
-                        <div className='cell-text'>{postTypeLabels[post.type]}</div>
+                        <div className='cell-text'>{categoryLabels[post.category]}</div>
                     </td>
                     <td className="notice-title" onClick={() => handleTitleClick(post)}> 
                         <div className='cell-text'>
@@ -300,7 +292,7 @@ const AllBoard = () => {
                 displayedPosts.map((post) => (
                 <tr key={`${post.type}-${post.id}`}>
                         <td>
-                            <div className='cell-text'>{postTypeLabels[post.type]}</div>
+                            <div className='cell-text'>{categoryLabels[post.category]}</div>
                         </td>
                         <td className="title-cell" onClick={() => handleTitleClick(post)}>
                         {/* {post.isSecret ? '🔒 ' : ''} */}

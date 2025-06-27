@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useChat } from '../Context/ChatContext';
 import './FormButton.css';
 import { Editor } from '@toast-ui/react-editor';
 import '@toast-ui/editor/toastui-editor.css'
@@ -12,24 +11,25 @@ import { useAdmin } from '../../../api/AdminContext';
 
 
 const AllBoardForm = () => {
+    const [category, setCategory] = useState('');
     const [title, setTitle] = useState('');
-    const [postType, setPostType] = useState('');
+    const [content, setContent] = useState('');
+
     const navigate = useNavigate();
     const titleInputRef = useRef(null);
     const editorRef = useRef(null);
 
-    const { addChat } = useChat();
     const { isAdmin } = useAdmin();
 
     //글쓰기 시 제목 포커스
     //로컬 스토리지에서 데이터 불러오기
     useEffect(() => {
         const savedTitle = localStorage.getItem('post-title');
-        const savedType = localStorage.getItem('post-type');
+        const savedCategory = localStorage.getItem('post-category');
         const savedContent = localStorage.getItem('post-content');
         
         if (savedTitle) setTitle(savedTitle);
-        if (savedType) setPostType(savedType);
+        if (savedCategory) setCategory(savedCategory);
         if (savedContent && editorRef.current) {
             setTimeout(() => {
                 editorRef.current.getInstance().setMarkdown(savedContent);
@@ -52,7 +52,7 @@ const AllBoardForm = () => {
 
         const content = editorRef.current?.getInstance().getMarkdown();
 
-        if(!postType){
+        if(!category){
             Swal.fire({
                 icon: 'warning',
                 title: '카테고리를 선택해주세요',
@@ -81,6 +81,7 @@ const AllBoardForm = () => {
 
         const newPost = {
             title,
+            category,
             content,
             author: '나야나', // 추후 사용자 정보로 교체 가능
             comment: 0,
@@ -88,7 +89,6 @@ const AllBoardForm = () => {
             likes: 0,
             createdAt: new Date(),
             isSecret: false,
-            type: postType,
         }
 
         Swal.fire({
@@ -102,7 +102,7 @@ const AllBoardForm = () => {
             cancelButtonText: '취소',
         }).then((result) => {
             if(result.isConfirmed){
-                addChat(newPost, postType);
+                // addChat(newPost, postType);
                 clearTempData(); //저장된 임시데이터 삭제
                 Swal.fire({
                     title: '등록 완료',
@@ -136,22 +136,6 @@ const AllBoardForm = () => {
         })
     }
 
-    //임시저장 버튼
-    // const handleTempSave = () => {
-    //     const content = editorRef.current?.getInstance().getMarkdown();
-    //     localStorage.setItem('post-title', title);
-    //     localStorage.setItem('post-type', postType);
-    //     localStorage.setItem('post-content', content);
-
-    //     Swal.fire({
-    //         title: '임시 저장 완료',
-    //         text: '작성 중인 글이 임시 저장되었습니다.',
-    //         icon: 'success',
-    //         confirmButtonColor: '#6c5ce7',
-    //         confirmButtonText: '확인'
-    //     });
-    // }
-
     return (
         <div>
             <h2>게시글 글쓰기</h2>
@@ -160,8 +144,8 @@ const AllBoardForm = () => {
                     <label style={{marginRight:10, fontWeight: 'bold'}}>카테고리</label>
                     <select 
                         style={{marginBottom: 16, padding: 5}} 
-                        value={postType} 
-                        onChange={(e) => setPostType(e.target.value)}
+                        value={category} 
+                        onChange={(e) => setCategory(e.target.value)}
                         >
                         <option value=''>선택</option>
                         {isAdmin && <option value='notice'>공지사항</option>} {/* 관리자만 공지사항 글쓰기 가능 */}

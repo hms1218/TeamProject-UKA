@@ -30,7 +30,7 @@ import AdoptionReview from './components/Board/Pages/AdoptionReview';
 import ReviewForm from './components/Board/Pages/ReviewForm';
 import AdoptionReviewDetail from './components/Board/Pages/AdoptionReviewDetail';
 import ReviewEdit from './components/Board/Pages/ReviewEdit';
-import { ChatProvider } from './components/Board/Context/ChatContext';
+import { BoardProvider } from './components/Board/Context/BoardContext';
 import { useEffect } from 'react';
 
 // 고객센터 관련
@@ -106,9 +106,9 @@ function App() {
                         {/* 게시판 전체 (MainBodys 제외) */}
                         <Route path="/board/*"
                             element={
-                                <ChatProvider>
+                                <BoardProvider>
                                     <BoardLayout />
-                                </ChatProvider>
+                                </BoardProvider>
                             }
                         >
                             <Route index element={<AllBoard />} />

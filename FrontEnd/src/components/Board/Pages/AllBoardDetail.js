@@ -1,23 +1,36 @@
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import './BoardDetail.css';
-import { useChat } from '../Context/ChatContext';
+import { useBoard } from '../Context/BoardContext';
 import Swal from 'sweetalert2';
 import { useAdmin } from '../../../api/AdminContext';
+import axios from 'axios';
 
 const mockComments = [
     { id: 1, author: 'guest1', content: '저도 궁금해요.', date: '25.06.14', parentId: null },
     { id: 2, author: 'user2', content: '답변 부탁드려요.', date: '25.06.14',parentId: null },
 ];
 
+const API_BASE_URL = 'http://localhost:8888';
+
+const categoryLabels = {
+        NOTICE: '공지사항',
+        CHAT: '속닥속닥',
+        REVIEW: '입양후기'
+    };
+
 const AllBoardDetail = () => {
     const { id, type } = useParams();
     const navigate = useNavigate();
     const location = useLocation();
 
-    const { chats, notice, review, updateChat, deletePostById, postTypeLabels } = useChat();
+    const { posts } = useBoard();
     const { isAdmin } = useAdmin();
 
+    const [notice, setNotice] = useState([]);
+    const [chat, setChat] = useState([]);
+    const [review, setReview] = useState([]);
+    
     const [post, setPost] = useState(null);
     const [prev, setPrev] = useState(null);
     const [next, setNext] = useState(null);
@@ -46,39 +59,85 @@ const AllBoardDetail = () => {
     const filteredList = location.state?.filteredList || null;
 
     useEffect(() => {
-        const postId = parseInt(id);
+        const fetchBoardById = async () => {
+            try {
+                const res = await axios.get(`${API_BASE_URL}/board/${id}`);
+                setPost(res.data);
+            } catch (error) {
+                console.error('게시글 불러오기 실패', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: '게시글 불러오기 실패',
+                    text: '서버에서 게시글을 불러오지 못했습니다.'
+                });
+                navigate('/board/all');
+            }
+        }
+        fetchBoardById();
+    },[id])
 
-        // notice는 별도 처리
-        if (type === 'notice') {
-            const sortedNotices = [...notice].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-            const idx = sortedNotices.findIndex(notice => notice.id === postId);
-            const current = sortedNotices[idx];
+    useEffect(() => {
+        if(!post) return;
 
-            setPost({...current, type: 'notice'});
-            setPrev(sortedNotices[idx - 1] || null);
-            setNext(sortedNotices[idx + 1] || null);
+        console.log('post.category:', post.category);
+        console.log('filteredList:', filteredList);
+
+        const notice = posts.filter(p => p.category.toUpperCase() === 'NOTICE');
+         console.log('notice:', notice);
+        const chat = posts.filter(p => p.category.toUpperCase() === 'CHAT');
+        const review = posts.filter(p => p.category.toUpperCase() === 'REVIEW');
+
+        let noticeList = [];
+
+        if(post.category === 'NOTICE'){
+
+            if (filteredList && filteredList.length > 0) {
+                const filteredNotice = filteredList.filter(p => p.category.toUpperCase() === 'NOTICE');
+                noticeList = filteredNotice.length > 0 ? filteredNotice : notice;
+            } else {
+                noticeList = notice;
+            }
+
+            console.log('noticeList:', noticeList);
+            if(!noticeList || noticeList.length === 0){
+                setPrev(null);
+                setNext(null);
+            }
+
+            const sortedNotice = [...noticeList].sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+            const idx = sortedNotice.findIndex(p => p.id === post.id);
+            console.log('현재 post 인덱스:', idx);
+            console.log('post.id:', post.id, 'type:', typeof post.id);
+            console.log('noticeList ids:', noticeList.map(p => ({ id: p.id, type: typeof p.id })));
+            setPrev(sortedNotice[idx - 1] || null);
+            setNext(sortedNotice[idx + 1] || null);
+            return
+        }
+
+        let combinedList = [];
+
+        if(filteredList){
+            combinedList = filteredList.filter(post => post.category === 'CHAT' || post.category === 'REVIEW');
+        } else{
+            combinedList = [
+                ...chat.map(post => ({...post, category: 'CHAT'})),
+                ...review.map(post => ({...post, category: 'REVIEW'}))
+            ]
+        }
+
+        if(combinedList.length === 0){
+            setPrev(null);
+            setNext(null);
             return;
         }
 
-        // chat + review만 정렬
-        let combined = [];
+        const sortedCombined = combinedList.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+        const idx = sortedCombined.findIndex(p => p.id === post.id);
 
-        if(filteredList){
-            combined = filteredList;
-        } else {
-            combined = [
-                ...chats.map(posts => ({ ...posts, type: 'chat' })),
-                ...review.map(posts => ({ ...posts, type: 'review' }))
-            ].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        }
+        setPrev(sortedCombined[idx - 1] || null);
+        setNext(sortedCombined[idx + 1] || null);
 
-        const idx = combined.findIndex(posts => posts.id === postId);
-        const current = {...combined[idx]};
-
-        setPost({...current});
-        setPrev(combined[idx - 1] || null);
-        setNext(combined[idx + 1] || null);
-    }, [id, notice, chats, review, type]);
+    },[post, filteredList, posts])
 
     // 댓글 LocalStorage에 저장
     useEffect(() => {
@@ -149,7 +208,7 @@ const AllBoardDetail = () => {
             cancelButtonText: '취소',
         }).then((result) => {
             if(result.isConfirmed){
-                deletePostById(post.type, post.id)
+                // deletePostById(post.type, post.id)
                 Swal.fire({
                     title: '삭제 완료',
                     text: '게시글이 삭제되었습니다.',
@@ -396,54 +455,42 @@ const AllBoardDetail = () => {
         });
     };
 
+    //임시라 고쳐야함
     const handleLikesButton = () => {
 
         setIsLiked(prevLiked => {
             const newLiked = !prevLiked;
 
-            setPost(prevPost => {
-                const updatedPost = {
-                    ...prevPost,
-                    likes: newLiked ? prevPost.likes + 1 : prevPost.likes - 1,
-                };
-
-            // ✅ ChatContext 상태도 동기화
-            updateChat(updatedPost, updatedPost.type);
-
-            return updatedPost;
-            });
+            setPost(prevPost => ({
+                ...prevPost,
+                likes: newLiked ? prevPost.likes + 1 : prevPost.likes - 1,         
+            }));
 
             return newLiked;
         });
     };
 
+    //임시라 고쳐야함
     const handleReportButton = () => {
         setIsReported(prevReported => {
             const newReported = !prevReported;
 
-            setPost(prevPost => {
-                const updatedPost = {
-                    ...prevPost,
-                    report: newReported ? prevPost.report + 1 : prevPost.report - 1,
-                };
-
-            // ✅ ChatContext 상태도 동기화
-            updateChat(updatedPost, updatedPost.type);
-
-            return updatedPost;
-            });
+            setPost(prevPost => ({
+                ...prevPost,
+                report: newReported ? (prevPost.report || 0) + 1 : (prevPost.report || 0) - 1,
+            }));
 
             return newReported;
         });
     };
-    
+
     return (
         <div style={{ minWidth:'1075px' }}>
             <div className='board-detail-title-container'>
-                <p style={{marginTop: 20}}>[ {postTypeLabels[post.type]} ]</p>  
+                <p style={{marginTop: 20}}>[ {categoryLabels[post.category]} ]</p>  
                 <div style={{textAlign: 'right', marginTop:15}}>
                     <span style={{color: '#ccc'}}>
-                        조회수 {post.views} |
+                        조회수 {post.view} |
                         추천수 {post.likes} |
                         신고수 {post.report}
                     </span><br/>

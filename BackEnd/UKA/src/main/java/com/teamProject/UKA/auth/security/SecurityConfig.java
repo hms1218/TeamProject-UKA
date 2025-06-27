@@ -48,7 +48,8 @@ public class SecurityConfig {
                         "/api/auth/find-username",
                         "/api/auth/reset-password-request",
                         "/api/auth/reset-password",
-                        "/board/**"
+                        "/board/**",
+                        "/board-detail/**"
                 ).permitAll()
                 .anyRequest().authenticated()
             )

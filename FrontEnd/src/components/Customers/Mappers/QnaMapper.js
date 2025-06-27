@@ -12,8 +12,8 @@ const MapQnaRaw = (raw) => {
     isAnswered: raw.qnaIsAnswered === "Y",
     createdAt: raw.qnaCreatedAt,
     updatedAt: raw.qnaUpdatedAt,
-    views: raw.qnaViews ?? 0,
-    likes: raw.qnaLikes ?? 0, // 주석
+    views: raw.qnaViews ?? 0, // 주석
+    likes: raw.qnaLikes ?? 0,
     comments: raw.qnaComments ?? [],
   };
 }

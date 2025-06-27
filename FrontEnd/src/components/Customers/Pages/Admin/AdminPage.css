@@ -2,6 +2,7 @@
 .admin-container {
   display: flex;
   min-height: 80vh;
+  width: 1200px;
   font-family: 'Pretendard', sans-serif;
 }
 

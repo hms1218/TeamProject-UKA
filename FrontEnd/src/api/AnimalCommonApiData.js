@@ -13,6 +13,9 @@ export const SidoApiData = async () => {
             numOfRows: PAGE_SIZE,
             pageNo: pageIndex,
         };
+
+        console.log("API_URL : ", API_URL);
+        console.log("params.serviceKey : ", params.serviceKey);
         const response = await fetch (
             `${API_URL}?serviceKey=${params.serviceKey}&pageNo=${params.pageNo}&numOfRows=${params.numOfRows}&_type=json`
         );

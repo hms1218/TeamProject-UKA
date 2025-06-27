@@ -1,26 +1,36 @@
 import { useParams } from 'react-router-dom';
-import { useQnA } from '../../Context/QnAContext'; 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { fetchQnaDetail } from '../../../../api/CustomerApiData';
+import { useAlert } from '../../Context/AlertContext';
 import './AdminQnADetail.css';
 
 const AdminQnADetail = () => {
-  const { id } = useParams();
-  const { qnas, setQnas } = useQnA();
-  const qna = qnas.find(q => q.id === Number(id));
+    const { qnaNo } = useParams(); // 라우터 파라미터
+    const [qna, setQna] = useState(null);
+    const [answer, setAnswer] = useState('');
+    const [isEditing, setIsEditing] = useState(false);
+    const { showAlert } = useAlert();
 
-  const [answer, setAnswer] = useState(qna.answer || '');
-  const [isEditing, setIsEditing] = useState(false);
+    useEffect(() => {
+        fetchQnaDetail(qnaNo).then(data => {
+            setQna(data);
+            setAnswer(data.qnaAnswer || '');
+        });
+    }, [qnaNo]);
 
-  const handleAnswerSubmit = () => {
-    const updatedQnas = qnas.map(q =>
-      q.id === qna.id
-        ? { ...q, answer, isAnswered: true }
-        : q
-    );
-    setQnas(updatedQnas);
-    setIsEditing(false);
-    alert('답변이 저장되었습니다!');
-  };
+    const handleAnswerSubmit = async () => {
+        await editQna(qnaNo, { qnaAnswer: answer, qnaIsAnswered: 'Y' });
+        setQna(prev => ({ ...prev, qnaAnswer: answer, qnaIsAnswered: 'Y' }));
+        setIsEditing(false);
+		await showAlert({
+			title: '답변이 저장되었습니다!',
+			imageUrl: process.env.PUBLIC_URL + '/img/goodCat.jpg',
+			imageWidth: 300,
+			imageHeight: 300,
+			imageAlt: '좋았쓰',
+			icon: 'success'
+		});
+    };
 
 return (
     <div>

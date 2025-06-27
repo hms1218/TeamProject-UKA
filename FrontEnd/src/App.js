@@ -29,7 +29,7 @@ import AdoptionReview from './components/Board/Pages/AdoptionReview';
 import ReviewForm from './components/Board/Pages/ReviewForm';
 import AdoptionReviewDetail from './components/Board/Pages/AdoptionReviewDetail';
 import ReviewEdit from './components/Board/Pages/ReviewEdit';
-import { ChatProvider } from './components/Board/Context/ChatContext';
+import { BoardProvider } from './components/Board/Context/BoardContext';
 import { useEffect } from 'react';
 
 // 고객센터 관련
@@ -41,7 +41,6 @@ import QnAForm from "./components/Customers/Pages/QnAForm";
 import QnADetail from "./components/Customers/Pages/QnADetail";
 import QnAEdit from "./components/Customers/Pages/QnAEdit";
 import AdoptionInquiry from "./components/Customers/Pages/AdoptionInquiry";
-import { QnAProvider } from './components/Customers/Context/QnAContext';
 //상세보기 관련
 import { DetailBody } from './components/DetailPage/DetailBody';
 import { DetailSelect } from './components/DetailPage/DetailSelect';
@@ -52,8 +51,6 @@ import AdminQnADetail from './components/Customers/Pages/Admin/AdminQnADetail';
 
 import { RequestMain } from './components/Request/RequestMain';
 import { RequestWrite } from './components/Request/RequestWrite';
-
-import NaverMap from './components/DetailMap/NaverMap';
 
 import './App.css';
 
@@ -96,28 +93,28 @@ function App() {
                                     {/* 게시판 전체 */}
                                     <Route path="/board/*"
                                         element={
-                                            <ChatProvider>
+                                            <BoardProvider>
                                                 <BoardLayout />
-                                            </ChatProvider>
+                                            </BoardProvider>
                                         }
                                     >
                                         <Route index element={<AllBoard />} />
                                         <Route path="all" element={<AllBoard />} />
                                         <Route path="all/form" element={<AllBoardForm />} />
-                                        <Route path="all/detail/:id" element={<AllBoardDetail />} />
+                                        <Route path="all/detail/:type/:id" element={<AllBoardDetail />} />
                                         <Route path="all/edit/:type/:id" element={<AllBoardEdit />} />
                                         <Route path="notice" element={<Notice />} />
-                                        <Route path="notice/new" element={<NoticeForm />} />
-                                        <Route path="notice/:id" element={<NoticeDetail />} />
-                                        <Route path="notice/:id/new" element={<NoticeEdit />} />
+                                        <Route path="notice/form" element={<NoticeForm />} />
+                                        <Route path="notice/detail/:type/:id" element={<NoticeDetail />} />
+                                        <Route path="notice/edit/:type/:id" element={<NoticeEdit />} />
                                         <Route path="chat" element={<ChatList />} />
-                                        <Route path="chat/new" element={<ChatForm />} />
-                                        <Route path="chat/:id" element={<ChatDetail />} />
-                                        <Route path="chat/:id/new" element={<ChatEdit />} />
+                                        <Route path="chat/form" element={<ChatForm />} />
+                                        <Route path="chat/detail/:type/:id" element={<ChatDetail />} />
+                                        <Route path="chat/edit/:type/:id" element={<ChatEdit />} />
                                         <Route path="adoptionReview" element={<AdoptionReview />} />
-                                        <Route path="adoptionReview/new" element={<ReviewForm />} />
-                                        <Route path="adoptionReview/:id" element={<AdoptionReviewDetail />} />
-                                        <Route path="adoptionReview/:id/new" element={<ReviewEdit />} />
+                                        <Route path="adoptionReview/form" element={<ReviewForm />} />
+                                        <Route path="adoptionReview/detail/:type/:id" element={<AdoptionReviewDetail />} />
+                                        <Route path="adoptionReview/edit/:type/:id" element={<ReviewEdit />} />
                                     </Route>
 
                                     {/* 고객센터 */}
@@ -135,26 +132,22 @@ function App() {
                                         <Route path="qna/:id/edit" element={<QnAEdit />} />
                                         <Route path="adoption" element={<AdoptionInquiry />} />
                                     </Route>
-                                    {/* 관리자 */}
+                                    {/* 관리자 라우팅 - 독립 경로 */}
                                     <Route path="/admin/*"
                                         element={
-                                            <QnAProvider>
                                                 <AdminPage />
-                                            </QnAProvider>
                                         }
                                     />
                                     <Route path="/customer/qna/:id/admin"
                                         element={
-                                            <QnAProvider>
                                                 <AdminQnADetail />
-                                            </QnAProvider>
                                         }
                                     />
+                                            </Routes>
+                                        </AppLayout>
+                                    }
+                                    />
                                 </Routes>
-                            </AppLayout>
-                        }
-                    />
-                </Routes>
             </Router>
         </div>
     );

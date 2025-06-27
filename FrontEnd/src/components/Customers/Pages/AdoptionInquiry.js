@@ -11,170 +11,291 @@ const DEFAULT_SLIDE_IMAGES = [
   '/AdoptionImage/photo5.jpg',
   '/AdoptionImage/photo6.jpg',
 ];
-const thumbnailImages = [
+const DEFAULT_THUMBNAILS = [
   '/AdoptionImage/image.png',
+  '/AdoptionImage/image2.gif',
 ];
 
 const AdoptionInquiry = () => {
-  const [open, setOpen] = useState(false);
-  const [slide, setSlide] = useState(0);
-  const [checked, setChecked] = useState(false);
-  const [confirmed, setConfirmed] = useState(false);
-  const { showAlert } = useAlert();
-  const [slideImages, setSlideImages] = useState(DEFAULT_SLIDE_IMAGES);
-  const [thumbnailImage, setThumbnailImage] = useState('/AdoptionImage/image.png');
-  const [photoManageOpen, setPhotoManageOpen] = useState(false);
-  const [photoDraft, setPhotoDraft] = useState([...slideImages]);
-  
+    const [open, setOpen] = useState(false);
+    const [slide, setSlide] = useState(0);
+    const [checked, setChecked] = useState(false);
+    const [confirmed, setConfirmed] = useState(false);
+    const { showAlert } = useAlert();
+    const [slideImages, setSlideImages] = useState(DEFAULT_SLIDE_IMAGES);
 
-  // 관리자 테스트
-  const { isAdmin } = useAdmin();
+    // 썸네일
+    const [thumbnails, setThumbnails] = useState([...DEFAULT_THUMBNAILS]);
+    const [thumbnailManageOpen, setThumbnailManageOpen] = useState(false);
+    const [thumbnailDraft, setThumbnailDraft] = useState([...DEFAULT_THUMBNAILS]);
 
-  useEffect(() => {
-    setOpen(true);
-  }, []);
+    // 팝업 이미지 관리
+    const [photoManageOpen, setPhotoManageOpen] = useState(false);
+    const [photoDraft, setPhotoDraft] = useState([...slideImages]);
 
-  // 모달 열 때 photoDraft에 복사
-  const openPhotoManage = () => {
-    setPhotoDraft([...slideImages]); // 현재 배열 복사
-    setPhotoManageOpen(true);
-  };
+    // 관리자 체크
+    const { isAdmin } = useAdmin();
 
-  // "수정된 내용 있음" 체크 (배열이 다르면 true)
-  const isDirty = JSON.stringify(photoDraft) !== JSON.stringify(slideImages);
+    useEffect(() => {
+        setOpen(true);
+    }, []);
 
-  const openModal = (idx) => {
-    setSlide(idx);
-    setOpen(true);
-    setChecked(false);
-  };
+    // 팝업 사진 관리 모달 열기
+    const openPhotoManage = () => {
+        setPhotoDraft([...slideImages]);
+        setPhotoManageOpen(true);
+    };
 
-  const next = () => setSlide((prev) => Math.min(prev + 1, slideImages.length - 1));
-  const prev = () => setSlide((prev) => Math.max(prev - 1, 0));
-  const closeModal = () => setOpen(false);
+    // 썸네일 관리 모달 열기
+    const openThumbnailManage = () => {
+        setThumbnailDraft([...thumbnails]);
+        setThumbnailManageOpen(true);
+    };
 
-  // 체크박스
-  const handleCheckbox = (e) => {
-    setChecked(e.target.checked);
-  };
+    // 썸네일 저장
+    const handleThumbnailSave = async () => {
+        const result = await showAlert({
+            title: '썸네일을 저장하시겠습니까?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: '저장',
+            cancelButtonText: '취소'
+        });
+        if (!result || !result.isConfirmed) return;
+        setThumbnails(thumbnailDraft);
+        setThumbnailManageOpen(false);
+        await showAlert({
+            title: '썸네일이 저장되었습니다.',
+            icon: 'success',
+            timer: 1200,
+            showConfirmButton: false
+        });
+    };
 
-  // "확인" 버튼 눌렀을 때 showAlert
-  const handleConfirm = async () => {
-    await showAlert({
-      title: "모든 안내를 확인하셨습니다.",
-      // imageUrl: process.env.PUBLIC_URL + '/img/goodCat.jpg',
-      // imageWidth: 300,
-      // imageHeight: 300,
-      // imageAlt: '좋았쓰',
-      icon: "success",
-    });
-    setConfirmed(true);   // 확인 상태 저장
-    closeModal();
-  };
+    // 썸네일 관리 닫기
+    const handleThumbnailClose = async () => {
+        if (JSON.stringify(thumbnailDraft) === JSON.stringify(thumbnails)) {
+            setThumbnailManageOpen(false);
+            return;
+        }
+        const result = await showAlert({
+            title: '수정사항이 저장되지 않았습니다. 취소하시겠습니까?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: '예',
+            cancelButtonText: '아니오'
+        });
+		if (result && result.isConfirmed) {
+			setThumbnailManageOpen(false);
+		}
+    };
 
-// 관리자 사진 저장
-const handleSave = async () => {
-  const result = await showAlert({
-    title: '저장하시겠습니까?',
-    icon: 'question',
-    showCancelButton: true,
-    confirmButtonText: '저장',
-    cancelButtonText: '취소'
-  });
-  if (!result || !result.isConfirmed) return;
-  setSlideImages(photoDraft); // 실제 반영
-  setPhotoManageOpen(false);
-  await showAlert({
-    title: '저장되었습니다.',
-    icon: 'success',
-    timer: 1200,
-    showConfirmButton: false
-  });
-};
+    // 팝업 사진 저장
+    const handleSave = async () => {
+        const result = await showAlert({
+            title: '저장하시겠습니까?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: '저장',
+            cancelButtonText: '취소'
+        });
+        if (!result || !result.isConfirmed) return;
+        setSlideImages(photoDraft);
+        setPhotoManageOpen(false);
+        await showAlert({
+            title: '저장되었습니다.',
+            icon: 'success',
+            timer: 1200,
+            showConfirmButton: false
+        });
+    };
 
-// 관리자 사진 관리 닫기
-const handleClose = async () => {
-  if (JSON.stringify(photoDraft) === JSON.stringify(slideImages)) {
-    setPhotoManageOpen(false); // 그냥 닫기
-    return;
-  }
-  const result = await showAlert({
-    title: '수정사항이 저장되지 않았습니다. 취소하시겠습니까?',
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonText: '예',
-    cancelButtonText: '아니오'
-  });
-  setPhotoManageOpen(false); // 예/아니오 모두 닫기
-};
+    // 팝업 사진 닫기
+    const handleClose = async () => {
+        if (JSON.stringify(photoDraft) === JSON.stringify(slideImages)) {
+            setPhotoManageOpen(false);
+            return;
+        }
+        const result = await showAlert({
+            title: '수정사항이 저장되지 않았습니다. 취소하시겠습니까?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: '예',
+            cancelButtonText: '아니오'
+        });
+		if (result && result.isConfirmed) {
+			setPhotoManageOpen(false);
+		}
+    };
 
-  return (
-    <div className="customer-adoption-inquiry">
-        {/* 썸네일 리스트 */}
-        <div className="customer-slide-thumbnails">
-            {thumbnailImages.map((src, idx) => (
-                <img
-                    key={src}
-                    src={thumbnailImage}
-                    alt={`썸네일${idx + 1}`}
-                    className="customer-slide-thumb"
-                    // 썸네일 클릭시 특별한 행동 없음, 필요하면 팝업 띄우기 가능
-                />
-            ))}
-        </div>
-        {isAdmin && (
-            <div style={{ textAlign: "center", margin: "24px 0" }}>
-                <button
-                    className="customer-adopt-button"
-                    onClick={openPhotoManage}
-                >
-                    팝업 사진 관리
+    // 썸네일 클릭X
+
+    const openModal = (idx) => {
+        setSlide(idx);
+        setOpen(true);
+        setChecked(false);
+    };
+
+    const next = () => setSlide((prev) => Math.min(prev + 1, slideImages.length - 1));
+    const prev = () => setSlide((prev) => Math.max(prev - 1, 0));
+    const closeModal = () => setOpen(false);
+
+    // 체크박스
+    const handleCheckbox = (e) => {
+        setChecked(e.target.checked);
+    };
+
+    // "확인" 버튼 눌렀을 때 showAlert
+    const handleConfirm = async () => {
+        await showAlert({
+            title: "모든 안내를 확인하셨습니다.",
+            icon: "success",
+        });
+        setConfirmed(true);
+        closeModal();
+    };
+
+    return (
+        <div className="customer-adoption-inquiry">
+
+            {/* 썸네일 리스트 (클릭X) */}
+            <div className="customer-slide-thumbnails">
+                {thumbnails.map((src, idx) => (
+					<img
+						key={src + idx}
+						src={src}
+						alt={`썸네일${idx + 1}`}
+						// 아무 스타일링 안 줌 = 원본 크기
+						style={{ marginRight: 12, verticalAlign: 'middle' }}
+					/>
+				))}
+            </div>
+			{/* 관리자만 썸네일/팝업 사진 관리 버튼 */}
+			{isAdmin && (
+			<div style={{ textAlign: "center", margin: "16px 0", display: "flex", justifyContent: "center", gap: 8 }}>
+				<button
+				className="customer-adopt-button"
+				onClick={openThumbnailManage}
+				>
+				썸네일 관리
+				</button>
+				<button
+				className="customer-adopt-button"
+				onClick={openPhotoManage}
+				>
+				팝업 사진 관리
+				</button>
+			</div>
+			)}
+            {/* 썸네일 관리 모달 */}
+            {thumbnailManageOpen && (
+				<div className="customer-slide-modal">
+					<div className="customer-slide-modal-content">
+					<h3>썸네일 관리</h3>
+					<div style={{ display: 'flex', gap: 12 }}>
+						{thumbnailDraft.map((img, idx) => (
+						<div key={img + idx} style={{ textAlign: 'center', width: 120 }}>
+							<img
+							src={img}
+							alt={`썸네일${idx + 1}`}
+							style={{
+								width: 100,
+								height: 100,
+								borderRadius: 8,
+								objectFit: 'cover',
+								border: '1px solid #ddd',
+							}}
+							/>
+							<div style={{ display: 'flex', gap: 8, justifyContent: 'center', marginTop: 8 }}>
+							{/* 파일 교체 */}
+							<label style={{ fontWeight: 600, cursor: "pointer", color: "#5548c8" }}>
+								수정
+								<input
+								type="file"
+								accept="image/*"
+								style={{ display: "none" }}
+								onChange={e => {
+									const file = e.target.files[0];
+									if (!file) return;
+									const url = URL.createObjectURL(file);
+									setThumbnailDraft(arr => arr.map((v, i) => i === idx ? url : v));
+								}}
+								/>
+							</label>
+							{/* 삭제 */}
+							<button
+								style={{
+								fontWeight: 600,
+								color: "#fff",
+								background: "#ff7676",
+								border: "none",
+								borderRadius: 5,
+								padding: "2px 10px",
+								cursor: "pointer",
+								}}
+								onClick={async () => {
+									if (thumbnailDraft.length <= 1) {
+										await showAlert({
+											title: "사진은 최소 1장 이상 필요합니다.",
+											icon: "warning",
+											imageUrl: process.env.PUBLIC_URL + '/img/noo.jpg', // 사진도 넣고 싶으면 추가
+											imageWidth: 300,
+											imageHeight: 250,
+											imageAlt: '꺄아악',
+										});
+										return;
+									}
+									setThumbnailDraft(arr => arr.filter((_, i) => i !== idx));
+								}}
+								title={thumbnailDraft.length <= 1 ? "사진 1장은 남겨야 함" : "삭제"}
+							>
+								삭제
+							</button>
+							</div>
+						</div>
+						))}
+						{/* 추가 */}
+						<label
+						style={{
+							width: 100,
+							height: 100,
+							border: '2px dashed #bbb',
+							borderRadius: 8,
+							display: 'flex',
+							alignItems: 'center',
+							justifyContent: 'center',
+							fontSize: 36,
+							color: '#bbb',
+							cursor: 'pointer',
+						}}
+						>
+						+
+						<input
+							type="file"
+							accept="image/*"
+							style={{ display: 'none' }}
+							onChange={e => {
+							const file = e.target.files[0];
+							if (!file) return;
+							const url = URL.createObjectURL(file);
+							setThumbnailDraft(arr => [...arr, url]);
+							}}
+						/>
+						</label>
+					</div>
+					<div style={{ textAlign: 'center', marginTop: 18 }}>
+						<button className="customer-adopt-button" onClick={handleThumbnailSave}>저장</button>
+						<button className="customer-adopt-button" style={{ marginLeft: 8 }} onClick={handleThumbnailClose}>닫기</button>
+					</div>
+					</div>
+				</div>
+				)}
+        {/* 다시 보기 버튼: confirmed면 노출 */}
+            <div style={{ textAlign: 'center', margin: '18px 0 0 0' }}>
+                <button className="customer-adopt-button" onClick={() => openModal(0)}>
+                    다시 보기
                 </button>
             </div>
-        )}
-        {/* 관리자만 썸네일 변경 버튼 노출 */}
-        {isAdmin && (
-            <div style={{ textAlign: 'center', }}>
-                <label className='customer-adopt-button' style={{ fontWeight: 700, cursor: 'pointer',marginRight: '18px' }}>
-                    썸네일 변경
-                    <input
-                        type="file"
-                        accept="image/*"
-                        style={{ display: "none" }}
-                        onChange={e => {
-                        const file = e.target.files[0];
-                        if (!file) return;
-                        const url = URL.createObjectURL(file);
-                        setThumbnailImage(url);
-                        }}
-                    />
-                </label>
-                {/* 저장 버튼 바로 옆에 붙이기 */}
-                <label style={{ fontWeight: 700, cursor: 'pointer' }}>
-                    <button className='customer-adopt-button' 
-                        onClick={async () => {
-                        await showAlert({
-                        title: '썸네일이 저장되었습니다.',
-                        imageUrl: process.env.PUBLIC_URL + '/img/goodCat.jpg',   // ← 확장자 포함!
-                        imageWidth: 300,
-                        imageHeight: 300,
-                        imageAlt: '좋았쓰',
-                        icon: 'info'
-                        });
-                        }}
-                    >
-                        저장
-                    </button>
-                </label>
-            </div>
-        )}
-
-        {/* 다시 보기 버튼: confirmed면 노출 */}
-        <div style={{ textAlign: 'center', margin: '18px 0 0 0' }}>
-            <button className="customer-adopt-button" onClick={() => openModal(0)}>
-                다시 보기
-            </button>
-        </div>
 
         {/*  */}
         {photoManageOpen && (
@@ -223,12 +344,22 @@ const handleClose = async () => {
                                             padding: "2px 10px",
                                             cursor: "pointer",
                                         }}
-                                        onClick={() =>
-                                            setPhotoDraft(arr => arr.filter((_, i) => i !== idx))
-                                        }
-                                        disabled={photoDraft.length <= 1}
-                                        title={photoDraft.length <= 1 ? "사진 1장은 남겨야 함" : "삭제"}
-                                    >
+                                        onClick={async () => {
+											if (photoDraft.length <= 1) {
+												await showAlert({
+													title: "사진은 최소 1장 이상 필요합니다.",
+													icon: "warning",
+													imageUrl: process.env.PUBLIC_URL + '/img/noo.jpg', // 사진도 넣고 싶으면 추가
+													imageWidth: 300,
+													imageHeight: 250,
+													imageAlt: '꺄아악',
+												});
+												return;
+											}
+											setPhotoDraft(arr => arr.filter((_, i) => i !== idx));
+										}}
+										title={photoDraft.length <= 1 ? "사진 1장은 남겨야 함" : "삭제"}
+									>
                                         삭제
                                     </button>
                                 </div>

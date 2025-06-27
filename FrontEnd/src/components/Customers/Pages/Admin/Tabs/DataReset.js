@@ -67,6 +67,34 @@ const DataReset = () => {
             </div>
         </div>
     );
+=======
+  return (
+    <div>
+      <h2>🔄 데이터 새로고침</h2>
+      <p>최신 데이터를 다시 불러오려면 아래 버튼을 클릭하세요.</p>
+      <div className='button' style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginTop: 18 }}>
+        {SIDOS.map((sido) => (
+          <button
+            key={sido.code}
+            onClick={() => handleReset(sido.code, sido.name)}
+            className="data-write-btn"
+            style={{
+              minWidth: 95,
+              padding: '8px 12px',
+              fontSize: '15px',
+              fontWeight: 700,
+              borderRadius: 7,
+              marginBottom: 8,
+              cursor: 'pointer'
+            }}
+          >
+            {sido.name}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+>>>>>>> geunsoo
 };
 
 export default DataReset;

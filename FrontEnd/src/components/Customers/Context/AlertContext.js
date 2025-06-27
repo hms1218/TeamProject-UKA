@@ -12,8 +12,20 @@ export const AlertProvider = ({ children }) => {
     });
   };
 
+  // 자주 쓰는 알럿 래퍼 함수
+  const alertUtils = {
+    confirm: (opts) =>
+      showAlert({ icon: 'warning', showCancelButton: true, ...opts }),
+    success: (msg, opts = {}) =>
+      showAlert({ icon: 'success', title: msg, timer: 1500, showConfirmButton: false, ...opts }),
+    error: (msg, opts = {}) =>
+      showAlert({ icon: 'error', title: msg, ...opts }),
+    warning: (msg, opts = {}) =>
+      showAlert({ icon: 'warning', title: msg, ...opts }),
+  };
+
   return (
-    <AlertContext.Provider value={{ showAlert }}>
+    <AlertContext.Provider value={{ showAlert, ...alertUtils }}>
       {children}
     </AlertContext.Provider>
   );

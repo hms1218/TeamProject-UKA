@@ -10,9 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserResponse {
-	private Long no;
-	private String user_id;
-	private String username;
+	private String UserId;
+	private String nickname;
 	private String email;
 	private String password; // 숨길거면 주석
 	private LocalDateTime createdAt;

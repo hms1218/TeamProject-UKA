@@ -8,4 +8,8 @@ import com.teamProject.UKA.auth.model.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 	Optional<User> findByEmail(String email);
+
+	Optional<User> findByUserId(String userId);
+	
+	Optional<User> findByUserIdAndEmail(String userId, String email);
 }

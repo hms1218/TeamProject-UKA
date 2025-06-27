@@ -45,30 +45,30 @@ public class AuthService {
 	public User signup(SignupRequest req) {
 	    String hash = pwEncoder.encode(req.getPassword());
 	    User u = new User();
-	    u.setNickname(req.getUsername());
+	    u.setUserId(req.getUserId());
+	    u.setNickname(req.getNickname());
 	    u.setEmail(req.getEmail());
 	    u.setPasswordHash(hash);
 	    return userRepo.save(u);
 	}
 
 	public LoginResponse login(LoginRequest req) {
-		User u = userRepo.findByEmail(req.getEmail())
-				.orElseThrow(() -> new RuntimeException("이메일 또는 비밀번호가 잘못되었습니다."));
+		User u = userRepo.findByUserId(req.getUserId())
+				.orElseThrow(() -> new RuntimeException("아이디 또는 비밀번호가 잘못되었습니다."));
 		if (!pwEncoder.matches(req.getPassword(), u.getPasswordHash())) {
-			throw new RuntimeException("이메일 또는 비밀번호가 잘못되었습니다.");			
+			throw new RuntimeException("아이디 또는 비밀번호가 잘못되었습니다.");			
 		}
 
 		byte[] keyBytes = Decoders.BASE64.decode(jwtSecret);
 		String token = Jwts.builder()
-				.setSubject(u.getUser_id().toString())
+				.setSubject(u.getUserId().toString())
 				.setIssuedAt(new Date())
 				.setExpiration(new Date(System.currentTimeMillis() + jwtExpiration))
 				.signWith(Keys.hmacShaKeyFor(keyBytes), SignatureAlgorithm.HS512)
 				.compact();
 
 		UserResponse ur = new UserResponse(
-			u.getNo()
-,		    u.getUser_id(), 
+		    u.getUserId(), 
 		    u.getNickname(), 
 		    u.getEmail(), 
 		    u.getPasswordHash(), // 숨길거면 주석
@@ -84,18 +84,20 @@ public class AuthService {
 	}
 	
     // ① 이메일로 아이디 찾기
-	public String findUsernameByEmail(String email) {
+	public String findUsernameByUserId(String email) {
 		User u = userRepo.findByEmail(email)
 				.orElseThrow(() -> new RuntimeException("등록된 이메일이 없습니다."));
-		return u.getNickname();
+		return u.getUserId();
 	}
 
 	// ② 비밀번호 재설정 요청
 	@Transactional
-	public void requestPasswordReset(String email) {
-		User u = userRepo.findByEmail(email)
-				.orElseThrow(() -> new RuntimeException("등록된 이메일이 없습니다."));
+	public void requestPasswordReset(String userId, String email) {
+		User u = userRepo.findByUserIdAndEmail(userId, email)
+				.orElseThrow(() -> new RuntimeException("아이디/이메일이 일치하지 않습니다."));
 		System.out.println("u ::: "+ u);
+		
+		
 
 	    // 기존 토큰 삭제
 	    tokenRepo.deleteByUser(u);

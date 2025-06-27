@@ -6,9 +6,7 @@ const pageIndex = 1;
 // 시도 API를 통해 전체 시도 목록을 가져옵니다.
 export const SidoApiData = async () => {
     const API_URL = process.env.REACT_APP_ALL_SIDO_API_URL;
-    console.log(1)
     
-
     try {
         const params = {
             serviceKey: API_KEY,

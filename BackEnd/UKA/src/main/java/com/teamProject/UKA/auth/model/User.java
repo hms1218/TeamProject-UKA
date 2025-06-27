@@ -21,18 +21,20 @@ import lombok.NoArgsConstructor;
 @Builder
 public class User {
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long no;
+	private Long seq;
 	
-	private String user_id;
+	@Column(nullable = false) 
+	private String userId;
 	  
 	@Column(nullable = false) 
 	private String nickname;
 	  
-	@Column(nullable = false, unique = true) 
+	@Column(nullable = false, unique = true)
 	private String email;
 	  
 	@Column(nullable = false) 
 	private String passwordHash;
-	   
+	  
+	@Builder.Default
 	private LocalDateTime createdAt = LocalDateTime.now();
 }

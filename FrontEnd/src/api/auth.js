@@ -1,36 +1,34 @@
-import api from './index.js';
-
-export async function signup({ username, email, password }) {
+export async function signup({ userId, nickname, password, email }) {
     const res = await fetch("http://localhost:8888/api/auth/signup", {
         method: 'POST',
         headers: {
         'Content-Type': 'application/json'
         },
         body: JSON.stringify({ 
-            username,
+            userId,
+            nickname,
             email,
-            password 
+            password,
         })
     });
 
-    const body = await res.json();
+    const data = await res.json(); // 한 번만 읽기
+    
     if (!res.ok) {
         // 백엔드가 내려준 에러 메시지를 포함한 ErrorResponse 객체에서 message 꺼내 던지기
-        throw new Error(body.message || `Signup failed: ${res.status}`);
+        throw new Error(data.message || `Signup failed: ${res.status}`);
     }
-
-    const user = await res.json();
-    return user;
+    return data;
 }
 
-export async function login({ email, password }) {
+export async function login({ userId, password }) {
     const res = await fetch("http://localhost:8888/api/auth/login", {
         method: "POST",
         headers: { 
             "Content-Type": "application/json" 
         },
         body: JSON.stringify({ 
-            email, 
+            userId, 
             password 
         })
     });
@@ -41,6 +39,7 @@ export async function login({ email, password }) {
     }
 
     localStorage.setItem('token', body.token);
+    localStorage.setItem('userId', body.userId);
     return body;  // 토큰과 유저를 함께 반환
 }
 

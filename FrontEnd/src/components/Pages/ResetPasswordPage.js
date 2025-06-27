@@ -7,6 +7,8 @@ export default function ResetPasswordPage() {
     const token = query.get('token') || '';
 
     const [newPassword, setNewPassword] = useState('');
+    const [newPasswordCheck, setNewPasswordCheck] = useState('');
+    
     const [error, setError] = useState('');
     const [info, setInfo] = useState('');
 
@@ -22,7 +24,7 @@ export default function ResetPasswordPage() {
             });
             const body = await res.json();
             if (!res.ok) throw new Error(body.message || '비밀번호 재설정 실패');
-            setInfo('비밀번호가 성공적으로 변경되었습니다!');
+            setInfo('비밀번호가 성공적으로 변경되었습니다. \n 3초 후 로그인 페이지로 이동됩니다.');
             // 3초 뒤 로그인 페이지로 이동
             setTimeout(() => navigate('/login'), 3000);
         } catch (err) {
@@ -44,6 +46,16 @@ export default function ResetPasswordPage() {
                         name="newPassword"
                         value={newPassword}
                         onChange={e => setNewPassword(e.target.value)}
+                        required minLength={6}
+                        />
+                    </label>
+                    <label>
+                        새 비밀번호 확인
+                        <input
+                        type="password"
+                        name="newPasswordCheck"
+                        value={newPasswordCheck}
+                        onChange={e => setNewPasswordCheck(e.target.value)}
                         required minLength={6}
                         />
                     </label>

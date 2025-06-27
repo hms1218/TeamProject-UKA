@@ -13,7 +13,7 @@ const MapQnaRaw = (raw) => {
     createdAt: raw.qnaCreatedAt,
     updatedAt: raw.qnaUpdatedAt,
     views: raw.qnaViews ?? 0,
-    likes: raw.qnaLikes ?? 0, 
+    likes: raw.qnaLikes ?? 0, // 주석
     comments: raw.qnaComments ?? [],
   };
 }

@@ -45,7 +45,7 @@ public class SecurityConfig {
                 		"/api/animals/**",
                         "/api/auth/signup", 
                         "/api/auth/login",
-                        "/api/auth/find-username",
+                        "/api/auth/find-userId",
                         "/api/auth/reset-password-request",
                         "/api/auth/reset-password"
                 ).permitAll()

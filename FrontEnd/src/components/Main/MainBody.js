@@ -6,7 +6,7 @@ import MapPanel from "../Panel/MapPanel";
 import SliderPanel from "../Panel/SliderPanel";
 
 /* 데이터 */
-import KoreaMap from "../Map/koreaMap";
+import SiDoData from "../Map/koreaSiDoData";
 
 /* 훅 */
 import useRegionData from "../../hook/useRegionData";
@@ -109,34 +109,36 @@ const MainBodys = () => {
         // 필터링한 결과를 상태에 저장
         setMainSlides(filtered);
     }, [rawData]);
+
     if (loading) return <Loading />;
+    
     if (error) return <Error type={error.type} detail={error.detail} />;
 
     return (
         <div className="dashboard-container">
-        <div className="dashboard-main">
-            <MapPanel
-                regionList={KoreaMap}
-                onRegionSelect={handleRegionSelect}
-                onRegionHover={handleRegionHover}
-                tooltipContent={tooltipContent}
-                regionNm={regionNm}
+            <div className="dashboard-main">
+                <MapPanel
+                    regionList={SiDoData}
+                    onRegionSelect={handleRegionSelect}
+                    onRegionHover={handleRegionHover}
+                    tooltipContent={tooltipContent}
+                    regionNm={regionNm}
+                />
+                <OverviewPanel 
+                    allRegionData={allRegionData} 
+                    regionData={regionData} 
+                    regionNm={regionNm}
+                    setRegionNm={setRegionNm}
+                    loading={loading} 
+                    error={error}
+                />
+            </div>
+            <SliderPanel
+                currentSlide={currentSlide}
+                onPrev={handlePrev}
+                onNext={handleNext}
+                MainSlides={MainSlides}
             />
-            <OverviewPanel 
-                allRegionData={allRegionData} 
-                regionData={regionData} 
-                regionNm={regionNm}
-                setRegionNm={setRegionNm}
-                loading={loading} 
-                error={error}
-            />
-        </div>
-        <SliderPanel
-            currentSlide={currentSlide}
-            onPrev={handlePrev}
-            onNext={handleNext}
-            MainSlides={MainSlides}
-        />
         </div>
     );
 };

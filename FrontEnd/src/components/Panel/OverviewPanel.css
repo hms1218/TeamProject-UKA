@@ -67,7 +67,11 @@
     border: 1px solid #cceeff;
     border-radius: 10px;
     padding: 10px;
-    /* box-shadow: 0 4px 12px rgba(0, 170, 255, 0.15); */
+    background: linear-gradient(135deg, 
+                #E6F3FB 0%, 
+                #A7CDEE 30%, 
+                #A7CDEE 70%, 
+                #E6F3FB 100%);
 }
 
 /* 지도 색상 호버 */

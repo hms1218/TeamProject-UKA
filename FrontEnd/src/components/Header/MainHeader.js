@@ -1,9 +1,10 @@
 import { Link, useNavigate } from 'react-router-dom';
-import MainLogo from '../../assets/MainLogo.png';
 import { useContext } from 'react';
+
 import DropDownMenu from './DropDownMenu';
+import MainLogo from '../../assets/MainLogo.png';
+
 import { AuthContext } from '../../AuthContext';
-import DogFootPrint from '../../assets/DogFootPrint.png';
 import { useAdmin } from '../../api/AdminContext';
 
 import './MainHeader.css';
@@ -33,11 +34,10 @@ const MainHeaders = () => {
 
             <div className="header-right-section">
                 <div className="header-auth-buttons">
-                    {/* 가운데 발바닥 아이콘 */}
-                    {/* <div className="middle-section">
-                        <img src={DogFootPrint} alt="Dog Footprint" className="footprint-icon" />
-                    </div> */}
-                    {/* 관리자 토글 버튼 추가 */}
+                    {isAdmin ? <p> <strong style={{color: "red"}}>관리자</strong> 계정으로 접속하였습니다.
+
+                    </p> : <p>OOO 회원님 반갑습니다.</p>}
+                {/* 관리자 토글 버튼 추가 */}
                 <button
                     onClick={() => setIsAdmin(v => !v)}
                     style={{
@@ -77,8 +77,6 @@ const MainHeaders = () => {
                 <nav className="header-nav-links">
                     <Link to="/about" style={{marginRight : 25}}>입양하고싶어요</Link>
                     <Link to="/request" style={{marginRight : 10}}>찾고있어요</Link>
-                    <Link to="/svg_map_detail" style={{marginRight : 10}}>테스트하고있어요</Link>
-                    
                     <DropDownMenu
                         title="게시판"
                         to="/board"

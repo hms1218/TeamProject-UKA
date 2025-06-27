@@ -7,8 +7,6 @@ const pageIndex = 1;
 export const SidoApiData = async () => {
     const API_URL = process.env.REACT_APP_ALL_SIDO_API_URL;
     
-    
-
     try {
         const params = {
             serviceKey: API_KEY,

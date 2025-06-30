@@ -39,8 +39,7 @@ export async function login({ userId, password }) {
     }
 
     localStorage.setItem('token', body.token);
-    localStorage.setItem('userId', body.userId);
-    localStorage.setItem('nickname', body.nickname);
+    localStorage.setItem('userId', body.user.userId);
     return body;  // 토큰과 유저를 함께 반환
 }
 

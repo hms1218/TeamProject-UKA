@@ -5,13 +5,11 @@ import DropDownMenu from './DropDownMenu';
 import MainLogo from '../../assets/MainLogo.png';
 
 import { AuthContext } from '../../AuthContext';
-import { useAdmin } from '../../api/AdminContext';
 
 import './MainHeader.css';
 
 const MainHeaders = () => {
     const { user, logout } = useContext(AuthContext);
-    const { isAdmin, setIsAdmin } = useAdmin(); // 어드민 테스트중
     const navigate = useNavigate();
 
     const handleLogout = () => {
@@ -28,8 +26,7 @@ const MainHeaders = () => {
         if (!user) return false;
         // userId 또는 username에 "admin" 또는 "관리자"가 포함된 경우
         return (
-            (user.userId && user.userId.toLowerCase().includes('admin')) ||
-            (user.username && user.username.includes('관리자'))
+            (user.userId && user.userId.toLowerCase().includes('admin'))
         );
     }
 
@@ -46,7 +43,7 @@ const MainHeaders = () => {
                     {user ? (
                         isAdminUser(user)
                             ? <p><strong style={{color: "red"}}>관리자</strong> 계정으로 접속하였습니다.</p>
-                            : <p>{user.username || user.userId} 회원님 반갑습니다.</p>
+                            : <p>{user.userId} 회원님 반갑습니다.</p>
                     ) : (
                         <p>로그인 해주세요.</p>
                     )}

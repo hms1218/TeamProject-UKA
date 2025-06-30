@@ -105,4 +105,33 @@ public class QnaController {
         qnaService.restoreQna(no);
         return ResponseEntity.ok("복원 완료");
     }
+    
+    // 관리자 답변 저장/수정/삭제 (빈값이면 삭제)
+    @PatchMapping("/{no}/answer")
+    public ResponseEntity<?> updateQnaAnswer(
+        @PathVariable("no") Long no,
+        @RequestBody QnaRequestDTO dto // 또는 Map<String, String> body
+    ) {
+        // 1. 관리자 권한 체크 (userId에 admin 포함)
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        boolean isAdmin = false;
+        String userId = null;
+        if (authentication != null && authentication.isAuthenticated()) {
+            userId = authentication.getName();
+            if (userId != null && userId.toLowerCase().contains("admin")) {
+                isAdmin = true;
+            }
+        }
+        if (!isAdmin) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body("관리자만 답변을 등록/수정/삭제할 수 있습니다.");
+        }
+
+        // 2. 서비스 호출 (서비스에서 엔티티 조회, 값 세팅, 저장)
+        QnaResponseDTO result = qnaService.updateQnaAnswer(no, dto.getQnaAnswer(), 
+                                        dto.getQnaAnswerWriter() != null ? dto.getQnaAnswerWriter() : userId);
+
+        return ResponseEntity.ok(result);
+    }
+
 }

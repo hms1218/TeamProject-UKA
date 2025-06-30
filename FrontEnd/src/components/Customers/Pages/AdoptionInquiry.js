@@ -1,7 +1,7 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { useAlert } from '../Context/AlertContext';
+import { useAdmin } from '../../../api/AdminContext';
 import './AdoptionInquiry.css';
-import { AuthContext } from '../../../AuthContext';
 
 const DEFAULT_SLIDE_IMAGES = [
   '/AdoptionImage/photo1.jpg',
@@ -17,7 +17,6 @@ const DEFAULT_THUMBNAILS = [
 ];
 
 const AdoptionInquiry = () => {
-    const {user, logout} = useContext(AuthContext);
     const [open, setOpen] = useState(false);
     const [slide, setSlide] = useState(0);
     const [checked, setChecked] = useState(false);
@@ -33,6 +32,9 @@ const AdoptionInquiry = () => {
     // 팝업 이미지 관리
     const [photoManageOpen, setPhotoManageOpen] = useState(false);
     const [photoDraft, setPhotoDraft] = useState([...slideImages]);
+
+    // 관리자 체크
+    const { isAdmin } = useAdmin();
 
     useEffect(() => {
         setOpen(true);
@@ -169,7 +171,7 @@ const AdoptionInquiry = () => {
 				))}
             </div>
 			{/* 관리자만 썸네일/팝업 사진 관리 버튼 */}
-			{user.userId && (
+			{isAdmin && (
 			<div style={{ textAlign: "center", margin: "16px 0", display: "flex", justifyContent: "center", gap: 8 }}>
 				<button
 				className="customer-adopt-button"
@@ -426,7 +428,7 @@ const AdoptionInquiry = () => {
         <div className="customer-slide-modal">
           <div className="customer-slide-modal-content">
             {/* (X 버튼: 관리자는 항상 보임, 일반은 confirmed일 때만 보임) */}
-            {(user.userId || confirmed) && (
+            {(isAdmin || confirmed) && (
               <button className="customer-close-btn" onClick={closeModal}>×</button>
             )}
             {/* 슬라이드: 버튼-이미지-버튼 */}

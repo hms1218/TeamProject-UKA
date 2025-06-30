@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAlert } from '../../../Context/AlertContext';
 
-const ReportedPosts = ({ qnas=[] }) => {
+const ReportedPosts = ({ qnas }) => {
   const navigate = useNavigate();
   const { showAlert } = useAlert();
 

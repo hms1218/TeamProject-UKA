@@ -1,13 +1,12 @@
 import { useParams, useNavigate, useLocation  } from 'react-router-dom';
-import { useEffect, useState, useContext } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useAlert } from '../Context/AlertContext';
 import { fetchQnaDetail, fetchQnaList, reportQna, restoreQna, deleteQna } from '../../../api/CustomerApiData';
+import { useAdmin } from '../../../api/AdminContext';
 import './QnADetail.css';
-import { AuthContext } from '../../../AuthContext';
 import { MapQnaRaw } from '../Mappers/QnaMapper';
 
 const QnADetail = () => {
-    const {user, logout} = useContext(AuthContext);
     const { id } = useParams();
     const navigate = useNavigate();
     const [qna, setQna] = useState(null);
@@ -17,6 +16,8 @@ const QnADetail = () => {
     const [commentInput, setCommentInput] = useState('');
     const [answerEditMode, setAnswerEditMode] = useState(false);
     const [answerInput, setAnswerInput] = useState(qna?.answer || "");
+    const isOwner = false; // 임시 추후 삭제 필요
+    const { isAdmin } = useAdmin(); // 어드민 임시(추후 삭제 필요)
 
     // 신고
     const [isReported, setIsReported] = useState(false);
@@ -80,7 +81,7 @@ const QnADetail = () => {
         const currentIndex = sorted.findIndex(q => String(q.id) === String(id));
         const current = sorted[currentIndex];
         if (!current) return;
-        if (user.userId) {
+        if (isAdmin) {
             setPrev(sorted[currentIndex - 1] || null);
             setNext(sorted[currentIndex + 1] || null);
             return;
@@ -97,7 +98,7 @@ const QnADetail = () => {
         }
         setPrev(sorted[currentIndex - 1] || null);
         setNext(sorted[currentIndex + 1] || null);
-    }, [id, qna, qnaList, user.userId, showAlert, navigate]);
+    }, [id, qna, qnaList, isAdmin, showAlert, navigate]);
 
 
 
@@ -174,7 +175,7 @@ const QnADetail = () => {
 
     // 이전/다음글 네비
     const handleSecretNavigate = async (post) => {
-        if (user.userId) {
+        if (isAdmin) {
             // 어드민은 패스워드 없이 이동
             navigate(`/customer/qna/${post.id}`);
             return;
@@ -227,7 +228,7 @@ const QnADetail = () => {
 
   // 버튼 핸들러
   const handleEdit = () => {
-  if (!(isOwner || user.userId)) {
+  if (!(isOwner || isAdmin)) {
     showAlert && showAlert({
       title: '권한이 없습니다.',
       text: '작성자 또는 관리자만 수정 가능합니다.',
@@ -241,7 +242,7 @@ const QnADetail = () => {
 
     // 삭제 핸들러
     const handleDelete = async () => {
-        if (!(isOwner || user.userId)) {
+        if (!(isOwner || isAdmin)) {
             await error('작성자 또는 관리자만 삭제 가능합니다.');
             return;
         }
@@ -319,7 +320,7 @@ const handleReport = async () => {
                 ...(item.comments || []),
                 {
                   id: (item.comments?.length || 0) + 1,
-                  author: user.userId ? '관리자' : 'me',
+                  author: isAdmin ? '관리자' : 'me',
                   content: commentInput,
                   date: formatDate(new Date().toISOString().split('T')[0]),
                 },
@@ -512,14 +513,14 @@ const handleReport = async () => {
                 )}
             </div>
             <div style={{ display: 'flex', gap: 8, margin: '8px 0' }}>
-                    {user.userId && !answerEditMode && qna.isAnswered && (
+                    {isAdmin && !answerEditMode && qna.isAnswered && (
                         <>
                             
                             <button className="qna-action-btn" onClick={handleEditAnswer}>수정</button>
                             <button className="qna-action-btn" onClick={handleDeleteAnswer}>삭제</button>
                         </>
                     )}
-                    {user.userId && answerEditMode && (
+                    {isAdmin && answerEditMode && (
                         <>
                             <button className="qna-action-btn" onClick={handleSaveAnswer}>저장</button>
                             <button className="qna-action-btn" onClick={() => setAnswerEditMode(false)}>취소</button>
@@ -536,7 +537,7 @@ const handleReport = async () => {
             </div>
         )}
         {/* 답변이 없고, 어드민이고, 수정모드 아니면 “답변 작성” 버튼 */}
-        {user.userId && !qna.isAnswered && !answerEditMode && (
+        {isAdmin && !qna.isAnswered && !answerEditMode && (
             <div style={{ margin: "20px 0" }}>
             <button className="qna-action-btn" onClick={() => setAnswerEditMode(true)}>
                 답변 작성
@@ -566,7 +567,7 @@ const handleReport = async () => {
             
         {/* 6. 수정/삭제/목록 (맨 하단) */}
         <div className="qna-detail-actions" style={{ marginTop: 34 }}>
-            {user.userId && qna.isReported && (
+            {isAdmin && qna.isReported && (
                 <button onClick={handleRestore} className="qna-action-btn">복원</button>
             )}
             <button className="qna-action-btn" onClick={handleEdit}>✏️ 수정</button>
@@ -641,7 +642,7 @@ const handleReport = async () => {
                         marginLeft: 4
                     }}
                     onClick={() => {
-                        if (user.userId) {
+                        if (isAdmin) {
                         navigate(`/customer/qna/${prev.id}`);
                         } else {
                         showAlert && showAlert({
@@ -686,7 +687,7 @@ const handleReport = async () => {
                         marginLeft: 4
                     }}
                     onClick={() => {
-                        if (user.userId) {
+                        if (isAdmin) {
                         // 👇 어드민은 이동
                         navigate(`/customer/qna/${next.id}`);
                         } else {

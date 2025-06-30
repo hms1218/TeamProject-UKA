@@ -1,11 +1,11 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import FAQEdit from './FAQEdit';
 import './FAQList.css';
 import { useAlert } from '../Context/AlertContext';
+import { useAdmin } from '../../../api/AdminContext';
 import { fetchFaqs } from '../../../api/CustomerApiData';
 import { deleteFaq } from '../../../api/CustomerApiData';
-import { AuthContext } from '../../../AuthContext';
 
 // const dummyFaqs = [
 //   { id: 1, question: '입양 절차는 어떻게 되나요?', answer: '입양 절차는 상담 → 서류 작성 → 방문 순입니다.' },
@@ -34,13 +34,15 @@ function highlightKeyword(text, keyword) {
 }
 
 const FAQList = ({ searchKeyword = "", onDelete = () => {} }) => {
-    const {user, logout} = useContext(AuthContext);
-    const [faqList, setFaqList] = useState([]);
-    const [openId, setOpenId] = useState(null);
-    const [showEditModal, setShowEditModal] = useState(false);
-    const [selectedFaq, setSelectedFaq] = useState(null);
-    const navigate = useNavigate();
-    const { showAlert } = useAlert();
+  const [faqList, setFaqList] = useState([]);
+  const [openId, setOpenId] = useState(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [selectedFaq, setSelectedFaq] = useState(null);
+  const navigate = useNavigate();
+  const { showAlert } = useAlert();
+
+  // 테스트용
+  const { isAdmin, setIsAdmin } = useAdmin();
 
     useEffect(() => {
         fetchFaqs().then(setFaqList);
@@ -126,7 +128,7 @@ const FAQList = ({ searchKeyword = "", onDelete = () => {} }) => {
                                         dangerouslySetInnerHTML={{ __html: faq.faqAnswer }}
                                     />
                                 </div>
-                                {user.userId && (
+                                {isAdmin && (
                                     <div className="faq-admin-buttons">
                                         <button
                                             className="edit-btn"

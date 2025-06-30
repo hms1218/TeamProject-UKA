@@ -8,6 +8,7 @@ import 'tui-color-picker/dist/tui-color-picker.css';
 import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css';
 import Swal from 'sweetalert2';
 import axios from 'axios';
+import { useAdmin } from '../../../api/AdminContext';
 
 
 const AllBoardForm = () => {
@@ -22,6 +23,7 @@ const AllBoardForm = () => {
     // 유저 정보
     const user = JSON.parse(localStorage.getItem('user'));
     console.log("user :", user);
+    const isAdmin = useAdmin();
 
     //글쓰기 시 제목 포커스
     //로컬 스토리지에서 데이터 불러오기
@@ -153,6 +155,7 @@ const AllBoardForm = () => {
                         >
                         <option value=''>선택</option>
                         {<option value='notice'>공지사항</option>} {/* 관리자만 공지사항 글쓰기 가능 */}
+                        {isAdmin && <option value='notice'>공지사항</option>} {/* 관리자만 공지사항 글쓰기 가능 */}
                         <option value='chat'>속닥속닥</option>
                         <option value='review'>입양후기</option>
                         

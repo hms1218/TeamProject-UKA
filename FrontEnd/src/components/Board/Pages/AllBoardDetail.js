@@ -26,6 +26,7 @@ const AllBoardDetail = () => {
     const location = useLocation();
 
     const { posts } = useBoard();
+    const isAdmin = useAdmin();
 
     const [notice, setNotice] = useState([]);
     const [chat, setChat] = useState([]);
@@ -54,7 +55,7 @@ const AllBoardDetail = () => {
     const [isReported, setIsReported] = useState(false);
 
     // const currentUser = localStorage.getItem("username"); //유저 정보
-    const currentUser = localStorage.getItem("username") || 'me';
+    const currentUser = isAdmin ? "admin" : localStorage.getItem("username") || 'me';
 
     const filteredList = location.state?.filteredList || null;
 
@@ -327,7 +328,7 @@ const AllBoardDetail = () => {
                 ) : (
                 <>
                     <div style={{ fontSize: 14, marginTop: 4 }}>{c.content}</div>
-                    {(c.author === currentUser) && (
+                    {(isAdmin || c.author === currentUser) && (
                     <>
                         <button
                             onClick={() =>

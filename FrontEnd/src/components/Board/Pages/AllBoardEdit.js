@@ -8,6 +8,7 @@ import color from '@toast-ui/editor-plugin-color-syntax'
 import 'tui-color-picker/dist/tui-color-picker.css';
 import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css';
 import { useBoard } from '../Context/BoardContext';
+import { useAdmin } from '../../../api/AdminContext';
 
 const AllBoardEdit = () => {
     const { id, type } = useParams();
@@ -21,6 +22,7 @@ const AllBoardEdit = () => {
     const [postType, setPostType] = useState('');
     const [title, setTitle] = useState('');
 
+    const isAdmin = useAdmin();
     let post;
     if (type === 'NOTICE') {
         post = posts.find((item) => item.id === Number(id));
@@ -119,7 +121,7 @@ const AllBoardEdit = () => {
                         onChange={(e) => setPostType(e.target.value)}
                         // required
                         >
-                        {<option value='notice'>공지사항</option>} {/* 관리자만 공지사항 글쓰기 가능 */}
+                        {isAdmin && <option value='notice'>공지사항</option>} {/* 관리자만 공지사항 글쓰기 가능 */}
                         <option value='chat'>속닥속닥</option>
                         <option value='review'>입양후기</option>                  
                     </select>

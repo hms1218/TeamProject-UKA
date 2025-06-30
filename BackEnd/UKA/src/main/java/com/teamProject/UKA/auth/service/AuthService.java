@@ -68,6 +68,7 @@ public class AuthService {
 				.compact();
 
 		UserResponse ur = new UserResponse(
+			u.getSeq(),
 		    u.getUserId(), 
 		    u.getNickname(), 
 		    u.getEmail(), 

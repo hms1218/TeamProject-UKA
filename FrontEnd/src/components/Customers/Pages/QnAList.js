@@ -76,12 +76,12 @@ const QnAList = () => {
     // 제목 클릭 시(비밀글 입력창 처리)
     const handleTitleClick = (qna) => {
         // 어드민은 상관없음
-        if (isAdmin) {
+        if (user.userId) {
         navigate(`/customer/qna/${qna.id}`);
         return;
         }
         // 🚫 신고된 글은 이동 금지 (비밀 여부와 상관없이)
-        if (!isAdmin && qna.isReported) {
+        if (!user.userId && qna.isReported) {
             showAlert && showAlert({
                 title: '🚫 관리자 검토중',
                 text: '신고가 누적된 글입니다.',
@@ -103,7 +103,7 @@ const QnAList = () => {
 
     // 비밀번호 확인
     const handlePasswordConfirm = async (qna) => {
-        if (isAdmin) {
+        if (user.userId) {
         navigate(`/customer/qna/${qna.id}`);
         return;
         }

@@ -1,7 +1,5 @@
 package com.teamProject.UKA.request.dto;
 
-import org.springframework.http.RequestEntity;
-
 import com.teamProject.UKA.auth.model.User;
 import com.teamProject.UKA.request.model.RequestDataEntity;
 

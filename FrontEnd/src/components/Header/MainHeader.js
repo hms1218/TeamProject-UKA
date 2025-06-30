@@ -24,6 +24,15 @@ const MainHeaders = () => {
         return;
     }
 
+    function isAdminUser(user) {
+        if (!user) return false;
+        // userId 또는 username에 "admin" 또는 "관리자"가 포함된 경우
+        return (
+            (user.userId && user.userId.toLowerCase().includes('admin')) ||
+            (user.username && user.username.includes('관리자'))
+        );
+    }
+
     return (
         <header className="main-header">
             <div className="header-left-section">
@@ -34,23 +43,13 @@ const MainHeaders = () => {
 
             <div className="header-right-section">
                 <div className="header-auth-buttons">
-                    {isAdmin ? <p> <strong style={{color: "red"}}>관리자</strong> 계정으로 접속하였습니다.
-
-                    </p> : <p>OOO 회원님 반갑습니다.</p>}
-                {/* 관리자 토글 버튼 추가 */}
-                <button
-                    onClick={() => setIsAdmin(v => !v)}
-                    style={{
-                        background: isAdmin ? "#ffe066" : "#e9ecef",
-                        border: "1px solid #adb5bd",
-                        borderRadius: 8,
-                        marginRight: 10,
-                        padding: "4px 10px",
-                        cursor: "pointer"
-                    }}
-                >
-                    {isAdmin ? "관리자 모드" : "일반 모드"}
-                </button>
+                    {user ? (
+                        isAdminUser(user)
+                            ? <p><strong style={{color: "red"}}>관리자</strong> 계정으로 접속하였습니다.</p>
+                            : <p>{user.username || user.userId} 회원님 반갑습니다.</p>
+                    ) : (
+                        <p>로그인 해주세요.</p>
+                    )}
                 {/* 여기 위 까지 관리자 테스트 */}
                     {user ? (
                         <>
@@ -94,7 +93,7 @@ const MainHeaders = () => {
                             { label: 'FAQ', to: '/customer/faq' },
                             { label: 'Q&A', to: '/customer/qna' },
                             { label: '입양문의', to: '/customer/adoption' },
-                            ...(isAdmin ? [{ label: '관리자 페이지', to: '/admin/reported' }] : []),
+                            ...(user && isAdminUser(user) ? [{ label: '관리자 페이지', to: '/admin/reported' }] : []),
                         ]}
                     />
                 </nav>

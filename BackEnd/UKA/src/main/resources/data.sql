@@ -10,8 +10,9 @@ delete from users;
 --아이디 admin02@example.con 비번 22222222
 INSERT INTO users (seq,user_id, nickname, email, password_hash, created_at) VALUES
 (1,'admin01', '관리자1', 'admin01@example.com', '$2a$10$TWAYab1Ccl0HMH.Ymw1X3uoapLKKjkhsqJ3BVs7zXwVt2Ta2uff7K', '2025-06-27 10:00:00'),
-(2,'admin02', '관리자2', 'admin02@example.com', '$2a$10$di6Zx4NcAeiOrbq2l01q4u9UKGPxQA01gR5SdhB91R6ciKaq0gDli	', '2025-06-27 10:05:00');
-
+(2,'admin02', '관리자2', 'admin02@example.com', '$2a$10$di6Zx4NcAeiOrbq2l01q4u9UKGPxQA01gR5SdhB91R6ciKaq0gDli	', '2025-06-27 10:05:00'),
+(3,'one', 'oneKorea', 'one@naver.com', '$2a$10$TWAYab1Ccl0HMH.Ymw1X3uoapLKKjkhsqJ3BVs7zXwVt2Ta2uff7K', '2025-06-27 10:05:00'),
+(4,'two', 'twoKorea', 'two@naver.com', '$2a$10$TWAYab1Ccl0HMH.Ymw1X3uoapLKKjkhsqJ3BVs7zXwVt2Ta2uff7K', '2025-06-27 10:05:00');
 
 --찾아주세요 샘플데이터
 INSERT INTO request (find, img, kind, sex, age, name, time, lost_location, contact_number, detail, user_seq) VALUES

@@ -104,8 +104,8 @@ function App() {
                                         <Route index element={<AllBoard />} />
                                         <Route path="all" element={<AllBoard />} />
                                         <Route path="all/form" element={<AllBoardForm />} />
-                                        <Route path="all/detail/:type/:id" element={<AllBoardDetail />} />
-                                        <Route path="all/edit/:type/:id" element={<AllBoardEdit />} />
+                                        <Route path="all/detail/:id" element={<AllBoardDetail />} />
+                                        <Route path="all/edit/:id" element={<AllBoardEdit />} />
                                         <Route path="notice" element={<Notice />} />
                                         <Route path="notice/form" element={<NoticeForm />} />
                                         <Route path="notice/detail/:type/:id" element={<NoticeDetail />} />

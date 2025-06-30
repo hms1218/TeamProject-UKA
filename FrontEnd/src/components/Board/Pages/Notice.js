@@ -1,32 +1,69 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useChat } from '../Context/ChatContext';
+import { useBoard } from '../Context/BoardContext';
 import './AllBoard.css';
 import Swal from 'sweetalert2';
+import axios from 'axios';
 
 const Notice = () => {
-    const { notice } = useChat();
+    const { posts } = useBoard();
+    const [notice, setNotice] = useState([]);
+
     const [currentPage, setCurrentPage] = useState(1);
     const navigate = useNavigate();
     const [sortOption, setSortOption] = useState('latest');
     const [sortAsc, setSortAsc] = useState(false); // 오름차순/내림차순
 
+    const [searchKeyword, setSearchKeyword] = useState(''); //키워드
+    const [filteredPosts, setFilteredPosts] = useState([]); //검색된 게시글 배열
+    const [isSearching, setIsSearching] = useState(false);
+    const [confirmKeyword, setConfirmKeyword] = useState('');
+    const [searchOption, setSearchOption] = useState('title');
+
     const itemsPerPage = 10;
 
-	//공지사항 글 매핑
-    const noticedChats = [...notice.map(post => ({ ...post, type: 'notice' }))].sort((a, b) => {
-        const order = sortAsc ? -1 : 1; // 정렬 방향 설정
+    const API_BASE_URL = 'http://localhost:8888';
 
-        if(sortOption === 'latest'){
-            return order * (new Date(b.createdAt) - new Date(a.createdAt));
-        } else if(sortOption === 'comment'){
-            return order * (b.comment - a.comment);
-        } else if(sortOption === 'views'){
-            return order * (b.views - a.views);
-        } else if(sortOption === 'likes'){
-            return order * (b.likes - a.likes);
+    useEffect(() => {
+        const fetchBoard = async () => {
+            try {
+                const res = await axios.get(`${API_BASE_URL}/board`);
+                console.log('게시글 데이터:', res.data);
+                setNotice(res.data.filter(post => post.category === "NOTICE"));
+            } catch (error) {
+                console.error('게시글 불러오기 실패', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: '게시글 불러오기 실패',
+                    text: '서버에서 게시글을 불러오지 못했습니다.'
+                });
+                navigate('/board/all');
+            }
         }
-    });
+        fetchBoard();
+    },[])
+
+	// 정렬 함수
+        const sortPosts = (posts) => {
+            const order = sortAsc ? -1 : 1;
+    
+            return [...posts].sort((a, b) => {
+                if (sortOption === 'latest') return order * (new Date(b.createdAt) - new Date(a.createdAt));
+                if (sortOption === 'views') return order * (b.views - a.views);
+                if (sortOption === 'likes') return order * (b.likes - a.likes);
+                if (sortOption === 'comment') return order * (b.comment - a.comment);
+                return 0;
+            });
+        };
+    
+    //정렬된 공지사항
+    const noticedChats = useMemo(() => 
+        sortPosts(notice.map(post => ({ ...post, category: 'NOTICE' })))
+    ,[notice, sortOption, sortAsc]);
+
+    // 정렬된 검색 결과
+    const sortedFilteredPosts = useMemo(() =>
+        sortPosts(filteredPosts), [filteredPosts, sortOption, sortAsc]);
 
     const totalPages = Math.ceil(noticedChats.length / itemsPerPage);
 
@@ -48,58 +85,12 @@ const Notice = () => {
 
 	//타이틀 클릭시
     const handleTitleClick = (post) => {
-        if (post.isSecret) {
-            Swal.fire({
-                title: '🔒 비밀글입니다',
-                text: '비밀번호를 입력해주세요',
-                input: 'password',
-                inputPlaceholder: '비밀번호',
-                showCancelButton: true,
-                confirmButtonColor: '#6c5ce7',  // 보라색 확인 버튼
-                cancelButtonColor: '#636e72',   // 회색 취소 버튼
-                confirmButtonText: '확인',
-                cancelButtonText: '취소',
-                inputAttributes: {
-                autocapitalize: 'off',
-                autocorrect: 'off'
-            },
-            preConfirm: (password) => {
-                if (!password) {
-                    Swal.showValidationMessage('비밀번호를 입력해주세요!');
-                }
-                    return password;
-            }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    const inputPassword = result.value;
-                        if (handlePasswordConfirm(inputPassword, post)) {
-                            navigate(`/board/notice/${post.id}`, { state: { postType: post.type } });
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: '비밀번호가 틀렸습니다',
-                                confirmButtonColor: '#d63031',
-                            });
-                        }
-                }
-            });
-        } else {
-            navigate(`/board/notice/${post.id}`, { state: { postType: post.type } });
-        }
-    };
-
-	//비밀번호 확인
-    const handlePasswordConfirm = (inputPassword, post) => {
-        if (inputPassword.trim() === post.password) {
-            window.sessionStorage.setItem(`chat_access_${post.id}`, 'true');
-            return true;
-        }
-        return false;
+        navigate(`/board/notice/detail/${post.category}/${post.id}`, { state: { state: { filteredList: isSearching ? sortedFilteredPosts : noticedChats, } } });  
     };
 
 	//글쓰기 버튼
     const handleWrite = () => {
-        navigate('/board/notice/new');
+        navigate('/board/notice/form');
     };
 
     // 날짜 포맷 함수

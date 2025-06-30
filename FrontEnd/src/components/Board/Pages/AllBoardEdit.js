@@ -7,12 +7,13 @@ import '@toast-ui/editor/toastui-editor.css'
 import color from '@toast-ui/editor-plugin-color-syntax'
 import 'tui-color-picker/dist/tui-color-picker.css';
 import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css';
-import { useChat } from '../Context/ChatContext';
-import { useAdmin } from '../../../api/AdminContext';
+import { useBoard } from '../Context/BoardContext';
 
 const AllBoardEdit = () => {
     const { id, type } = useParams();
     const navigate = useNavigate();
+
+    const { posts } = useBoard();
 
     const titleInputRef = useRef(null);
     const editorRef = useRef(null);
@@ -20,16 +21,13 @@ const AllBoardEdit = () => {
     const [postType, setPostType] = useState('');
     const [title, setTitle] = useState('');
 
-    const {notice, chats, review, updateChat} = useChat();
-    const { isAdmin } = useAdmin();
-
     let post;
-    if (type === 'chat') {
-        post = chats.find((item) => item.id === Number(id));
-    } else if (type === 'notice') {
-        post = notice.find((item) => item.id === Number(id));
-    } else if (type === 'review') {
-        post = review.find((item) => item.id === Number(id));
+    if (type === 'NOTICE') {
+        post = posts.find((item) => item.id === Number(id));
+    } else if (type === 'CHAT') {
+        post = posts.find((item) => item.id === Number(id));
+    } else if (type === 'REVIEW') {
+        post = posts.find((item) => item.id === Number(id));
     }
 
     useEffect(() => {
@@ -61,7 +59,7 @@ const AllBoardEdit = () => {
             updatedAt: new Date(),
         }
 
-        updateChat(updatedPost, postType);
+        // updateChat(updatedPost, postType);
 
         Swal.fire({
             title: '게시글 수정',
@@ -121,7 +119,7 @@ const AllBoardEdit = () => {
                         onChange={(e) => setPostType(e.target.value)}
                         // required
                         >
-                        {isAdmin && <option value='notice'>공지사항</option>} {/* 관리자만 공지사항 글쓰기 가능 */}
+                        {<option value='notice'>공지사항</option>} {/* 관리자만 공지사항 글쓰기 가능 */}
                         <option value='chat'>속닥속닥</option>
                         <option value='review'>입양후기</option>                  
                     </select>

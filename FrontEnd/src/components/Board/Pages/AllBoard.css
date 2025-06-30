@@ -30,102 +30,136 @@
     justify-content: center;
     align-items: center;
     margin-top: 10px;
+    margin-right: 5px;
 }
 
 .board-search input {
     padding: 6px 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    width: 280px;
+    width: 260px;
 }
 
-.search-btn {
-    background-color: #333;
-    color: #fff;
-    border: none;
-    padding: 6px 14px;
+.board-search select {
+    padding: 5px 1px;
     border-radius: 4px;
+    /* color: #4895ff; */
+    /* border: 1px solid #4895ff; */
+    border: 1px solid #ccc;
     cursor: pointer;
 }
 
+.search-btn {
+    /* background-color: #333; */
+    background-color: #fff;
+    color: #4895ff;
+    border: 1px solid #4895ff;
+    padding: 5px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+}
 .board-options {
-    color: #5d70ca;
-    border: 1px solid #5d70ca;
+    /* color: #5d70ca; */
+    color: #4895ff;
+    /* border: 1px solid #5d70ca; */
+    border: 1px solid #4895ff;
     height: 35px;
     width: 75px;
 }
-
 .board-write-btn {
     background-color: #fff;
-    color: #5d70ca;
+    color: #4895ff;
     padding: 8px 16px;
-    border: 1px solid #5d70ca;
+    border: 1px solid #4895ff;
     border-radius: 6px;
     /* font-weight: bold; */
     cursor: pointer;
 }
-
 .board-table {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 20px;
 }
-
-.board-table th, .board-table td {
-    border: none;
+.board-table th { 
+    background-color: #f3f3f3;
     border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ccc;
     padding: 10px;
     text-align: center;
+    /* border: 1px solid red; */
+    margin-right: 5px;
+}
+.board-table td {
+    border-top: 1px solid #ddd;
+    padding: 10px;
+    /* border: 1px solid red; */
+    text-align: center;
+}
+.board-table td .board-cell-text {
+    /* display: inline-block; */
+    /* border: 1px solid green; */
+    display: flex;
+    align-items: center;
+    text-align: center;
+    justify-content: flex-start;
+    /* margin-left: 10px; */
 }
 
 /* 각 열의 너비 설정 */
-.board-table th:nth-child(1), /* 번호 */
+/* 카테고리 */
+
 .board-table td:nth-child(1) {
     width: 70px;
 }
 
-.board-table th:nth-child(2), /* 제목 */
+/* 제목 */
+
 .board-table td:nth-child(2) {
     width: auto;
 }
 
-.board-table th:nth-child(3), /* 작성자 */
+/* 작성자 */ 
 .board-table td:nth-child(3) {
-    width: 150px;
+    width: 100px;
 }
 
-.board-table th:nth-child(4),
-.board-table td:nth-child(4) { /* 댓글 */
-    width: 90px;
+.board-table th:nth-child(3){
+    text-align: left;
 }
 
-.board-table th:nth-child(5), /* 조회 */
+/* 조회 */
+.board-table td:nth-child(4) { 
+    width: 60px;
+}
+
+/* 추천 */
 .board-table td:nth-child(5) {
-    width: 90px;
+    width: 60px;
 }
 
-.board-table th:nth-child(6), /* 추천 */
+/* 댓글 */
 .board-table td:nth-child(6) {
-    width: 90px;
+    width: 60px;
 }
 
-.board-table th:nth-child(7), /* 작성일 */
+/* 작성일 */
 .board-table td:nth-child(7) {
     width: 100px;
 }
 
+.comment-header {
+    /* border: 1px solid green; */
+    text-align: left;
+    padding: 0;
+}
+
 .filter-btn {
     position: relative;
-    padding-right: 20px;
     border: none;
     font-size: 15px;
     font-weight: bold;
-    padding: 6px 12px;
+    padding: 2px 2px;
     cursor: pointer;
-    background-color: #f3f3f3;
-}
-
-.board-table th {
     background-color: #f3f3f3;
 }
 
@@ -136,19 +170,26 @@
 
 .board-table td.notice-tab {
     color: red;
+    border-bottom: 1px solid #ccc;
     font-weight: bold;
 }
 
 .board-table td.notice-title {
     color: red;
+    border-bottom: 1px solid #ccc;
     font-weight: bold;
     text-align: left;
     padding-left: 16px;
     cursor: pointer;
 }
 
+.board-table td.notice-title:hover{
+    text-decoration: underline;
+}
+
 .board-table td.notice-cell {
     font-weight: bold;
+    border-bottom: 1px solid #ccc;
 }
 
 .board-table td.title-cell {
@@ -165,28 +206,35 @@
     background-color: #f9f9f9;
 }
 
-.pagination {
+.board-pagination {
     display: flex;
     justify-content: center;
     gap: 6px;
     font-size: 14px;
 }
 
-.pagination button {
+.board-pagination button {
+    width: 25px;
+    height: 25px;
     padding: 4px 8px;
     border: 1px solid #ccc;
     background: white;
     cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;    
+    text-align: center;
 }
 
-.pagination .active {
-    background-color: #b19cd9;
+.board-pagination .active {
+    /* background-color: #b19cd9; */
+    background-color: #4895ff;
     color: white;
     border: none;
-    border-radius: 4px;
+    /* border-radius: 4px; */
 }
 
-.pagination button:disabled {
+.board-pagination button:disabled {
     background-color: #eee;
     color: #999;
     cursor: not-allowed;

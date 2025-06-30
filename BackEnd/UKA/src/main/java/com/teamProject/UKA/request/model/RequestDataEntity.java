@@ -1,7 +1,6 @@
 package com.teamProject.UKA.request.model;
 
 
-import com.teamProject.UKA.auth.dto.UserResponse;
 import com.teamProject.UKA.auth.model.User;
 import com.teamProject.UKA.request.dto.RequestDataDTO;
 
@@ -12,7 +11,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -64,7 +62,7 @@ public class RequestDataEntity {
 	//작성한 유저 아이디
 	//(fk)단방향 조인 //유저 개인페이지에서 불러올 경우 양방향으로 진행 예정.
 	@ManyToOne
-	@JoinColumn(name="user_seq")
+	@JoinColumn(name="user_no")
 	private User user;
 	
 	//toDTO

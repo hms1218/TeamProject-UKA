@@ -44,7 +44,7 @@ export const RequestWrite = () => {
             setImg(file)
             console.log(file)
             //받은 이미지 저장 (유저아이디+파일명으로 파일 이름 저장.)
-            setFormData(prev=>({...prev,image:localStorage.getItem('userId')+file.name}))
+            // setFormData(prev=>({...prev,image:localStorage.getItem('userId')+file.name}))
             //받은 이미지로 프리뷰에 쓸 임시 URL 만들고 세팅.
             setPreview(URL.createObjectURL(file));    
         } catch (error) {
@@ -85,6 +85,7 @@ export const RequestWrite = () => {
             // 이미지 파일 백엔드에 저장 후 접근 URL받기
             const imageForm = new FormData();
             imageForm.append("file",img);
+            imageForm.append("userId",JSON.parse(localStorage.getItem('user')).userId)
             console.log("img",img)
             let imageUrl = null;
 

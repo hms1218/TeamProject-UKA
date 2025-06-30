@@ -39,7 +39,7 @@ export const RequestComponent = ({
         <CardMedia
           component="img"
           height="auto"
-          image={`/img/userimg/${img}`}
+          image={img}
           sx={{ width: 360, height: 360, objectFit: 'cover' }}
         />
       </div>

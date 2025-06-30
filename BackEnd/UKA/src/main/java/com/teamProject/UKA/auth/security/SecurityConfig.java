@@ -50,7 +50,7 @@ public class SecurityConfig {
                         "/api/auth/reset-password",
                         "/request",
                     	"/request/*",
-                    	"/request/img/*",
+                    	"/request/img/**",
                         "/board/**",
                         "/board-detail/**",
                         "/customer/faq/**",

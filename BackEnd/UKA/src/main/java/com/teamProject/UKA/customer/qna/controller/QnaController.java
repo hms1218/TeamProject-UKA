@@ -57,7 +57,7 @@ public class QnaController {
         boolean isAdmin = false;
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()) {
-            String userId = authentication.getName(); // 또는 UserDetails에서 getUsername()
+            String userId = authentication.getName();
             if (userId != null && userId.toLowerCase().contains("admin")) {
                 isAdmin = true;
             }
@@ -77,6 +77,7 @@ public class QnaController {
 
         return ResponseEntity.ok(QnaResponseDTO.fromEntity(qna));
     }
+
 
     // 게시글 수정
     @PutMapping("/{no}")

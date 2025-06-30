@@ -557,7 +557,7 @@ const handleReport = async () => {
                 disabled={isLiked}
                 style={{
                     background: isLiked ? "#ddd" : "",
-                    color: isLiked ? "#aaa" : "#b19cd9",
+                    // color: isLiked ? "#aaa" : "#b19cd9",
                     cursor: isLiked ? "not-allowed" : "pointer"
                 }}
             >

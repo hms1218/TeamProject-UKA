@@ -160,7 +160,7 @@ const QnAList = () => {
     return (
         <div className="customer-container">
         <div className="customer-controls">
-            <button className="customer-write-btn" onClick={handleWrite}>✏️ 글쓰기</button>
+            <button className="qna-action-btn" onClick={handleWrite}>✏️ 글쓰기</button>
         </div>
         <div className="customer-table-container">
         <table className="customer-table">

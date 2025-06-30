@@ -11,6 +11,7 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -18,6 +19,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Builder
 @Table(name = "board_main")
 public class Board {
 	
@@ -35,14 +37,24 @@ public class Board {
 	@Column(name = "brd_author", nullable = false)
 	private String author;
 	
+	@Column(name = "brd_content", nullable = false, columnDefinition = "TEXT")
+	private String content;
+	
+	@Builder.Default
 	@Column(name = "brd_view")
 	private int view = 0;
 	
+	@Builder.Default
 	@Column(name = "brd_likes")
 	private int likes = 0;
 	
+	@Builder.Default
 	@Column(name = "brd_comment")
 	private int comment = 0;
+	
+	@Builder.Default
+    @Column(name = "brd_report")
+    private int report = 0;
 	
 	@Column(name = "brd_created_at", updatable = false)
 	private LocalDateTime createdAt;

@@ -33,6 +33,7 @@ public class BoardService {
 	//게시글 등록
 	@Transactional
 	public BoardResponseDTO createBoard(BoardRequestDTO requestDTO) {
+		System.out.println(1);
 		String newId = generateBoardId();
 
         Board board = requestDTO.toEntity(newId);

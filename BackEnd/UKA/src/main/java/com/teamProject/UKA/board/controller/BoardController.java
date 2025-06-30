@@ -35,18 +35,20 @@ public class BoardController {
 	//게시글 등록
 	@PostMapping
 	public ResponseEntity<BoardResponseDTO> createBoard(@Valid @RequestBody BoardRequestDTO requestDTO){
+		System.out.println("여기 들어오는거 맞지?");
 		BoardResponseDTO responseDTO = service.createBoard(requestDTO);
 		
 		return ResponseEntity.ok(responseDTO);
 	}
-	
+
 	// 게시글 조회 (조회수 자동 증가)
     @GetMapping("/{id}")
     public ResponseEntity<BoardResponseDTO> getBoard(@PathVariable("id") String id) {
+    	// id : board_250630_0004
         BoardResponseDTO responseDTO = service.getBoard(id);
         return ResponseEntity.ok(responseDTO);
     }
-    
+
     //게시글 수정
     @PutMapping("/{id}")
     public ResponseEntity<BoardResponseDTO> updateBoard(

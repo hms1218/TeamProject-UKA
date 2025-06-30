@@ -20,12 +20,12 @@ const categoryLabels = {
     };
 
 const AllBoardDetail = () => {
-    const { id, type } = useParams();
+    console.log("detail 들어왓니 ")
+    const { id } = useParams();
     const navigate = useNavigate();
     const location = useLocation();
 
     const { posts } = useBoard();
-    const isAdmin = useAdmin();
 
     const [notice, setNotice] = useState([]);
     const [chat, setChat] = useState([]);
@@ -54,7 +54,7 @@ const AllBoardDetail = () => {
     const [isReported, setIsReported] = useState(false);
 
     // const currentUser = localStorage.getItem("username"); //유저 정보
-    const currentUser = isAdmin ? "admin" : localStorage.getItem("username") || 'me';
+    const currentUser = localStorage.getItem("username") || 'me';
 
     const filteredList = location.state?.filteredList || null;
 
@@ -188,7 +188,7 @@ const AllBoardDetail = () => {
 
     //이전글, 다음글
     const handleNavigate = (post) => {
-        navigate(`/board/all/detail/${post.type}/${post.id}`, {
+        navigate(`/board/all/detail/${post.id}`, {
             state: {
                 filteredList: filteredList
             }
@@ -327,7 +327,7 @@ const AllBoardDetail = () => {
                 ) : (
                 <>
                     <div style={{ fontSize: 14, marginTop: 4 }}>{c.content}</div>
-                    {(isAdmin || c.author === currentUser) && (
+                    {(c.author === currentUser) && (
                     <>
                         <button
                             onClick={() =>
@@ -533,20 +533,18 @@ const AllBoardDetail = () => {
                         🚨신고
                     </button>
                 </>
-                {((post.type === 'notice' && isAdmin) || (post.type !== 'notice' && (isAdmin || post.author === currentUser))) && (
-                    <>
-                        <button className="board-detail-button"
-                            onClick={() => navigate(`/board/all/edit/${post.type}/${post.id}`, { state: post })}
-                        >
-                        ✏️ 수정
-                        </button>
-                        <button className="board-detail-button"
-                            onClick={handleDelete}
-                        >
-                        🗑 삭제
-                        </button>
-                    </>
-                )}
+                <>
+                    <button className="board-detail-button"
+                        onClick={() => navigate(`/board/all/edit/${post.id}`, { state: post })}
+                    >
+                    ✏️ 수정
+                    </button>
+                    <button className="board-detail-button"
+                        onClick={handleDelete}
+                    >
+                    🗑 삭제
+                    </button>
+                </>
                 <button className="board-detail-button"
                     onClick={() => navigate('/board/all')}       
                 >

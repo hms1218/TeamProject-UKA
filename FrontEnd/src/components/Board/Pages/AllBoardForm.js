@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useChat } from '../Context/ChatContext';
 import './FormButton.css';
 import { Editor } from '@toast-ui/react-editor';
 import '@toast-ui/editor/toastui-editor.css'
@@ -8,7 +7,7 @@ import color from '@toast-ui/editor-plugin-color-syntax'
 import 'tui-color-picker/dist/tui-color-picker.css';
 import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css';
 import Swal from 'sweetalert2';
-import { useAdmin } from '../../../api/AdminContext';
+import axios from 'axios';
 
 
 const AllBoardForm = () => {
@@ -18,8 +17,11 @@ const AllBoardForm = () => {
     const titleInputRef = useRef(null);
     const editorRef = useRef(null);
 
-    const { addChat } = useChat();
-    const isAdmin = useAdmin();
+    const API_BASE_URL = 'http://localhost:8888';
+
+    // 유저 정보
+    const user = JSON.parse(localStorage.getItem('user'));
+    console.log("user :", user);
 
     //글쓰기 시 제목 포커스
     //로컬 스토리지에서 데이터 불러오기
@@ -71,15 +73,10 @@ const AllBoardForm = () => {
         const content = editorRef.current?.getInstance().getMarkdown();
 
         const newPost = {
-            title,
-            content,
-            author: '나야나', // 추후 사용자 정보로 교체 가능
-            comment: 0,
-            views: 0,
-            likes: 0,
-            createdAt: new Date(),
-            isSecret: false,
-            type: postType,
+            category: "CHAT",  // 반드시 Category enum 이름과 일치해야 함
+            title: title,
+            author: !!user ? user.nickname : "익명",
+            content: "내용입니다"
         }
 
         Swal.fire({
@@ -91,19 +88,34 @@ const AllBoardForm = () => {
             cancelButtonColor: '#636e72',   // 회색 취소 버튼
             confirmButtonText: '확인',
             cancelButtonText: '취소',
-        }).then((result) => {
-            if(result.isConfirmed){
-                addChat(newPost, postType);
-                clearTempData(); //저장된 임시데이터 삭제
+        }).then(async (result) => {
+            try {
+                if(result.isConfirmed){
+                    
+                    // addChat(newPost, postType);
+                    console.log("test ::", `${API_BASE_URL}/board`);
+                    const res = await axios.post(`${API_BASE_URL}/board`, newPost);
+
+                    clearTempData(); //저장된 임시데이터 삭제
+                    Swal.fire({
+                        title: '등록 완료',
+                        text: '게시글이 등록되었습니다.',
+                        icon: 'success',
+                        confirmButtonColor: '#6c5ce7',
+                        confirmButtonText: '확인'
+                    }).then(() => {
+                        navigate('/board/all')
+                    })
+                }
+            } catch (error) {
+                console.error(error);
                 Swal.fire({
-                    title: '등록 완료',
-                    text: '게시글이 등록되었습니다.',
-                    icon: 'success',
+                    title: '오류',
+                    text: '게시글 등록 중 오류가 발생했습니다.',
+                    icon: 'error',
                     confirmButtonColor: '#6c5ce7',
                     confirmButtonText: '확인'
-                }).then(() => {
-                    navigate('/board/all')
-                })
+                });
             }
         })
     };
@@ -127,22 +139,6 @@ const AllBoardForm = () => {
         })
     }
 
-    //임시저장 버튼
-    const handleTempSave = () => {
-        const content = editorRef.current?.getInstance().getMarkdown();
-        localStorage.setItem('post-title', title);
-        localStorage.setItem('post-type', postType);
-        localStorage.setItem('post-content', content);
-
-        Swal.fire({
-            title: '임시 저장 완료',
-            text: '작성 중인 글이 임시 저장되었습니다.',
-            icon: 'success',
-            confirmButtonColor: '#6c5ce7',
-            confirmButtonText: '확인'
-        });
-    }
-
     return (
         <div>
             <h2>게시글 글쓰기</h2>
@@ -156,7 +152,7 @@ const AllBoardForm = () => {
                         // required
                         >
                         <option value=''>선택</option>
-                        {isAdmin && <option value='notice'>공지사항</option>} {/* 관리자만 공지사항 글쓰기 가능 */}
+                        {<option value='notice'>공지사항</option>} {/* 관리자만 공지사항 글쓰기 가능 */}
                         <option value='chat'>속닥속닥</option>
                         <option value='review'>입양후기</option>
                         
@@ -193,7 +189,6 @@ const AllBoardForm = () => {
                 </div>
                 <div className='board-write-button-container'>
                     <button type="submit" className="board-write-button">등록</button>
-                    <button type="button" className="board-write-button" onClick={handleTempSave}>임시 저장</button>
                     <button type="button" className="board-write-button" onClick={handleCancel}>취소</button>
                 </div>
             </form>

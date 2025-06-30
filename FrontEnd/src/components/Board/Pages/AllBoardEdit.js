@@ -8,7 +8,7 @@ import color from '@toast-ui/editor-plugin-color-syntax'
 import 'tui-color-picker/dist/tui-color-picker.css';
 import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css';
 import { useChat } from '../Context/ChatContext';
-import { useAdmin } from '../../../api/AdminContext';
+import isAdminCheck from '../../Common/isAdminCheck';
 
 const AllBoardEdit = () => {
     const { id, type } = useParams();
@@ -21,7 +21,7 @@ const AllBoardEdit = () => {
     const [title, setTitle] = useState('');
 
     const {notice, chats, review, updateChat} = useChat();
-    const { isAdmin } = useAdmin();
+    const isAdmin = isAdminCheck();
 
     let post;
     if (type === 'chat') {

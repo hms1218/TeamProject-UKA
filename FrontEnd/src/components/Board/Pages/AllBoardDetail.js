@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react';
 import './BoardDetail.css';
 import { useBoard } from '../Context/BoardContext';
 import Swal from 'sweetalert2';
-import { useAdmin } from '../../../api/AdminContext';
 import axios from 'axios';
+import isAdminCheck from '../../Common/isAdminCheck';
 
 const mockComments = [
     { id: 1, author: 'guest1', content: '저도 궁금해요.', date: '25.06.14', parentId: null },
@@ -25,7 +25,7 @@ const AllBoardDetail = () => {
     const location = useLocation();
 
     const { posts } = useBoard();
-    const { isAdmin } = useAdmin();
+    const isAdmin = isAdminCheck();
 
     const [notice, setNotice] = useState([]);
     const [chat, setChat] = useState([]);

@@ -69,11 +69,7 @@ const CustomerLayout = ({children}) => {
 
       	{/* 라우트 출력 영역 */}
         <main className="customer-content">
-            {location.pathname === '/customer/faq'
-                ? <FAQList searchKeyword={appliedKeyword} resetFlag={faqResetFlag} />
-            : location.pathname === '/customer/qna'
-                ? <QnAList resetFlag={qnaResetFlag} />
-            : <Outlet />}
+            <Outlet />
         </main>
     </div>
   );

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAlert } from '../Context/AlertContext';
-import { useAdmin } from '../../../api/AdminContext';
 import './AdoptionInquiry.css';
+import isAdminCheck from '../../Common/isAdminCheck';
 
 const DEFAULT_SLIDE_IMAGES = [
   '/AdoptionImage/photo1.jpg',
@@ -34,7 +34,7 @@ const AdoptionInquiry = () => {
     const [photoDraft, setPhotoDraft] = useState([...slideImages]);
 
     // 관리자 체크
-    const { isAdmin } = useAdmin();
+    const isAdmin = isAdminCheck();
 
     useEffect(() => {
         setOpen(true);

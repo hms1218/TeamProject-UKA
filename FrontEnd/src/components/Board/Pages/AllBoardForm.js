@@ -8,7 +8,7 @@ import color from '@toast-ui/editor-plugin-color-syntax'
 import 'tui-color-picker/dist/tui-color-picker.css';
 import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css';
 import Swal from 'sweetalert2';
-import { useAdmin } from '../../../api/AdminContext';
+import isAdminCheck from '../../Common/isAdminCheck';
 
 
 const AllBoardForm = () => {
@@ -19,7 +19,7 @@ const AllBoardForm = () => {
     const editorRef = useRef(null);
 
     const { addChat } = useChat();
-    const { isAdmin } = useAdmin();
+    const isAdmin = isAdminCheck();
 
     //글쓰기 시 제목 포커스
     //로컬 스토리지에서 데이터 불러오기

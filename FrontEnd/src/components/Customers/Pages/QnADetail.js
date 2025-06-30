@@ -2,9 +2,9 @@ import { useParams, useNavigate, useLocation  } from 'react-router-dom';
 import { useEffect, useState, useRef } from 'react';
 import { useAlert } from '../Context/AlertContext';
 import { fetchQnaDetail, fetchQnaList, reportQna, restoreQna, deleteQna } from '../../../api/CustomerApiData';
-import { useAdmin } from '../../../api/AdminContext';
 import './QnADetail.css';
 import { MapQnaRaw } from '../Mappers/QnaMapper';
+import isAdminCheck from '../../Common/isAdminCheck';
 
 const QnADetail = () => {
     const { id } = useParams();
@@ -16,8 +16,11 @@ const QnADetail = () => {
     const [commentInput, setCommentInput] = useState('');
     const [answerEditMode, setAnswerEditMode] = useState(false);
     const [answerInput, setAnswerInput] = useState(qna?.answer || "");
-    const isOwner = false; // 임시 추후 삭제 필요
-    const { isAdmin } = useAdmin(); // 어드민 임시(추후 삭제 필요)
+    const isAdmin = isAdminCheck();
+    const user = JSON.parse(localStorage.getItem('user'));
+    const isOwner = user?.nickname === qna?.author;
+
+    console.log('[디버깅] isAdmin:', isAdmin, '| isOwner:', isOwner, '| user:', user, '| author:', qna?.author);
 
     // 신고
     const [isReported, setIsReported] = useState(false);

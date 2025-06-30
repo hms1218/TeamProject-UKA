@@ -39,7 +39,7 @@ export async function login({ userId, password }) {
     }
 
     localStorage.setItem('token', body.token);
-    localStorage.setItem('userId', body.user.userId);
+    localStorage.setItem('user', JSON.stringify(body.user));
     return body;  // 토큰과 유저를 함께 반환
 }
 
@@ -54,6 +54,9 @@ export async function getMe() {
         headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
+        },
+        body: {
+            'userId': localStorage.getItem('userId')  // 유저 ID를 헤더에 포함
         }
     });
 

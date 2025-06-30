@@ -96,8 +96,8 @@ const QnAEdit = () => {
           />
         </div>
         <div className="customer-write-button-container">
-          <button type="submit" className="customer-write-button">수정 완료</button>
-          <button type="button" className="customer-write-button" onClick={handleCancel}>취소</button>
+          <button type="submit" className="qna-action-btn">수정 완료</button>
+          <button type="button" className="qna-action-btn" onClick={handleCancel}>취소</button>
         </div>
       </form>
     </div>

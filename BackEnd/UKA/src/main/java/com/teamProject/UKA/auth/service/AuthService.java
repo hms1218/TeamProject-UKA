@@ -96,9 +96,6 @@ public class AuthService {
 	public void requestPasswordReset(String userId, String email) {
 		User u = userRepo.findByUserIdAndEmail(userId, email)
 				.orElseThrow(() -> new RuntimeException("아이디/이메일이 일치하지 않습니다."));
-		System.out.println("u ::: "+ u);
-		
-		
 
 	    // 기존 토큰 삭제
 	    tokenRepo.deleteByUser(u);

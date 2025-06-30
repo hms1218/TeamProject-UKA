@@ -46,7 +46,7 @@ const QnAForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const content = editorRef.current?.getInstance().getMarkdown();
+        const content = editorRef.current?.getInstance().getHTML();
 
         // 제목/내용 비어있으면 경고
         if (!title.trim()) {
@@ -164,9 +164,9 @@ const QnAForm = () => {
                         />
                     </div>
                 )}
-                <div className='board-write-button-container'>
-                    <button type="submit" className="customer-form-write-button">등록</button>
-                    <button type="button" className="customer-form-write-button" onClick={handleCancel}>취소</button>
+                <div className='customer-write-button-container'>
+                    <button type="submit" className="qna-action-btn">등록</button>
+                    <button type="button" className="qna-action-btn" onClick={handleCancel}>취소</button>
                 </div>
             </form>
         </div>

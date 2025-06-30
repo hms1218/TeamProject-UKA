@@ -10,7 +10,6 @@ export const RequestMain = () => {
     const [card,setCard] = useState([]);
 
     useEffect(()=>{
-        console.log('run')
         const requestApi = async () => {
             try {
                 const response = await (await fetch("http://www.localhost:8888/request"))

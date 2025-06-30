@@ -33,6 +33,7 @@
 }
 
 .customer-write-button-container{
+  width: 86%;
   text-align: center;
-  padding-left: 440px;
+  /* padding-right: 30px; */
 }

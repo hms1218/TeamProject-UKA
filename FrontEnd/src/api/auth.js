@@ -39,8 +39,8 @@ export async function login({ userId, password }) {
     }
 
     localStorage.setItem('token', body.token);
-    localStorage.setItem('userId', body.userId);
-    localStorage.setItem('nickname', body.nickname);
+    localStorage.setItem('user', JSON.stringify(body.user));
+    
     return body;  // 토큰과 유저를 함께 반환
 }
 
@@ -63,5 +63,19 @@ export async function getMe() {
         throw new Error(body.message || `회원 정보 조회 실패: ${res.status}`);
     }
 
-    return body;  // { id, username, email, createdAt }
+    return body;
+}
+
+// 예시: 이미 만들어둔 api/auth.js 파일에 추가
+export async function checkUserId(userId) {
+    const res = await fetch(`http://localhost:8888/api/auth/check-userid?userId=${encodeURIComponent(userId)}`);
+    const body = await res.json();
+    // 서버에서 { exists: true/false } 또는 { available: true/false }로 응답한다고 가정
+    return body;
+}
+
+export async function checkEmail(email) {
+    const res = await fetch(`http://localhost:8888/api/auth/check-email?email=${encodeURIComponent(email)}`);
+    const body = await res.json();
+    return body;
 }

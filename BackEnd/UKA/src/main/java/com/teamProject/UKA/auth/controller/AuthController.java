@@ -38,7 +38,7 @@ public class AuthController {
 
 	@GetMapping("/me")
 	public User me(@AuthenticationPrincipal String userId) {
-		return authService.getMe(Long.valueOf(userId));
+		return authService.getMe(String.valueOf(userId));
 	}
 	
 	@PostMapping("/find-userId")

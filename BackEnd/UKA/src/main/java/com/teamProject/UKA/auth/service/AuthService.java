@@ -68,6 +68,7 @@ public class AuthService {
 				.compact();
 
 		UserResponse ur = new UserResponse(
+			u.getSeq(),
 		    u.getUserId(), 
 		    u.getNickname(), 
 		    u.getEmail(), 
@@ -78,8 +79,8 @@ public class AuthService {
 		return new LoginResponse(token, ur);
 	}
 
-	public User getMe(Long userId) {
-		return userRepo.findById(userId)
+	public User getMe(String userId) {
+		return userRepo.findByUserId(userId)
 				.orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
 	}
 	

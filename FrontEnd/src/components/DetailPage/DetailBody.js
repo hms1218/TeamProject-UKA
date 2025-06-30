@@ -121,7 +121,6 @@ export const DetailBody = () => {
             <div className="DBcombobox">
                 {/* 시 */}
                 <div>
-                    <label className="DBtext" htmlFor="siDo">시 선택</label>
                     <select
                         id="siDo"
                         value={siDo}
@@ -142,7 +141,6 @@ export const DetailBody = () => {
                 </div>
                 {/* 군 */}
                 <div>
-                    <label className="DBtext" htmlFor="gunGu">군 선택</label>
                     <select
                         id="gunGu"
                         value={gunGu}
@@ -163,7 +161,6 @@ export const DetailBody = () => {
                 </div>
                 {/* 센터 */}
                 <div>
-                    <label className="DBtext" htmlFor="center">센터 선택</label>
                     <select
                         id="center"
                         value={center}
@@ -180,12 +177,12 @@ export const DetailBody = () => {
                 </div>
 
                 
-   
+                {/* 센터 선택, 마커 생성 버튼 */}
                 <Button
                     variant="contained"
                     className="DBButton"
-                    color="inherit"
-                    sx={{ marginLeft: '20px', marginTop: '37px' }}
+                    color="info"
+                    sx={{ marginLeft: '20px'}}
                     onClick={() => {
                         let filteredCenters = [];
                         if (selectedCenterData) {
@@ -205,10 +202,11 @@ export const DetailBody = () => {
                         setTargetCenters(filteredCenters);
                         console.log("마커 표시할 센터 목록:", filteredCenters);
                     }}
-                >
-                    검색하기
+                ><span>
+                    검색하기</span>
                 </Button>
             </div>
+
 
             {/* 상단 div */}
             <div className="DBtop">

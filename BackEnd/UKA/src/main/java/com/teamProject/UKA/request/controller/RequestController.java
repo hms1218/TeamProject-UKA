@@ -1,8 +1,11 @@
 package com.teamProject.UKA.request.controller;
 
+import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.teamProject.UKA.request.dto.RequestDataDTO;
 import com.teamProject.UKA.request.service.RequestService;
@@ -34,12 +38,29 @@ public class RequestController {
 		return ResponseEntity.ok().body(result);
 	}
 	
-//			//C-A - 찾고 있어요. 테스용 데이터 넣기 '많이' 작성.
-//			@PostMapping("/all")
-//			public ResponseEntity<?> writeAll(@RequestBody List<RequestDataDTO> list){
-//				List<RequestDataDTO> result = service.writeAll(list);
-//				return ResponseEntity.ok().body(result);
-//			}
+	//C-image 이미지 업로드용 
+	@PostMapping("/image")
+	public ResponseEntity<?> uploadFile(@RequestParam("file")MultipartFile file){
+		String imageUrl = "";
+		
+		File directory = new File("C:/my-app/upload/");
+		if (!directory.exists()) {
+		    directory.mkdirs(); // 폴더 자동 생성
+		}
+		
+		String filePath = "C:/my-app/upload/" + file.getOriginalFilename();
+		
+		try {
+			file.transferTo(new File(filePath));
+			
+			imageUrl = "http://localhost:8888/img/"+file.getOriginalFilename();
+		} catch (Exception e) {
+		    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "파일 업로드 실패"));
+		}
+		return ResponseEntity.ok(Map.of("imageUrl",imageUrl));
+	}
+	
 		
 	@GetMapping
 	//R - 전체 조회.

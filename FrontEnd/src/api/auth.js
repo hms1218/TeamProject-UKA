@@ -40,6 +40,7 @@ export async function login({ userId, password }) {
 
     localStorage.setItem('token', body.token);
     localStorage.setItem('user', JSON.stringify(body.user));
+    // console.log(JSON.stringify(body.user))
     
     return body;  // 토큰과 유저를 함께 반환
 }

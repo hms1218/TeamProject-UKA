@@ -1,3 +1,4 @@
+/* 흰색 텍스트 */
 .DBtext{
   color: white;
   font-size: 26px;
@@ -175,9 +176,10 @@
     background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
   
     padding : 20px 40px;
-    gap:40px;
+    gap:50px;
 }
 
 /* 콤보박스 안 select */
@@ -203,8 +205,19 @@
 
 /* 콤보박스 안 '검색하기' 버튼 */
 .DBButton{
-    
-   
+    width: 150px;
+    font-size: 26px;
+    padding : 10px;
+}
+
+.DBButton span{
+    color: white;
+}
+
+/* 지도 들어가는 div */
+.DBmap{
+    display: flex;
+    height: 100%;
 }
 
 /* 본문 아래쪽 */

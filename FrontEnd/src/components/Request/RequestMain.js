@@ -60,6 +60,7 @@ export const RequestMain = () => {
 
                 {/* 데이터 시작 */}
                 <div style={{marginTop:'20px'}}></div>
+
                 {card.map((list)=>(
                     <div key={list.no}>
                         <div className='RMone' >
@@ -74,12 +75,13 @@ export const RequestMain = () => {
                                 phone={list.contactNumver}
                                 descripsion={list.detail}
                             /> 
-                            {console.log(list)}
+                            {/* 받은값 확인하기. */}
+                            {/* {console.log(list)} */}
                         </div>
                         {/* 밑줄 */}
                         <div className='RMhr'></div>
                     </div>
-                ))}
+                )).reverse()}
 
             </Box>
         </div>

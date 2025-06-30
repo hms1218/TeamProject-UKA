@@ -9,6 +9,7 @@
     flex-direction: row;
     justify-content: center;
     align-items: center;
+    min-width: 1070px;
 }.RMloading div{
     margin-top: 20px;
 }

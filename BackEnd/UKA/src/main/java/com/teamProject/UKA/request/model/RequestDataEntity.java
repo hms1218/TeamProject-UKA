@@ -62,7 +62,7 @@ public class RequestDataEntity {
 	//작성한 유저 아이디
 	//(fk)단방향 조인 //유저 개인페이지에서 불러올 경우 양방향으로 진행 예정.
 	@ManyToOne
-	@JoinColumn(name="user_no")
+	@JoinColumn(name="user_seq")
 	private User user;
 	
 	//toDTO

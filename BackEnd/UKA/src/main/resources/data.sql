@@ -14,7 +14,7 @@ INSERT INTO users (seq,user_id, nickname, email, password_hash, created_at) VALU
 
 
 --찾아주세요 샘플데이터
-INSERT INTO request (find, img, kind, sex, age, name, time, lost_location, contact_number, detail, user_no) VALUES
+INSERT INTO request (find, img, kind, sex, age, name, time, lost_location, contact_number, detail, user_seq) VALUES
 (false, 'dog1.jpg', '진돗개', true, '2살', '바둑이', '2025-06-01 14:00', '서울 강남구 논현동', '010-1111-2222', '하얀색 진돗개, 목줄 착용', 1),
 (false, 'cat1.jpg', '코리안숏헤어', false, '3개월', '나비', '2025-06-02 09:30', '서울 마포구 합정동', '010-3333-4444', '왼쪽 귀에 검은 점 있음', 2),
 (false, 'dog2.jpg', '포메라니안', true, '1살', '쫑이', '2025-06-03 17:00', '서울 송파구 잠실동', '010-5555-6666', '크림색 털, 활동적임', 1),

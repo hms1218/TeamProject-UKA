@@ -38,7 +38,7 @@ public class BoardResponseDTO {
         this.view = entity.getView();
         this.likes = entity.getLikes();
         this.comment = entity.getComment();
-//        this.report = entity.getReport(); 
+        this.report = entity.getReport(); 
         this.createdAt = entity.getCreatedAt();
         this.updatedAt = entity.getUpdatedAt();
     }

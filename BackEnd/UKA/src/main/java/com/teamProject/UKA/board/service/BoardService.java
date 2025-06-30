@@ -54,6 +54,28 @@ public class BoardService {
         return new BoardResponseDTO(board);
     }
 	
+	//게시글 추천 카운트
+	@Transactional
+	public BoardResponseDTO toggleLikes(String id, boolean increment) {
+	    Board board = repository.findById(id)
+	            .orElseThrow(() -> new IllegalArgumentException("게시글이 없습니다. id=" + id));
+
+	    int newLikes = board.getLikes() + (increment ? 1 : -1);
+	    board.setLikes(Math.max(newLikes, 0)); // 음수 방지
+	    return new BoardResponseDTO(board);
+	}
+
+	//게시글 신고 카운트
+	@Transactional
+	public BoardResponseDTO toggleReport(String id, boolean increment) {
+	    Board board = repository.findById(id)
+	            .orElseThrow(() -> new IllegalArgumentException("게시글이 없습니다. id=" + id));
+
+	    int newReport = board.getReport() + (increment ? 1 : -1);
+	    board.setReport(Math.max(newReport, 0)); // 음수 방지
+	    return new BoardResponseDTO(board);
+	}
+	
 	//게시글 수정
 	@Transactional
 	public BoardResponseDTO updateBoard(String id, BoardRequestDTO requestDTO) {

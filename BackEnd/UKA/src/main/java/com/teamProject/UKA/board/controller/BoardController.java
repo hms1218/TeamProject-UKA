@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.teamProject.UKA.board.dto.BoardRequestDTO;
@@ -35,7 +36,6 @@ public class BoardController {
 	//게시글 등록
 	@PostMapping
 	public ResponseEntity<BoardResponseDTO> createBoard(@Valid @RequestBody BoardRequestDTO requestDTO){
-		System.out.println("여기 들어오는거 맞지?");
 		BoardResponseDTO responseDTO = service.createBoard(requestDTO);
 		
 		return ResponseEntity.ok(responseDTO);
@@ -47,6 +47,24 @@ public class BoardController {
     	// id : board_250630_0004
         BoardResponseDTO responseDTO = service.getBoard(id);
         return ResponseEntity.ok(responseDTO);
+    }
+    
+    //게시글 추천 카운트
+    @PostMapping("/{id}/likes")
+    public ResponseEntity<BoardResponseDTO> toggleLikes(
+            @PathVariable("id") String id,
+            @RequestParam("increment") boolean increment) {
+        BoardResponseDTO updated = service.toggleLikes(id, increment);
+        return ResponseEntity.ok(updated);
+    }
+
+    //게시글 신고 카운트
+    @PostMapping("/{id}/report")
+    public ResponseEntity<BoardResponseDTO> toggleReport(
+            @PathVariable("id") String id,
+            @RequestParam("increment") boolean increment) {
+        BoardResponseDTO updated = service.toggleReport(id, increment);
+        return ResponseEntity.ok(updated);
     }
 
     //게시글 수정

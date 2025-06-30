@@ -1,17 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useBoard } from '../Context/BoardContext';
 import './AllBoard.css';
 import Swal from 'sweetalert2';
-import axios from 'axios';
+import { fetchAllPosts } from '../../../api/BoardApi';
 
 const AllBoard = () => {
-
-    const { posts } = useBoard();
-
-    const [notice, setNotice] = useState([]);
-    const [chat, setChat] = useState([]);
-    const [review, setReview] = useState([]);
+    const [posts, setPosts] = useState([]);
 
     const [currentPage, setCurrentPage] = useState(1);
     const navigate = useNavigate();
@@ -26,27 +20,31 @@ const AllBoard = () => {
 
     const itemsPerPage = 10;
 
-    const API_BASE_URL = 'http://localhost:8888';
-
     const categoryLabels = {
         NOTICE: '공지사항',
         CHAT: '속닥속닥',
         REVIEW: '입양후기'
     };
 
+    //게시글 불러오기
     useEffect(() => {
-        if (posts) {
-            setNotice(posts.filter(post => post.category === "NOTICE"));
-            setChat(posts.filter(post => post.category === "CHAT"));
-            setReview(posts.filter(post => post.category === "REVIEW"));
-        }
-    },[posts])
+        const getAllPosts = async () => {
+            try {
+                const data = await fetchAllPosts();
+                setPosts(data);
+            } catch (err) {
+                console.error('게시글 불러오기 실패', err);
+                Swal.fire('오류', '게시글 불러오기 중 오류가 발생했습니다.', 'error');
+            }
+        };
+        getAllPosts();
+    }, []);
 
-    // 정렬 함수
-    const sortPosts = (post) => {
+    // 게시글 정렬
+    const sortPosts = (postList) => {
         const order = sortAsc ? -1 : 1;
 
-        return [...post].sort((a, b) => {
+        return [...postList].sort((a, b) => {
             if (sortOption === 'view') return order * (b.view - a.view);
             if (sortOption === 'likes') return order * (b.likes - a.likes);
             if (sortOption === 'comment') return order * (b.comment - a.comment);
@@ -55,54 +53,8 @@ const AllBoard = () => {
         });
     };
 
-	//정렬된 공지사항
-    const noticedChats = useMemo(() => {
-        if (!posts) return [];
-        return sortPosts(
-            posts.filter(post => post.category === "NOTICE")
-        );
-    }, [posts, sortOption, sortAsc]);
-
-	//정렬된 일반게시글
-    const combinedPosts = useMemo(() => {
-        if (!posts) return [];
-        return sortPosts(
-            posts.filter(post => post.category !== "NOTICE")
-        );
-    }, [posts, sortOption, sortAsc]);
-
-    // 정렬된 검색 결과
-    const sortedFilteredPosts = useMemo(() =>
-        sortPosts(filteredPosts), [filteredPosts, sortOption, sortAsc]);
-
-    // 현재 페이지에 보여줄 게시글
-    const paginatedPosts = isSearching ? sortedFilteredPosts : combinedPosts;
-    const displayedPosts = paginatedPosts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-
-    //searching 여부에 따라 페이징
-    const totalPages = Math.max(1, Math.ceil(
-        (isSearching ? filteredPosts.length : combinedPosts.length) / itemsPerPage));
-
-	// 페이지 버튼 생성 로직
-    const getPageNumbers = () => {
-        const maxButtons = 5; //페이지 바에서 최대 보여주는 버튼 개수
-		const groupIndex = Math.floor((currentPage - 1) / maxButtons)
-		const start = groupIndex * maxButtons + 1;
-        const end = Math.min( totalPages, start + maxButtons - 1);
-
-        return Array.from({ length: end - start + 1 }, (_, i) => start + i);
-    };
-
-	//타이틀 클릭시
-    const handleTitleClick = (post) => {
-        console.log("post : ", post);
-        navigate(`/board/all/detail/${post.id}`, { state: { filteredList: isSearching ? sortedFilteredPosts : combinedPosts, } });
-    };
-
-	//글쓰기 버튼
-    const handleWrite = () => {
-        navigate('/board/all/form');
-    };
+    const noticedPosts = sortPosts(posts.filter(p => p.category === "NOTICE"));
+    const normalPosts = sortPosts(posts.filter(p => p.category !== "NOTICE"));
 
     //검색 함수
     const handleSearch = () => {
@@ -124,7 +76,7 @@ const AllBoard = () => {
             return;
         }
 
-        const filtered = combinedPosts.filter(post => {
+        const filtered = normalPosts.filter(post => {
             if(searchOption === 'title'){
                 return post.title.toLowerCase().includes(keyword.toLowerCase())
             }
@@ -140,6 +92,35 @@ const AllBoard = () => {
         setConfirmKeyword(keyword);
         // setSearchKeyword('')
     }
+
+    // 현재 페이지에 보여줄 게시글
+    const paginatedPosts = isSearching ? filteredPosts : normalPosts;
+    const displayedPosts = paginatedPosts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+    //searching 여부에 따라 페이징
+    const totalPages = Math.max(1, Math.ceil(
+        (isSearching ? filteredPosts.length : displayedPosts.length) / itemsPerPage));
+
+	// 페이지 버튼 생성 로직
+    const getPageNumbers = () => {
+        const maxButtons = 5; //페이지 바에서 최대 보여주는 버튼 개수
+		const groupIndex = Math.floor((currentPage - 1) / maxButtons)
+		const start = groupIndex * maxButtons + 1;
+        const end = Math.min( totalPages, start + maxButtons - 1);
+
+        return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+    };
+
+	//타이틀 클릭시
+    const handleTitleClick = (post) => {
+        console.log("post : ", post);
+        navigate(`/board/all/detail/${post.id}`, { state: { filteredList: isSearching ? filteredPosts : displayedPosts, } });
+    };
+
+	//글쓰기 버튼
+    const handleWrite = () => {
+        navigate('/board/all/form');
+    };
 
     //검색한 키워드 강조
     const highlightKeyword = (text, keyword) => {
@@ -163,82 +144,74 @@ const AllBoard = () => {
 
     return (
         <div className="board-container">
-        {/* <h1 className="board-title">전체 게시판</h1> */}
+            <div className="board-controls">
+                <select className='board-options'
+                    value={sortOption} 
+                    onChange={(e) => {setSortOption(e.target.value); setSortAsc(false);}}
+                >
+                <option value='latest' selected>최신순</option>
+                <option value='view'>조회순</option>
+                <option value='likes'>추천순</option>
+                <option value='comment'>댓글순</option>
+                </select>
+                <button className="board-write-btn" onClick={handleWrite}>글쓰기</button>
+            </div>
 
-        <div className="board-controls">
-            <select className='board-options'
-                value={sortOption} 
-                onChange={(e) => {
-                    setSortOption(e.target.value); 
-                    setSortAsc(false);
-                }}>
-            <option value='latest' selected>최신순</option>
-            <option value='view'>조회순</option>
-            <option value='likes'>추천순</option>
-            <option value='comment'>댓글순</option>
-            </select>
-            <button className="board-write-btn" onClick={handleWrite}>글쓰기</button>
-        </div>
-
-        <table className="board-table">
-            <thead>
-            <tr>
-                <th>카테고리</th>
-                <th>제목</th>
-                <th>작성자</th>
-				<th className='comment-header'>
-                    <button className="filter-btn" onClick={() => {
-                        if(sortOption === 'view'){
-                            setSortAsc(!sortAsc);
-                        } else{
-                            setSortOption('view');
-                            setSortAsc(true);
-                        }
-                        }}>
-                        조회 {sortOption === 'view' ? (!sortAsc ? '∨' : '∧') : '∨'}
-                    </button>
-				</th>
-				<th>
-					<button className="filter-btn" onClick={() => {
-                        if(sortOption === 'likes'){
-                            setSortAsc(!sortAsc);
-                        } else{
-                            setSortOption('likes');
-                            setSortAsc(true);
-                        }
-                        }}>
-                        추천 {sortOption === 'likes' ? (!sortAsc ? '∨' : '∧') : '∨'}
-                    </button>
-                </th>
-				<th>
-					<button className="filter-btn" onClick={() => {
-                        if(sortOption === 'comment'){
-                            setSortAsc(!sortAsc);
-                        } else{
-                            setSortOption('comment');
-                            setSortAsc(true);
-                        }
-                        }}>
-                        댓글 {sortOption === 'comment' ? (!sortAsc ? '∨' : '∧') : '∨'}
-                    </button>
-				</th>
-				<th>
-					<button className="filter-btn" onClick={() => {
-                        if(sortOption === 'latest'){
-                            setSortAsc(!sortAsc);
-                        } else{
-                            setSortOption('latest');
-                            setSortAsc(true);
-                        }
-                        }}>
-                        작성일 {sortOption === 'latest' ? (!sortAsc ? '∨' : '∧') : '∨'}
-                    </button>
-				</th>
-            </tr>
-            </thead>
-            <tbody>
-            {/* 공지사항 매핑 */}
-            {noticedChats?.map((post) => (
+            <table className="board-table">
+                <thead>
+                <tr>
+                    <th>카테고리</th>
+                    <th>제목</th>
+                    <th>작성자</th>
+                    <th className='comment-header'>
+                        <button className="filter-btn" onClick={() => {
+                            if(sortOption === 'view'){
+                                setSortAsc(!sortAsc);
+                            } else{
+                                setSortOption('view');
+                                setSortAsc(true);
+                            }
+                        }}> 조회 {sortOption === 'view' ? (!sortAsc ? '∨' : '∧') : '∨'}
+                        </button>
+                    </th>
+                    <th>
+                        <button className="filter-btn" onClick={() => {
+                            if(sortOption === 'likes'){
+                                setSortAsc(!sortAsc);
+                            } else{
+                                setSortOption('likes');
+                                setSortAsc(true);
+                            }
+                        }}> 추천 {sortOption === 'likes' ? (!sortAsc ? '∨' : '∧') : '∨'}
+                        </button>
+                    </th>
+                    <th>
+                        <button className="filter-btn" onClick={() => {
+                            if(sortOption === 'comment'){
+                                setSortAsc(!sortAsc);
+                            } else{
+                                setSortOption('comment');
+                                setSortAsc(true);
+                            }
+                        }}> 댓글 {sortOption === 'comment' ? (!sortAsc ? '∨' : '∧') : '∨'}
+                        </button>
+                    </th>
+                    <th>
+                        <button className="filter-btn" onClick={() => {
+                            if(sortOption === 'latest'){
+                                setSortAsc(!sortAsc);
+                            } else{
+                                setSortOption('latest');
+                                setSortAsc(true);
+                            }
+                        }}> 작성일 {sortOption === 'latest' ? (!sortAsc ? '∨' : '∧') : '∨'}
+                        </button>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                {/* 공지사항 매핑 */}
+                {noticedPosts?.map((post) => (
                 <tr key={`notice-${post.id}`} className="notice-row" style={{backgroundColor: '#ddd'}}>
                     <td className='notice-tab'>{categoryLabels[post.category]}</td>
                     <td className="notice-title" onClick={() => handleTitleClick(post)}>
@@ -271,113 +244,112 @@ const AllBoard = () => {
                         <div className='board-cell-text' style={{marginLeft:15}}>{formatDate(post.createdAt)}</div>
                     </td>
                 </tr>
-            ))}
-            {/* 일반게시글 매핑 */}
-            {displayedPosts.length > 0 ? (
-                displayedPosts.map((post) => (
-                <tr key={`${post.type}-${post.id}`}>
-                        <td>{categoryLabels[post.category]}</td>
-                        <td className="title-cell" onClick={() => handleTitleClick(post)}>
-                        {/* {post.isSecret ? '🔒 ' : ''} */}
-                            <div className='board-cell-text'>
-                                {searchOption === 'title' 
-                                    ? highlightKeyword(post.title, isSearching ? confirmKeyword : '')
-                                    : post.title
-                                }
-                            </div>
-                        </td>
-                        <td>
-                            <div className='board-cell-text'>
-                                {searchOption === 'author' 
-                                    ? highlightKeyword(post.author, isSearching ? confirmKeyword : '')
-                                    : post.author
-                                }
-                            </div>
-                        </td>
-                        <td>
-                            <div className='board-cell-text' style={{marginLeft:20}}>{post.view}</div>
-                        </td>
-                        <td>
-                            <div className='board-cell-text' style={{marginLeft:20}}>{post.likes}</div>
-                        </td>
-                        <td>
-                            <div className='board-cell-text' style={{marginLeft:20}}>{post.comment}</div>
-                        </td>
-                        <td>
-                            <div className='board-cell-text' style={{marginLeft:15}}>{formatDate(post.createdAt)}</div>
-                        </td>
-                </tr>           
-                ))
-            ) : (
-                <tr>
-                    <td colSpan='7' style={{color: '#999'}}> 🔍 해당 게시글이 없습니다.</td>
-                </tr>
-            )
-        }
-            </tbody>
-        </table>
+                ))}
+                {/* 일반게시글 매핑 */}
+                {displayedPosts.length > 0 ? (
+                    displayedPosts.map((post) => (
+                    <tr key={`${post.type}-${post.id}`}>
+                            <td>{categoryLabels[post.category]}</td>
+                            <td className="title-cell" onClick={() => handleTitleClick(post)}>
+                                <div className='board-cell-text'>
+                                    {searchOption === 'title' 
+                                        ? highlightKeyword(post.title, isSearching ? confirmKeyword : '')
+                                        : post.title
+                                    }
+                                </div>
+                            </td>
+                            <td>
+                                <div className='board-cell-text'>
+                                    {searchOption === 'author' 
+                                        ? highlightKeyword(post.author, isSearching ? confirmKeyword : '')
+                                        : post.author
+                                    }
+                                </div>
+                            </td>
+                            <td>
+                                <div className='board-cell-text' style={{marginLeft:20}}>{post.view}</div>
+                            </td>
+                            <td>
+                                <div className='board-cell-text' style={{marginLeft:20}}>{post.likes}</div>
+                            </td>
+                            <td>
+                                <div className='board-cell-text' style={{marginLeft:20}}>{post.comment}</div>
+                            </td>
+                            <td>
+                                <div className='board-cell-text' style={{marginLeft:15}}>{formatDate(post.createdAt)}</div>
+                            </td>
+                    </tr>           
+                    ))
+                ) : (
+                    <tr>
+                        <td colSpan='7' style={{color: '#999'}}> 🔍 해당 게시글이 없습니다.</td>
+                    </tr>
+                )
+            }
+                </tbody>
+            </table>
 
-        <div className="board-pagination">
-			<button
-				onClick={() => {
-					const prevGroupStart = Math.ceil((currentPage) / 5 - 1) * 5;
-					//ex) currentPage = 14 -> ceil((14-1)/5-1) = 2 , 2*5 = 10page
-					const prevGroupPage = Math.max(prevGroupStart, 1); //둘중에 최댓값의 페이지로 이동
-					setCurrentPage(prevGroupPage);
-				}}
-				disabled={currentPage === 1}
-			>
-			«
-			</button>
-            <button onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1}>‹</button>
-            {getPageNumbers().map(page => (
-            <button
-                key={page}
-                onClick={() => setCurrentPage(page)}
-                className={currentPage === page ? 'active' : ''}
-            >
-                {page}
-            </button>
-            ))}
-            <button onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage === totalPages}>›</button>
-			<button
-				onClick={() => {
-					const nextGroupStart = Math.floor((currentPage - 1) / 5 + 1) * 5 + 1;
-					//ex) currentPage = 14 -> floor((14-1)/5+1) = 3, 3*5+1 = 16page
-					const nextGroupPage = Math.min(nextGroupStart, totalPages); //둘중에 최솟값의 페이지의로 이동
-					setCurrentPage(nextGroupPage);
-				}}
-				disabled={currentPage === totalPages}
-			>
-			»
-			</button>
-        </div>
-
-        <div className="board-search">
-            <select className='board-search-option'
-                value={searchOption}
-                onChange={e => setSearchOption(e.target.value)}
+            <div className="board-pagination">
+                <button
+                    onClick={() => {
+                        const prevGroupStart = Math.ceil((currentPage) / 5 - 1) * 5;
+                        //ex) currentPage = 14 -> ceil((14-1)/5-1) = 2 , 2*5 = 10page
+                        const prevGroupPage = Math.max(prevGroupStart, 1); //둘중에 최댓값의 페이지로 이동
+                        setCurrentPage(prevGroupPage);
+                    }}
+                    disabled={currentPage === 1}
                 >
-                <option value='title' selected>제목</option>
-                <option value='author'>작성자</option>
-            </select>
-            <input 
-                type="text" 
-                placeholder="검색어를 입력해주세요"
-                value={searchKeyword}
-                onChange={(e) => {
-                    setSearchKeyword(e.target.value);
-                }}
-                onKeyDown={(e) => {
-                    if(e.key === 'Enter'){
-                        e.preventDefault();
-                        handleSearch();
-                    }
-                }}
-            />
-            <button className="search-btn" onClick={handleSearch}>검색</button>                      
+                «
+                </button>
+                <button onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1}>‹</button>
+                {getPageNumbers().map(page => (
+                <button
+                    key={page}
+                    onClick={() => setCurrentPage(page)}
+                    className={currentPage === page ? 'active' : ''}
+                >
+                    {page}
+                </button>
+                ))}
+                <button onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage === totalPages}>›</button>
+                <button
+                    onClick={() => {
+                        const nextGroupStart = Math.floor((currentPage - 1) / 5 + 1) * 5 + 1;
+                        //ex) currentPage = 14 -> floor((14-1)/5+1) = 3, 3*5+1 = 16page
+                        const nextGroupPage = Math.min(nextGroupStart, totalPages); //둘중에 최솟값의 페이지의로 이동
+                        setCurrentPage(nextGroupPage);
+                    }}
+                    disabled={currentPage === totalPages}
+                >
+                »
+                </button>
+            </div>
+
+            <div className="board-search">
+                <select className='board-search-option'
+                    value={searchOption}
+                    onChange={e => setSearchOption(e.target.value)}
+                    >
+                    <option value='title' selected>제목</option>
+                    <option value='author'>작성자</option>
+                </select>
+                <input 
+                    type="text" 
+                    placeholder="검색어를 입력해주세요"
+                    value={searchKeyword}
+                    onChange={(e) => {
+                        setSearchKeyword(e.target.value);
+                    }}
+                    onKeyDown={(e) => {
+                        if(e.key === 'Enter'){
+                            e.preventDefault();
+                            handleSearch();
+                        }
+                    }}
+                />
+                <button className="search-btn" onClick={handleSearch}>검색</button>                      
+            </div>
         </div>
-    </div>
     );
 };
 

@@ -9,14 +9,17 @@ import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-sy
 import Swal from 'sweetalert2';
 import axios from 'axios';
 import { useAdmin } from '../../../api/AdminContext';
+import { useBoard } from '../Context/BoardContext';
 
 
 const AllBoardForm = () => {
     const [title, setTitle] = useState('');
-    const [postType, setPostType] = useState('');
+    const [category, setCategory] = useState('');
     const navigate = useNavigate();
     const titleInputRef = useRef(null);
     const editorRef = useRef(null);
+
+    // const {posts} = useBoard();
 
     const API_BASE_URL = 'http://localhost:8888';
 
@@ -29,11 +32,11 @@ const AllBoardForm = () => {
     //로컬 스토리지에서 데이터 불러오기
     useEffect(() => {
         const savedTitle = localStorage.getItem('post-title');
-        const savedType = localStorage.getItem('post-type');
+        const savedCategory = localStorage.getItem('post-category');
         const savedContent = localStorage.getItem('post-content');
         
         if (savedTitle) setTitle(savedTitle);
-        if (savedType) setPostType(savedType);
+        if (savedCategory) setCategory(savedCategory);
         if (savedContent && editorRef.current) {
             setTimeout(() => {
                 editorRef.current.getInstance().setMarkdown(savedContent);
@@ -46,7 +49,7 @@ const AllBoardForm = () => {
     // 저장된 데이터 삭제 함수
     const clearTempData = () => {
         localStorage.removeItem('post-title');
-        localStorage.removeItem('post-type');
+        localStorage.removeItem('post-category');
         localStorage.removeItem('post-content');
     };
 
@@ -54,7 +57,7 @@ const AllBoardForm = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        if(!postType){
+        if(!category){
             Swal.fire({
                 icon: 'warning',
                 title: '카테고리를 선택해주세요',
@@ -75,10 +78,10 @@ const AllBoardForm = () => {
         const content = editorRef.current?.getInstance().getMarkdown();
 
         const newPost = {
-            category: "CHAT",  // 반드시 Category enum 이름과 일치해야 함
+            category: category,  // 반드시 Category enum 이름과 일치해야 함
             title: title,
             author: !!user ? user.nickname : "익명",
-            content: "내용입니다"
+            content: content
         }
 
         Swal.fire({
@@ -93,9 +96,6 @@ const AllBoardForm = () => {
         }).then(async (result) => {
             try {
                 if(result.isConfirmed){
-                    
-                    // addChat(newPost, postType);
-                    console.log("test ::", `${API_BASE_URL}/board`);
                     const res = await axios.post(`${API_BASE_URL}/board`, newPost);
 
                     clearTempData(); //저장된 임시데이터 삭제
@@ -149,15 +149,13 @@ const AllBoardForm = () => {
                     <label style={{marginRight:10, fontWeight: 'bold'}}>카테고리</label>
                     <select 
                         style={{marginBottom: 16, padding: 5}} 
-                        value={postType} 
-                        onChange={(e) => setPostType(e.target.value)}
-                        // required
+                        value={category} 
+                        onChange={(e) => setCategory(e.target.value)}
                         >
-                        <option value=''>선택</option>
-                        {<option value='notice'>공지사항</option>} {/* 관리자만 공지사항 글쓰기 가능 */}
-                        {isAdmin && <option value='notice'>공지사항</option>} {/* 관리자만 공지사항 글쓰기 가능 */}
-                        <option value='chat'>속닥속닥</option>
-                        <option value='review'>입양후기</option>
+                        <option value='' disabled hidden>선택</option>
+                        {isAdmin && <option value='NOTICE'>공지사항</option>} {/* 관리자만 공지사항 글쓰기 가능 */}
+                        <option value='CHAT'>속닥속닥</option>
+                        <option value='REVIEW'>입양후기</option>
                         
                     </select>
                 </div>
@@ -168,7 +166,6 @@ const AllBoardForm = () => {
                         type="text"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
-                        // required
                         style={{ width: '50%', padding: '10px', marginBottom: '16px' }}
                         onKeyDown={(e) => {
                             if(e.key === 'Enter'){

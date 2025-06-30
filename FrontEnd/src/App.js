@@ -104,20 +104,20 @@ function App() {
                                         <Route index element={<AllBoard />} />
                                         <Route path="all" element={<AllBoard />} />
                                         <Route path="all/form" element={<AllBoardForm />} />
-                                        <Route path="all/detail/:type/:id" element={<AllBoardDetail />} />
-                                        <Route path="all/edit/:type/:id" element={<AllBoardEdit />} />
+                                        <Route path="all/detail/:id" element={<AllBoardDetail />} />
+                                        <Route path="all/edit/:id" element={<AllBoardEdit />} />
                                         <Route path="notice" element={<Notice />} />
                                         <Route path="notice/form" element={<NoticeForm />} />
-                                        <Route path="notice/detail/:type/:id" element={<NoticeDetail />} />
-                                        <Route path="notice/edit/:type/:id" element={<NoticeEdit />} />
+                                        <Route path="notice/detail/:id" element={<NoticeDetail />} />
+                                        <Route path="notice/edit/:id" element={<NoticeEdit />} />
                                         <Route path="chat" element={<ChatList />} />
                                         <Route path="chat/form" element={<ChatForm />} />
-                                        <Route path="chat/detail/:type/:id" element={<ChatDetail />} />
-                                        <Route path="chat/edit/:type/:id" element={<ChatEdit />} />
+                                        <Route path="chat/detail/:id" element={<ChatDetail />} />
+                                        <Route path="chat/edit/:id" element={<ChatEdit />} />
                                         <Route path="adoptionReview" element={<AdoptionReview />} />
                                         <Route path="adoptionReview/form" element={<ReviewForm />} />
-                                        <Route path="adoptionReview/detail/:type/:id" element={<AdoptionReviewDetail />} />
-                                        <Route path="adoptionReview/edit/:type/:id" element={<ReviewEdit />} />
+                                        <Route path="adoptionReview/detail/:id" element={<AdoptionReviewDetail />} />
+                                        <Route path="adoptionReview/edit/:id" element={<ReviewEdit />} />
                                     </Route>
 
                                     {/* 고객센터 */}

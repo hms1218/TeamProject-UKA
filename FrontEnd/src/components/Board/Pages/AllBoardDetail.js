@@ -1,23 +1,15 @@
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import './BoardDetail.css';
-import { useBoard } from '../Context/BoardContext';
 import Swal from 'sweetalert2';
 import { useAdmin } from '../../../api/AdminContext';
 import axios from 'axios';
+import { fetchPostById, deletePost, updatePost, toggleLikes, toggleReport } from '../../../api/BoardApi';
 
 const mockComments = [
     { id: 1, author: 'guest1', content: '저도 궁금해요.', date: '25.06.14', parentId: null },
     { id: 2, author: 'user2', content: '답변 부탁드려요.', date: '25.06.14',parentId: null },
 ];
-
-const API_BASE_URL = 'http://localhost:8888';
-
-const categoryLabels = {
-        NOTICE: '공지사항',
-        CHAT: '속닥속닥',
-        REVIEW: '입양후기'
-    };
 
 const AllBoardDetail = () => {
     console.log("detail 들어왓니 ")
@@ -25,16 +17,19 @@ const AllBoardDetail = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const { posts } = useBoard();
     const isAdmin = useAdmin();
+    // const currentUser = localStorage.getItem("username"); //유저 정보
+    const currentUser = isAdmin ? "admin" : localStorage.getItem("username") || 'me';
 
-    const [notice, setNotice] = useState([]);
-    const [chat, setChat] = useState([]);
-    const [review, setReview] = useState([]);
-    
     const [post, setPost] = useState(null);
     const [prev, setPrev] = useState(null);
     const [next, setNext] = useState(null);
+
+    const categoryLabels = {
+        NOTICE: '공지사항',
+        CHAT: '속닥속닥',
+        REVIEW: '입양후기'
+    };
 
     //댓글
     const [comments, setComments] = useState(mockComments);
@@ -54,16 +49,13 @@ const AllBoardDetail = () => {
     const [isLiked, setIsLiked] = useState(false);
     const [isReported, setIsReported] = useState(false);
 
-    // const currentUser = localStorage.getItem("username"); //유저 정보
-    const currentUser = isAdmin ? "admin" : localStorage.getItem("username") || 'me';
-
     const filteredList = location.state?.filteredList || null;
 
     useEffect(() => {
-        const fetchBoardById = async () => {
+        const getPostsById = async () => {
             try {
-                const res = await axios.get(`${API_BASE_URL}/board/${id}`);
-                setPost(res.data);
+                const data = await fetchPostById(id);
+                setPost(data);
             } catch (error) {
                 console.error('게시글 불러오기 실패', error);
                 Swal.fire({
@@ -74,71 +66,25 @@ const AllBoardDetail = () => {
                 navigate('/board/all');
             }
         }
-        fetchBoardById();
-    },[id])
+        getPostsById();
+    },[id, navigate])
 
     useEffect(() => {
         if(!post) return;
 
-        console.log('post.category:', post.category);
-        console.log('filteredList:', filteredList);
-
-        const notice = posts.filter(p => p.category.toUpperCase() === 'NOTICE');
-         console.log('notice:', notice);
-        const chat = posts.filter(p => p.category.toUpperCase() === 'CHAT');
-        const review = posts.filter(p => p.category.toUpperCase() === 'REVIEW');
-
-        let noticeList = [];
-
-        if(post.category === 'NOTICE'){
-
-            if (filteredList && filteredList.length > 0) {
-                const filteredNotice = filteredList.filter(p => p.category.toUpperCase() === 'NOTICE');
-                noticeList = filteredNotice.length > 0 ? filteredNotice : notice;
-            } else {
-                noticeList = notice;
-            }
-
-            console.log('noticeList:', noticeList);
-            if(!noticeList || noticeList.length === 0){
-                setPrev(null);
-                setNext(null);
-            }
-
-            const sortedNotice = [...noticeList].sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
-            const idx = sortedNotice.findIndex(p => p.id === post.id);
-            console.log('현재 post 인덱스:', idx);
-            console.log('post.id:', post.id, 'type:', typeof post.id);
-            console.log('noticeList ids:', noticeList.map(p => ({ id: p.id, type: typeof p.id })));
-            setPrev(sortedNotice[idx - 1] || null);
-            setNext(sortedNotice[idx + 1] || null);
-            return
-        }
-
-        let combinedList = [];
-
-        if(filteredList){
-            combinedList = filteredList.filter(post => post.category === 'CHAT' || post.category === 'REVIEW');
-        } else{
-            combinedList = [
-                ...chat.map(post => ({...post, category: 'CHAT'})),
-                ...review.map(post => ({...post, category: 'REVIEW'}))
-            ]
-        }
-
-        if(combinedList.length === 0){
+        if(!filteredList || filteredList.length === 0){
             setPrev(null);
             setNext(null);
             return;
         }
 
-        const sortedCombined = combinedList.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
-        const idx = sortedCombined.findIndex(p => p.id === post.id);
+        const sortedList = [...filteredList].sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+        const idx = sortedList.findIndex(p => p.id === post.id);
 
-        setPrev(sortedCombined[idx - 1] || null);
-        setNext(sortedCombined[idx + 1] || null);
+        setPrev(sortedList[idx - 1] || null);
+        setNext(sortedList[idx + 1] || null);
 
-    },[post, filteredList, posts])
+    },[post, filteredList])
 
     // 댓글 LocalStorage에 저장
     useEffect(() => {
@@ -197,30 +143,27 @@ const AllBoardDetail = () => {
     }
 
     //삭제 버튼
-    const handleDelete = () => {
-        Swal.fire({
-            title: '게시글 삭제',
-            text: '정말 삭제하시겠습니까?',
-            icon: 'question',
+    const handleDelete = async () => {
+        const confirm = await Swal.fire({
+            title: '삭제하시겠습니까?',
+            text: '삭제된 게시글은 복구할 수 없습니다.',
+            icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#6c5ce7',  // 보라색 확인 버튼
-            cancelButtonColor: '#636e72',   // 회색 취소 버튼
+            confirmButtonColor: '#d63031',
+            cancelButtonColor: '#636e72',
             confirmButtonText: '삭제',
             cancelButtonText: '취소',
-        }).then((result) => {
-            if(result.isConfirmed){
-                // deletePostById(post.type, post.id)
-                Swal.fire({
-                    title: '삭제 완료',
-                    text: '게시글이 삭제되었습니다.',
-                    icon: 'success',
-                    confirmButtonColor: '#6c5ce7',
-                    confirmButtonText: '확인'
-                }).then(() => {
-                    navigate(`/board/all`);
-                });
-            };
-        })
+        });
+
+        if (confirm.isConfirmed) {
+            try {
+                await deletePost(post.id);
+                Swal.fire('삭제 완료', '게시글이 삭제되었습니다.', 'success');
+                navigate('/board/all');
+            } catch (error) {
+                Swal.fire('삭제 실패', '게시글 삭제 중 오류가 발생했습니다.', 'error');
+            }
+        }
     }
 
     // 댓글 추가
@@ -457,105 +400,87 @@ const AllBoardDetail = () => {
     };
 
     //임시라 고쳐야함
-    const handleLikesButton = () => {
-
-        setIsLiked(prevLiked => {
-            const newLiked = !prevLiked;
-
-            setPost(prevPost => ({
-                ...prevPost,
-                likes: newLiked ? prevPost.likes + 1 : prevPost.likes - 1,         
-            }));
-
-            return newLiked;
-        });
+    const handleLikesButton = async () => {
+        console.log("id:",post.id)
+        console.log('increment value:', !isLiked);
+        try {
+            const updatedPost = await toggleLikes(post.id, !isLiked);
+            setPost(updatedPost);
+            setIsLiked(!isLiked);
+        } catch (error) {
+            console.error('추천 처리 실패:', error);
+        }
     };
 
     //임시라 고쳐야함
-    const handleReportButton = () => {
-        setIsReported(prevReported => {
-            const newReported = !prevReported;
-
-            setPost(prevPost => ({
-                ...prevPost,
-                report: newReported ? (prevPost.report || 0) + 1 : (prevPost.report || 0) - 1,
-            }));
-
-            return newReported;
-        });
+    const handleReportButton = async () => {
+        try {
+            const updatedPost = await toggleReport(post.id, !isReported);
+            setPost(updatedPost);
+            setIsReported(!isReported);
+        } catch (error) {
+            console.error('신고 처리 실패:', error);
+        }
     };
 
     return (
         <div style={{ minWidth:'1075px' }}>
+            {/* 헤더 */}
             <div className='board-detail-title-container'>
                 <p style={{marginTop: 20}}>[ {categoryLabels[post.category]} ]</p>  
                 <div style={{textAlign: 'right', marginTop:15}}>
                     <span style={{color: '#ccc'}}>
-                        조회수 {post.view} |
-                        추천수 {post.likes} |
-                        신고수 {post.report}
+                        조회수 {post.view} | 추천수 {post.likes} | 신고수 {post.report}
                     </span><br/>
                 </div>         
             </div>
             <div className='board-detail-title-container'>
                 <p style={{fontSize: 30}}>{post.title}</p>
                 <div style={{textAlign: 'right', marginTop: 15}}>
-                    <span style={{color: '#ccc'}}>
-                        작성자 : {post.author}
-                    </span><br/>
-                    <span style={{color: '#ccc'}}>
-                        {new Date(post.createdAt).toLocaleString()}
-                    </span>
+                    <span style={{color: '#ccc'}}>작성자 : {post.author}</span><br/>
+                    <span style={{color: '#ccc'}}>{new Date(post.createdAt).toLocaleString()}</span>
                 </div>  
             </div>
             <hr/>
+
+            {/* 본문 */}
             <div className='board-detail-content'>
                 <p style={{minHeight: 250, fontSize:18}}>{post.content}</p>
             </div>
 
+            {/* 버튼 */}
             <div className="board-detail-button-group">
-                <>
-                    <button className="board-detail-button"
-                        onClick={handleLikesButton}
-                        style={{
-                            backgroundColor: isLiked ? '#4895ff' : '#fff',
-                            color: isLiked ? '#fff' : '#000'
-                        }}
-                    >
-                        👍추천
-                    </button>
-                    <button className="board-detail-report-button"
-                        onClick={handleReportButton}
-                        style={{
-                            backgroundColor: isReported ? 'red' : '#fff',
-                            color: isReported ? '#fff' : '#000',
-                        }}
-                    >
-                        🚨신고
-                    </button>
-                </>
-                <>
-                    <button className="board-detail-button"
-                        onClick={() => navigate(`/board/all/edit/${post.id}`, { state: post })}
-                    >
-                    ✏️ 수정
-                    </button>
-                    <button className="board-detail-button"
-                        onClick={handleDelete}
-                    >
-                    🗑 삭제
-                    </button>
-                </>
+                <button className="board-detail-button"
+                    onClick={handleLikesButton}
+                    style={{
+                        backgroundColor: isLiked ? '#4895ff' : '#fff',
+                        color: isLiked ? '#fff' : '#000'
+                    }}
+                > 👍추천
+                </button>
+                <button className="board-detail-report-button"
+                    onClick={handleReportButton}
+                    style={{
+                        backgroundColor: isReported ? 'red' : '#fff',
+                        color: isReported ? '#fff' : '#000',
+                    }}
+                > 🚨신고
+                </button>
+                <button className="board-detail-button"
+                    onClick={() => navigate(`/board/all/edit/${post.id}`, { state: post })}
+                > ✏️ 수정
+                </button>
+                <button className="board-detail-button"
+                    onClick={handleDelete}
+                > 🗑 삭제
+                </button>               
                 <button className="board-detail-button"
                     onClick={() => navigate('/board/all')}       
-                >
-                ← 목록으로
+                > ← 목록으로
                 </button>
             </div>
                 
-            
-            {/* 댓글 렌더링 */}
-            {/* ✅ 댓글 영역 */}
+            {/* 댓글 */}
             <strong>댓글({comments.length})</strong>
             <div style={{ marginTop: 12 }}>
                 {renderCommentTree()}
@@ -564,7 +489,6 @@ const AllBoardDetail = () => {
             <form
                 onSubmit={handleCommentSubmit}
                 style={{ display: 'flex', gap: 8, marginTop: 12 }}
-      
             >
                 <input
                     type="text"
@@ -578,31 +502,27 @@ const AllBoardDetail = () => {
                         fontSize: 16,
                         padding: "8px 14px"
                     }}
-                    />
+                />
                 <button type="submit" className="board-detail-submit-button">등록</button>
             </form>
 
-
+            {/* 이전/다음글 */}
             <div className="board-post-navigation">
-            {prev && (
-                <div 
-                    className="board-post-nav-item" 
-                    onClick={() => handleNavigate(prev)}
-                >
-                    <span className="board-post-nav-label">◀️ 이전글</span>
-                    <span className="board-post-nav-title">
-                    {prev.title}
-                    </span>
-                </div>
-            )}
-            {next && (
-                <div className="board-post-nav-item" onClick={() => handleNavigate(next)}>
-                    <span className="board-post-nav-label">▶️ 다음글</span>
-                    <span className="board-post-nav-title">
-                    {next.title}
-                    </span>
-                </div>
-            )}
+                {prev && (
+                    <div 
+                        className="board-post-nav-item" 
+                        onClick={() => handleNavigate(prev)}
+                    >
+                        <span className="board-post-nav-label">◀️ 이전글</span>
+                        <span className="board-post-nav-title">{prev.title}</span>
+                    </div>
+                )}
+                {next && (
+                    <div className="board-post-nav-item" onClick={() => handleNavigate(next)}>
+                        <span className="board-post-nav-label">▶️ 다음글</span>
+                        <span className="board-post-nav-title">{next.title}</span>
+                    </div>
+                )}
             </div>
         </div>
     );

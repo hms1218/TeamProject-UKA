@@ -24,22 +24,22 @@ import lombok.NoArgsConstructor;
 public class PasswordResetToken {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long seq;
 
     @Column(nullable = false, unique = true)
     private String token;
 
     @OneToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "userId", nullable = false)
     private User user;
 
     @Column(nullable = false)
     private LocalDateTime expiry;
     
     // (2) id 없이 token, user, expiry만 받는 생성자 추가
-    public PasswordResetToken(String token, User user, LocalDateTime expiry) {
+    public PasswordResetToken(String token, User userId, LocalDateTime expiry) {
         this.token  = token;
-        this.user   = user;
+        this.user   = userId;
         this.expiry = expiry;
     }
 }

@@ -1,14 +1,12 @@
 import React from 'react';
-import { useQnA } from '../../../Context/QnAContext';
 import { useNavigate } from 'react-router-dom';
 import { useAlert } from '../../../Context/AlertContext';
 
-const ReportedPosts = () => {
-  const { qnas } = useQnA();
+const ReportedPosts = ({ qnas }) => {
   const navigate = useNavigate();
   const { showAlert } = useAlert();
 
-  const reportedPosts = qnas.filter(q => q.isReported);
+  const reportedPosts = qnas.filter(q => q.qnaIsReported === 'Y' || q.isReported === true);
 
   return (
     <div>

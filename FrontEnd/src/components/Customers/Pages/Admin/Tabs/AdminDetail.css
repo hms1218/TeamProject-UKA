@@ -16,7 +16,6 @@
 
 .faq-form-title input{
   min-width: 800px;
-  width: 98%;
   border-radius: 4px;
   padding: 15px;
 }
@@ -27,4 +26,13 @@
   width: 100%;
   display: flex;
   flex-direction: column;
+}
+
+.customer-write-container{
+  width: 705px;
+}
+
+.customer-write-button-container{
+  text-align: center;
+  padding-left: 440px;
 }

@@ -145,6 +145,7 @@ const Chatbot = ({ onClose }) => {
       </div>
 
       <div className="chat-window" ref={chatWindowRef}>
+        <div className="message bot">안녕하세요! 무엇을 도와드릴까요?</div>
         {messages.map((msg, idx) => {
           if (msg.type === "options") {
             return (

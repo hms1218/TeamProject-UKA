@@ -42,14 +42,18 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
                 		"/",
-                		"/api/animals/",
+                		"/api/animals/**",
                         "/api/auth/signup", 
                         "/api/auth/login",
-                        "/api/auth/find-username",
+                        "/api/auth/find-userId",
                         "/api/auth/reset-password-request",
                         "/api/auth/reset-password",
+                        "/request",
+                    	"/request/*",
                         "/board/**",
-                        "/board-detail/**"
+                        "/board-detail/**",
+                        "/customer/faq/**",
+                        "/customer/qna/**"
                 ).permitAll()
                 .anyRequest().authenticated()
             )
@@ -65,7 +69,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of("http://localhost:3000"));
-        config.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
+        config.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS", "PATCH"));
         config.setAllowCredentials(true);
         config.setAllowedHeaders(List.of("*"));
 

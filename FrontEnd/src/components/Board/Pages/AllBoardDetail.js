@@ -25,7 +25,7 @@ const AllBoardDetail = () => {
     const location = useLocation();
 
     const { posts } = useBoard();
-    const { isAdmin } = useAdmin();
+    const isAdmin = useAdmin();
 
     const [notice, setNotice] = useState([]);
     const [chat, setChat] = useState([]);

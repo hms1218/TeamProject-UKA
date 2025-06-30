@@ -17,22 +17,22 @@ const QnAForm = () => {
     const { showAlert } = useAlert();
     const [isSecret, setIsSecret] = useState(false);
     const [password, setPassword] = useState('');
-
-    // 로그인 유저 정보 가져오기
-    const [user] = useState(() => JSON.parse(localStorage.getItem('user')));
-
+    const [loading, setLoading] = useState(true);
+    const user = JSON.parse(localStorage.getItem('user'));
     
     useEffect(() => {
+        const token = localStorage.getItem('token');
         // 로그인 안 되어 있으면 로그인 페이지로 리다이렉트
-        if (!user) {
+        if (!token) {
             showAlert({
                 title: '로그인이 필요합니다.',
                 icon: 'warning'
             }).then(() => {
-                navigate('/login'); // 로그인 페이지로 이동
+                navigate('/login');
             });
+            return;
         }
-    }, [user, navigate, showAlert]);
+    }, [navigate, showAlert]);
 
 
     useEffect(() => {
@@ -41,7 +41,7 @@ const QnAForm = () => {
     }, []);
     
     // 이후 user가 없으면 return null로 렌더링 막기
-    if (!user) return null;
+    // if (!user) return null;
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -80,7 +80,7 @@ const QnAForm = () => {
             qnaContent: content,
             qnaIsSecret: isSecret ? 'Y' : 'N',
             qnaPassword: password,
-            // qnaWriter: user?.nickname // 또는 user.name 등 로그인 정보 기반
+            qnaWriter: user?.nickname // 또는 user.name 등 로그인 정보 기반
         });
 
         await showAlert({

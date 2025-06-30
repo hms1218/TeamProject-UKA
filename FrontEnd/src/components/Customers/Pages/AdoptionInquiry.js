@@ -34,7 +34,7 @@ const AdoptionInquiry = () => {
     const [photoDraft, setPhotoDraft] = useState([...slideImages]);
 
     // 관리자 체크
-    const { isAdmin } = useAdmin();
+    const isAdmin = useAdmin();
 
     useEffect(() => {
         setOpen(true);

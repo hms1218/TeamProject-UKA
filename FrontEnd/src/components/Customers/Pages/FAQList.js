@@ -42,7 +42,7 @@ const FAQList = ({ searchKeyword = "", onDelete = () => {} }) => {
   const { showAlert } = useAlert();
 
   // 테스트용
-  const { isAdmin, setIsAdmin } = useAdmin();
+  const isAdmin = useAdmin();
 
     useEffect(() => {
         fetchFaqs().then(setFaqList);

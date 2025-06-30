@@ -2,121 +2,189 @@ import axios from 'axios';
 
 // FAQ get, post, put, delete 순서
 export const fetchFaqs = async () => {
-    const res = await axios.get('http://localhost:8888/customer/faq');
-    return res.data;
+    try {
+        const res = await axios.get('http://localhost:8888/customer/faq');
+        return res.data;
+    } catch (error) {
+        console.error('fetchFaqs API 에러:', error.response ? error.response.data : error.message);
+        throw error;
+    }
 };
 
 export const createFaq = async (faq) => {
-    const res = await axios.post('http://localhost:8888/customer/faq', faq);
-    return res.data;
+    try {
+        const res = await axios.post('http://localhost:8888/customer/faq', faq);
+        return res.data;
+    } catch (error) {
+        console.error('createFaq API 에러:', error.response ? error.response.data : error.message);
+        throw error;
+    }
 };
 
 export const editFaq = async (faqId, data) => {
-    const res = await axios.put(`http://localhost:8888/customer/faq/${faqId}`, data);
-    return res.data;
+    try {
+        const res = await axios.put(`http://localhost:8888/customer/faq/${faqId}`, data);
+        return res.data;
+    } catch (error) {
+        console.error('editFaq API 에러:', error.response ? error.response.data : error.message);
+        throw error;
+    }
 };
 
 export const deleteFaq = async (faqId) => {
-    const res = await axios.delete(`http://localhost:8888/customer/faq/${faqId}`);
-    return res.data;
+    try {
+        const res = await axios.delete(`http://localhost:8888/customer/faq/${faqId}`);
+        return res.data;
+    } catch (error) {
+        console.error('deleteFaq API 에러:', error.response ? error.response.data : error.message);
+        throw error;
+    }
 };
 
 // QnA 전체 리스트 조회
 export const fetchQnaList = async () => {
-    const res = await axios.get('http://localhost:8888/customer/qna');
-    return res.data;
+    try {
+        const res = await axios.get('http://localhost:8888/customer/qna');
+        return res.data;
+    } catch (error) {
+        console.error('fetchQnaList API 에러:', error.response ? error.response.data : error.message);
+        throw error;
+    }
 };
 
 // QnA 단일 조회
 export const fetchQnaDetail = async (qnaId, password = null) => {
+    const token = localStorage.getItem('token');
     const url = password
         ? `http://localhost:8888/customer/qna/${qnaId}?password=${password}`
         : `http://localhost:8888/customer/qna/${qnaId}`;
-    const res = await axios.get(url);
-    return res.data;
+
+    // 토큰 있으면 헤더, 없으면 헤더 없이 요청
+    const config = token
+        ? { headers: { Authorization: `Bearer ${token}` } }
+        : {};
+
+    try {
+        const res = await axios.get(url, config);
+        return res.data;
+    } catch (error) {
+        console.error('fetchQnaDetail API 에러:', error.response ? error.response.data : error.message);
+        throw error;
+    }
 };
 
 // QnA 등록
 export const createQna = async (qna) => {
-    const res = await axios.post('http://localhost:8888/customer/qna', qna);
-    return res.data;
+    try {
+        const res = await axios.post('http://localhost:8888/customer/qna', qna);
+        return res.data;
+    } catch (error) {
+        console.error('createQna API 에러:', error.response ? error.response.data : error.message);
+        throw error;
+    }
 };
 
 // QnA 수정
 export const editQna = async (qnaId, data) => {
-    const res = await axios.put(`http://localhost:8888/customer/qna/${qnaId}`, data);
-    return res.data;
+    try {
+        const res = await axios.put(`http://localhost:8888/customer/qna/${qnaId}`, data);
+        return res.data;
+    } catch (error) {
+        console.error('editQna API 에러:', error.response ? error.response.data : error.message);
+        throw error;
+    }
 };
 
 // QnA 삭제
 export const deleteQna = async (qnaId) => {
-    const res = await axios.delete(`http://localhost:8888/customer/qna/${qnaId}`);
-    return res.data;
+    try {
+        const res = await axios.delete(`http://localhost:8888/customer/qna/${qnaId}`);
+        return res.data;
+    } catch (error) {
+        console.error('deleteQna API 에러:', error.response ? error.response.data : error.message);
+        throw error;
+    }
 };
 
 // QnA 신고
 export const reportQna = async (qnaId) => {
-    // PATCH or POST(백엔드 설계 따라 다름)
-    return axios.patch(`http://localhost:8888/customer/qna/${qnaId}/report`);
+    try {
+        const res = await axios.patch(`http://localhost:8888/customer/qna/${qnaId}/report`);
+        return res.data;
+    } catch (error) {
+        console.error('reportQna API 에러:', error.response ? error.response.data : error.message);
+        throw error;
+    }
 };
 
 // QnA 복원
 export const restoreQna = async (qnaId) => {
-    // const token = localStorage.getItem('yourAuthToken'); // <-- 'yourAuthToken'을 실제 토큰 키값으로 변경하세요
-    
-    // const config = {};
-    // if (token) {
-    //     config.headers = {
-    //         Authorization: `Bearer ${token}`
-    //     };
-    // }
     try {
-        const res = await axios.patch(
-            `http://localhost:8888/customer/qna/${qnaId}/restore`,
-            // config
-        );
+        const res = await axios.patch(`http://localhost:8888/customer/qna/${qnaId}/restore`);
         return res.data;
     } catch (error) {
-        console.error('restoreQna API 호출 에러:', error.response ? error.response.data : error.message);
+        console.error('restoreQna API 에러:', error.response ? error.response.data : error.message);
         throw error;
     }
 };
 
 // QnA 답변 작성/수정 (PUT or PATCH)
 export const updateQnaAnswer = async (qnaId, answer, answerWriter) => {
-    const res = await axios.patch(`http://localhost:8888/customer/qna/${qnaId}/answer`, {
-        answer,
-        answerWriter
-    });
-    return res.data;
+    try {
+        const res = await axios.patch(`http://localhost:8888/customer/qna/${qnaId}/answer`, {
+            answer,
+            answerWriter
+        });
+        return res.data;
+    } catch (error) {
+        console.error('updateQnaAnswer API 에러:', error.response ? error.response.data : error.message);
+        throw error;
+    }
 };
 
 // QnA 답변 삭제 (실제로는 빈 문자열로 PATCH)
 export const deleteQnaAnswer = async (qnaId) => {
-    const res = await axios.patch(`http://localhost:8888/customer/qna/${qnaId}/answer`, {
-        answer: '',
-        answerWriter: ''
-    });
-    return res.data;
+    try {
+        const res = await axios.patch(`http://localhost:8888/customer/qna/${qnaId}/answer`, {
+            answer: '',
+            answerWriter: ''
+        });
+        return res.data;
+    } catch (error) {
+        console.error('deleteQnaAnswer API 에러:', error.response ? error.response.data : error.message);
+        throw error;
+    }
 };
 
 // QnA 댓글 등록
 export const createQnaComment = async (qnaId, data) => {
-    // data = { content, writer, ... }
-    const res = await axios.post(`http://localhost:8888/customer/qna/${qnaId}/comments`, data);
-    return res.data;
+    try {
+        const res = await axios.post(`http://localhost:8888/customer/qna/${qnaId}/comments`, data);
+        return res.data;
+    } catch (error) {
+        console.error('createQnaComment API 에러:', error.response ? error.response.data : error.message);
+        throw error;
+    }
 };
 
 // QnA 댓글 수정
 export const editQnaComment = async (commentId, data) => {
-    // data = { content, ... }
-    const res = await axios.put(`http://localhost:8888/customer/qna/comments/${commentId}`, data);
-    return res.data;
+    try {
+        const res = await axios.put(`http://localhost:8888/customer/qna/comments/${commentId}`, data);
+        return res.data;
+    } catch (error) {
+        console.error('editQnaComment API 에러:', error.response ? error.response.data : error.message);
+        throw error;
+    }
 };
 
 // QnA 댓글 삭제
 export const deleteQnaComment = async (commentId) => {
-    const res = await axios.delete(`http://localhost:8888/customer/qna/comments/${commentId}`);
-    return res.data;
+    try {
+        const res = await axios.delete(`http://localhost:8888/customer/qna/comments/${commentId}`);
+        return res.data;
+    } catch (error) {
+        console.error('deleteQnaComment API 에러:', error.response ? error.response.data : error.message);
+        throw error;
+    }
 };
-

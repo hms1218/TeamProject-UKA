@@ -2,10 +2,11 @@ package com.teamProject.UKA.customer.qna.controller;
 
 import java.util.List;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -52,7 +53,23 @@ public class QnaController {
         QnaEntity qna = qnaService.findByQnaNo(no)
             .orElseThrow(() -> new RuntimeException("글이 없습니다."));
 
-        if ("Y".equals(qna.getQnaIsSecret())) {
+        // 관리자 권한 체크
+        boolean isAdmin = false;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            String userId = authentication.getName(); // 또는 UserDetails에서 getUsername()
+            if (userId != null && userId.toLowerCase().contains("admin")) {
+                isAdmin = true;
+            }
+        }
+
+        // 신고글 접근 제한 (관리자는 예외)
+        if ("Y".equals(qna.getQnaIsReported()) && !isAdmin) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        // 비밀글 접근 제한 (관리자는 예외)
+        if ("Y".equals(qna.getQnaIsSecret()) && !isAdmin) {
             if (password == null || !password.equals(qna.getQnaPassword())) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             }

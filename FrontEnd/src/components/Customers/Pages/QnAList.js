@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './QnAList.css';
 import { useAlert } from '../Context/AlertContext';
 import { fetchQnaList } from '../../../api/CustomerApiData';
-import { useAdmin } from '../../../api/AdminContext';
+import isAdminCheck from '../../Common/isAdminCheck';
 
 const ITEMS_PER_PAGE = 10;
 const PAGE_BUTTON_LIMIT = 5;
@@ -13,7 +13,7 @@ const QnAList = () => {
     const [qnas, setQnas] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const { showAlert } = useAlert();
-    const { isAdmin } = useAdmin();
+    const isAdmin = isAdminCheck();
 
     const sortedQnAs = [...qnas].sort((a, b) => Number(b.id) - Number(a.id));
 

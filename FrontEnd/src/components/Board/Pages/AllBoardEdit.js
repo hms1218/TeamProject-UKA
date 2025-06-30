@@ -21,7 +21,7 @@ const AllBoardEdit = () => {
     const [title, setTitle] = useState('');
 
     const {notice, chats, review, updateChat} = useChat();
-    const { isAdmin } = useAdmin();
+    const isAdmin = useAdmin();
 
     let post;
     if (type === 'chat') {

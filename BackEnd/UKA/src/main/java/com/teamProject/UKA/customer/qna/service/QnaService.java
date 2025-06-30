@@ -132,4 +132,18 @@ public class QnaService {
         qna.setQnaReportCount(0);
         qnaRepository.save(qna);
     }
+    
+    // 관리자 답변 저장/수정/삭제
+    @Transactional
+    public QnaResponseDTO updateQnaAnswer(Long no, String answer, String answerWriter) {
+        QnaEntity qna = qnaRepository.findByQnaNo(no)
+                .orElseThrow(() -> new RuntimeException("QnA not found"));
+
+        qna.setQnaAnswer(answer);
+        qna.setQnaAnswerWriter(answerWriter);
+        qna.setQnaIsAnswered((answer != null && !answer.trim().isEmpty()) ? "Y" : "N");
+
+        QnaEntity updated = qnaRepository.save(qna);
+        return QnaResponseDTO.fromEntity(updated);
+    }
 }

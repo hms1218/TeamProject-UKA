@@ -52,14 +52,17 @@ export const fetchQnaList = async () => {
     }
 };
 
-// QnA 단일 조회
-export const fetchQnaDetail = async (qnaId, password = null) => {
+export const fetchQnaDetail = async (qnaId, password = null, userId = null) => {
     const token = localStorage.getItem('token');
-    const url = password
-        ? `http://localhost:8888/customer/qna/${qnaId}?password=${password}`
-        : `http://localhost:8888/customer/qna/${qnaId}`;
 
-    // 토큰 있으면 헤더, 없으면 헤더 없이 요청
+    let url = `http://localhost:8888/customer/qna/${qnaId}`;
+    const params = new URLSearchParams();
+
+    if (password) params.append("password", password);
+    if (userId) params.append("userId", userId);
+
+    if (params.toString()) url += `?${params.toString()}`;
+
     const config = token
         ? { headers: { Authorization: `Bearer ${token}` } }
         : {};

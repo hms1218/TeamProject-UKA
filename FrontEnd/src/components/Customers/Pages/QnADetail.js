@@ -54,32 +54,49 @@ const QnADetail = () => {
     const { showAlert } = useAlert();
     const { confirm, success, error, warning } = useAlert();
 
-  // --- fetchData 함수 선언: useEffect 밖에 두어 props로 전달 가능하게 함 ---
+    // --- fetchData 함수 선언: useEffect 밖에 두어 props로 전달 가능하게 함 ---
     const fetchData = async () => {
-        try {
+    try {
         const rawDetail = await fetchQnaDetail(id, password);
         const mappedDetail = MapQnaRaw(rawDetail);
         setQna(mappedDetail);
+
+        // ✅ 신고 상태
         setIsReported(mappedDetail.isReported === 'Y');
 
+        // ✅ 추천 상태 (서버 기준)
+        setIsLiked(mappedDetail.isLikedByMe === true); // ← 이게 핵심!
+
+        // ✅ localStorage는 참고용으로 동기화 (선택)
+        const storageKey = `qna_liked_${user?.userId}_${mappedDetail.id}`;
+        if (mappedDetail.isLikedByMe) {
+        localStorage.setItem(storageKey, 'true');
+        } else {
+        localStorage.removeItem(storageKey);
+        }
+
+        // ✅ 추천 수
+        setLikes(mappedDetail.likes || 0);
+
+        // ✅ 리스트 + 이전/다음
         const rawList = await fetchQnaList();
         const mappedList = rawList.map(MapQnaRaw);
         setQnaList(mappedList);
-
-        setAnswerInput(mappedDetail.answer || '');
 
         const idx = mappedList.findIndex(item => String(item.id) === String(id));
         setPrev(idx > 0 ? mappedList[idx - 1] : null);
         setNext(idx >= 0 && idx < mappedList.length - 1 ? mappedList[idx + 1] : null);
 
-        setIsLiked(!!localStorage.getItem(`qna_liked_${id}`));
-        setLikes(mappedDetail.likes || 0);
+        // ✅ 답변 입력창 초기값
+        setAnswerInput(mappedDetail.answer || '');
+
         console.log('QNA DETAIL API RAW:', rawDetail);
-        } catch (err) {
+    } catch (err) {
         await error('QnA 데이터를 불러오지 못했습니다.');
         navigate('/customer/qna');
-        }
+    }
     };
+
 
   // QnA 상세 + 리스트 가져오기
     useEffect(() => {

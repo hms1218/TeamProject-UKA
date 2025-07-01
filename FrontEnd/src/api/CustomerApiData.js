@@ -130,11 +130,16 @@ export const restoreQna = async (qnaId) => {
 
 // QnA 답변 작성/수정 (PUT or PATCH)
 export const updateQnaAnswer = async (qnaId, answer, answerWriter) => {
+    const token = localStorage.getItem('token');
+    const config = token
+        ? { headers: { Authorization: `Bearer ${token}` } }
+        : {};
     try {
-        const res = await axios.patch(`http://localhost:8888/customer/qna/${qnaId}/answer`, {
-            answer,
-            answerWriter
-        });
+        const res = await axios.patch(
+            `http://localhost:8888/customer/qna/${qnaId}/answer`,
+            { qnaAnswer: answer, qnaAnswerWriter: answerWriter }, // ← DTO 이름 맞춰서!
+            config // ← 반드시 헤더 포함!
+        );
         return res.data;
     } catch (error) {
         console.error('updateQnaAnswer API 에러:', error.response ? error.response.data : error.message);
@@ -143,12 +148,18 @@ export const updateQnaAnswer = async (qnaId, answer, answerWriter) => {
 };
 
 // QnA 답변 삭제 (실제로는 빈 문자열로 PATCH)
+
 export const deleteQnaAnswer = async (qnaId) => {
+    const token = localStorage.getItem('token');
+    const config = token
+        ? { headers: { Authorization: `Bearer ${token}` } }
+        : {};
     try {
-        const res = await axios.patch(`http://localhost:8888/customer/qna/${qnaId}/answer`, {
-            answer: '',
-            answerWriter: ''
-        });
+        const res = await axios.patch(
+            `http://localhost:8888/customer/qna/${qnaId}/answer`,
+            { qnaAnswer: '', qnaAnswerWriter: '' },
+            config
+        );
         return res.data;
     } catch (error) {
         console.error('deleteQnaAnswer API 에러:', error.response ? error.response.data : error.message);

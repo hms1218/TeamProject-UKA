@@ -54,7 +54,8 @@ public class SecurityConfig {
                         "/board/**",
                         "/comment/**",
                         "/customer/faq/**",
-                        "/customer/qna/**"
+                        "/customer/qna/**",
+                        "/admin/**"
                 ).permitAll()
                 .anyRequest().authenticated()
             )

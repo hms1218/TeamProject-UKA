@@ -1,6 +1,7 @@
 const MapQnaRaw = (raw) => {
   return {
-    id: raw.qnaNo,
+    qnaNo: raw.qnaNo,                        // ✅ API 식별용 (PK)
+    qnaId: raw.qnaId,                        // ✅ 날짜 기반 표시용
     title: raw.qnaTitle,
     content: raw.qnaContent,
     author: raw.qnaWriter,
@@ -14,7 +15,7 @@ const MapQnaRaw = (raw) => {
     updatedAt: raw.qnaUpdatedAt,
     views: raw.qnaViews ?? 0,
     likes: raw.qnaLikes ?? 0, // 주석
-    comments: raw.qnaComments ?? [],
+    comments: raw.comments ?? [],
   };
 }
 export {MapQnaRaw};

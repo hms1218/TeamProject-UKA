@@ -36,7 +36,7 @@ const BoardLayout = () => {
             속닥속닥
             </NavLink>
             <NavLink
-                to="/board/adoptionReview"
+                to="/board/review"
                 className={({ isActive }) => isActive ? 'active' : ''}
             >
             입양후기

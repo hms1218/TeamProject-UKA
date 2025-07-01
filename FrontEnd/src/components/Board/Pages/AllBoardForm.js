@@ -9,8 +9,6 @@ import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-sy
 import Swal from 'sweetalert2';
 import axios from 'axios';
 import { useAdmin } from '../../../api/AdminContext';
-import { useBoard } from '../Context/BoardContext';
-
 
 const AllBoardForm = () => {
     const [title, setTitle] = useState('');

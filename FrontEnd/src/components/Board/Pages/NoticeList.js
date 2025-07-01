@@ -4,7 +4,7 @@ import './AllBoard.css';
 import Swal from 'sweetalert2';
 import { fetchAllPosts } from '../../../api/BoardApi';
 
-const AllBoard = () => {
+const NoticeList = () => {
     const [posts, setPosts] = useState([]);
 
     const [currentPage, setCurrentPage] = useState(1);
@@ -352,4 +352,4 @@ const AllBoard = () => {
     );
 };
 
-export default AllBoard;
+export default NoticeList;

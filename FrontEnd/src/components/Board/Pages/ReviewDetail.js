@@ -7,7 +7,7 @@ import { fetchPostById, deletePost, toggleLikes, toggleReport } from '../../../a
 import { createComment, createReply, fetchCommentsByBoard, fetchRepliesByComment, updateComment, deleteComment } from '../../../api/BoardCommentApi';
 import CommentList from '../Comment/CommentList';
 
-const AllBoardDetail = () => {
+const ReviewDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const location = useLocation();
@@ -432,4 +432,4 @@ const AllBoardDetail = () => {
     );
 };
 
-export default AllBoardDetail;
+export default ReviewDetail;

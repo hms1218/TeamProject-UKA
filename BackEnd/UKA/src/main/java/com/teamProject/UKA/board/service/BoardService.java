@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.teamProject.UKA.board.dto.BoardCommentCount;
 import com.teamProject.UKA.board.dto.BoardRequestDTO;
 import com.teamProject.UKA.board.dto.BoardResponseDTO;
 import com.teamProject.UKA.board.model.Board;
@@ -114,6 +115,4 @@ public class BoardService {
 
         return prefix + "_" + String.format("%04d", nextSeq);
     }
-
-	
 }

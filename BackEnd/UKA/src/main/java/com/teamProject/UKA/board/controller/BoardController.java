@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.teamProject.UKA.board.dto.BoardCommentCount;
 import com.teamProject.UKA.board.dto.BoardRequestDTO;
 import com.teamProject.UKA.board.dto.BoardResponseDTO;
 import com.teamProject.UKA.board.service.BoardService;

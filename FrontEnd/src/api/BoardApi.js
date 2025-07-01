@@ -25,11 +25,13 @@ export const fetchPostById = async (id) => {
     }
 };
 
+//추천 토글
 export const toggleLikes  = async (id, increment) => {
     const res = await axios.post(`${API_BASE_URL}/board/${id}/likes`, {}, {params : {increment}});
     return res.data;
 };
 
+//신고 토글
 export const toggleReport  = async (id, increment) => {
     const res = await axios.post(`${API_BASE_URL}/board/${id}/report`, {}, {params : {increment}});
     return res.data;
@@ -60,8 +62,9 @@ export const updatePost = async (id, updatedPost) => {
 // 게시글 삭제
 export const deletePost = async (id) => {
     try {
-        const res = await axios.delete(`${API_BASE_URL}/board/${id}`);
-        return res.data;
+        // const res = 
+        await axios.delete(`${API_BASE_URL}/board/${id}`);
+        // return res.data;
     } catch (error) {
         console.error(`게시글 삭제 실패(id: ${id}):`, error);
         throw error;

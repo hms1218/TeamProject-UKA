@@ -10,20 +10,22 @@ export const handleLikeAction = async ({
   setLikes,
   setIsLiked,
   showAlert,
-  setLikeLoading, // 🔁 (선택) 중복 클릭 방지용 상태
+  setLikeLoading,
 }) => {
   if (!user || !user.userId) {
-    await showAlert({
-      title: '로그인이 필요합니다.',
-      icon: 'warning',
-    });
+    await showAlert({ title: '로그인이 필요합니다.', icon: 'warning' });
     return;
   }
 
   const storageKey = `qna_liked_${user.userId}_${qna.id}`;
+  let optimisticLiked = !isLiked;
+
+  // 1. **Optimistic update**
+  setIsLiked(optimisticLiked);
+  setLikes(prev => optimisticLiked ? prev + 1 : Math.max(prev - 1, 0));
 
   try {
-    setLikeLoading?.(true); // ✅ 로딩 true로
+    setLikeLoading?.(true);
 
     if (isLiked) {
       await unlikeQna(qna.id, user.userId);
@@ -33,17 +35,21 @@ export const handleLikeAction = async ({
       localStorage.setItem(storageKey, 'true');
     }
 
-    // ⛔ 상태는 서버 응답 기준으로만 갱신
-    const updated = await fetchQnaDetail(qna.id);
-    const mapped = MapQnaRaw(updated);
-    setQna(mapped);
-    setLikes(mapped.likes || 0);
-    setIsLiked(mapped.isLikedByMe); // ✅ 여기서만 업데이트
+    // 2. **서버 동기화 (에러 없으면 skip 가능, 정말 필요할 때만 fetchQnaDetail)**
+    // const updated = await fetchQnaDetail(qna.id);
+    // const mapped = MapQnaRaw(updated);
+    // setQna(mapped);
+    // setLikes(mapped.likes || 0);
+    // setIsLiked(mapped.isLikedByMe);
 
   } catch (e) {
+    // **에러나면 optimistic rollback**
+    setIsLiked(isLiked);
+    setLikes(prev => isLiked ? prev + 1 : Math.max(prev - 1, 0));
+
     if (e.response?.status === 409) {
       await showAlert({ title: '이미 추천하셨습니다.', icon: 'info' });
-      setIsLiked(true); // 서버 기준 반영
+      setIsLiked(true);
     } else if (e.response?.status === 404) {
       await showAlert({ title: '추천 기록이 없습니다.', icon: 'info' });
       setIsLiked(false);
@@ -55,7 +61,7 @@ export const handleLikeAction = async ({
       });
     }
   } finally {
-    setLikeLoading?.(false); // 🔁 항상 로딩 false
+    setLikeLoading?.(false);
   }
 };
 

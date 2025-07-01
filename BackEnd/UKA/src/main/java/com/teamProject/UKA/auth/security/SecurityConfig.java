@@ -52,7 +52,7 @@ public class SecurityConfig {
                     	"/request/*",
                     	"/request/img/**",
                         "/board/**",
-                        "/board-detail/**",
+                        "/comment/**",
                         "/customer/faq/**",
                         "/customer/qna/**"
                 ).permitAll()

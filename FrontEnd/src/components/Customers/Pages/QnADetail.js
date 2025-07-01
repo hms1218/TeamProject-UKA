@@ -98,28 +98,43 @@ const QnADetail = () => {
     };
 
 
-  // QnA 상세 + 리스트 가져오기
-    useEffect(() => {
-    const lastViewTimeKey = `qna_last_view_time_${id}`;
-    const now = Date.now();
-    const lastViewTime = localStorage.getItem(lastViewTimeKey);
+useEffect(() => {
+  const lastViewTimeKey = `qna_last_view_time_${id}`;
+  const now = Date.now();
+  const lastViewTime = localStorage.getItem(lastViewTimeKey);
 
-    fetchData(); // 데이터 먼저 로드
-
-    // 조회수 증가 로직
-    // 1초 이상 지난 경우에만 조회수 증가
-    if (!lastViewTime || now - lastViewTime > 1000) {
-        (async () => {
-        try {
-            await increaseViewCount(id); // 조회수 API 호출
-            await fetchData();            // 최신 데이터 다시 로드
-            localStorage.setItem(lastViewTimeKey, now); // 시간 저장
-        } catch (error) {
-            console.error('조회수 증가 중 에러:', error);
-        }
-        })();
+  // 상세 데이터 불러오기 함수
+  const fetchData = async () => {
+    try {
+      const raw = await fetchQnaDetail(id, password);
+      const mapped = MapQnaRaw(raw);
+      setQna(mapped);
+      setLikes(mapped.likes);
+      setIsLiked(mapped.isLikedByMe); // ★ 바꿔주세요!
+      console.log('API isLikedByMe:', mapped.isLikedByMe); // ★
+      console.log('isLiked state:', isLiked);     
+    } catch (error) {
+      // 에러 처리
     }
-    }, [id, password]);
+  };
+
+  fetchData(); // 최초 데이터 로드
+
+  // 조회수 증가 로직
+  if (!lastViewTime || now - lastViewTime > 1000) {
+    (async () => {
+      try {
+        await increaseViewCount(id); // 조회수 증가
+        await fetchData();           // 증가 후 최신 데이터 다시 로드
+        localStorage.setItem(lastViewTimeKey, now);
+      } catch (error) {
+        console.error('조회수 증가 중 에러:', error);
+      }
+    })();
+  }
+}, [id, password]);
+
+
 
   // 날짜 변환 함수
   const formatDate = (dateString) => {

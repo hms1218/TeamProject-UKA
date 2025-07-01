@@ -162,9 +162,10 @@
 
 
     height:600px;
-    
+    overflow: auto;
     /* flex:0 0 50%; */
     flex-direction: column;
+    
 }
 
 
@@ -218,7 +219,10 @@
 .DBmap{
     display: flex;
     height: 100%;
+    width: 100%;
     align-items: center;
+    overflow: hidden;
+    
 }
 
 /* 본문 아래쪽 */
@@ -267,6 +271,7 @@
 /* 보드에서 가져온 페이지 네이션 */
 .DBpagination {
     display: flex;
+    margin-top: 20px;
     margin-bottom: 20px;
     justify-content: center;
     gap: 6px;

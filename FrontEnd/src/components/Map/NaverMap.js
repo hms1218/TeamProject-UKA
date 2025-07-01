@@ -21,7 +21,7 @@ const NaverMap = ({ centers = [], onMapReady }) => {
 
     const initializeMap = () => {
         mapInstance.current = new naver.maps.Map(mapRef.current, {
-            center: new naver.maps.LatLng(37.566826, 126.9786567),
+            center: new naver.maps.LatLng(37.566826, 126.7986567),
             zoom: 8,
         });
 

@@ -77,6 +77,7 @@ export const RequestComponent = ({
           showCancelButton : true,
           confirmButtonText: '네',
           cancelButtonText:'아니요',
+          icon: 'warning'
       })
 
       // '네' 버튼 눌렀을 시

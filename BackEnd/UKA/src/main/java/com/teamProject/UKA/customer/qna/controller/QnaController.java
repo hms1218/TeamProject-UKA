@@ -44,7 +44,7 @@ public class QnaController {
         return ResponseEntity.ok(qnaService.getAllQna());
     }
 
-    // 게시글 상세 조회
+    // QnA 게시글 상세 조회 (댓글 포함)
     @GetMapping("/{no}")
     public ResponseEntity<QnaResponseDTO> getQna(
         @PathVariable("no") Long no,
@@ -75,8 +75,10 @@ public class QnaController {
             }
         }
 
-        return ResponseEntity.ok(QnaResponseDTO.fromEntity(qna));
+        // **QnA + 댓글 리스트 DTO로 반환**
+        return ResponseEntity.ok(qnaService.getQnaWithComments(no));
     }
+
 
 
     // 게시글 수정
@@ -111,18 +113,22 @@ public class QnaController {
     @PatchMapping("/{no}/answer")
     public ResponseEntity<?> updateQnaAnswer(
         @PathVariable("no") Long no,
-        @RequestBody QnaRequestDTO dto // 또는 Map<String, String> body
+        @RequestBody QnaRequestDTO dto
     ) {
-        // 1. 관리자 권한 체크 (userId에 admin 포함)
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         boolean isAdmin = false;
         String userId = null;
         if (authentication != null && authentication.isAuthenticated()) {
             userId = authentication.getName();
+            // ⬇️ 여기!
+            System.out.println("[QnA PATCH] userId: " + userId);
             if (userId != null && userId.toLowerCase().contains("admin")) {
                 isAdmin = true;
             }
         }
+        // ⬇️ 여기!
+        System.out.println("[QnA PATCH] isAdmin: " + isAdmin);
+
         if (!isAdmin) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                 .body("관리자만 답변을 등록/수정/삭제할 수 있습니다.");

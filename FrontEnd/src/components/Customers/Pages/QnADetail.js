@@ -1,7 +1,14 @@
 import { useParams, useNavigate, useLocation  } from 'react-router-dom';
 import { useEffect, useState, useRef } from 'react';
 import { useAlert } from '../Context/AlertContext';
-import { fetchQnaDetail, fetchQnaList, reportQna, restoreQna, deleteQna } from '../../../api/CustomerApiData';
+import {
+    deleteQnaAnswer,
+    updateQnaAnswer, fetchQnaDetail,
+    fetchQnaList, reportQna,
+    restoreQna,
+    deleteQna,
+    createQnaComment
+} from '../../../api/CustomerApiData';
 import './QnADetail.css';
 import { MapQnaRaw } from '../Mappers/QnaMapper';
 import isAdminCheck from '../../Common/isAdminCheck';
@@ -38,36 +45,28 @@ const QnADetail = () => {
 
     // QnA 상세 가져오기 + 매핑
     useEffect(() => {
-        const getQna = async () => {
-            try {
-                const raw = await fetchQnaDetail(id, password);
-                setQna(MapQnaRaw(raw));
-            } catch (err) {
-                await error('QnA 상세 데이터를 불러오지 못했습니다.');
-                navigate('/customer/qna');
-            }
-        };
-        getQna();
+    const fetchData = async () => {
+        try {
+        // 상세 데이터
+        const rawDetail = await fetchQnaDetail(id, password);
+        const mappedDetail = MapQnaRaw(rawDetail);
+        setQna(mappedDetail);
+
+        // 리스트 데이터
+        const rawList = await fetchQnaList();
+        const mappedList = rawList.map(MapQnaRaw);
+        setQnaList(mappedList);
+
+        // 상세 데이터가 준비되면 답변 초기화
+        setAnswerInput(mappedDetail.answer || "");
+        } catch (err) {
+        await error('QnA 데이터를 불러오지 못했습니다.');
+        navigate('/customer/qna');
+        }
+    };
+
+    fetchData();
     }, [id, password, error, navigate]);
-
-    useEffect(() => {
-        const getQnaList = async () => {
-            try {
-                const list = await fetchQnaList();
-                // 여기서 매핑
-                setQnaList(list.map(MapQnaRaw));
-            } catch(e) {
-                // 무시
-            }
-        };
-        getQnaList();
-    }, [id]);
-
-    useEffect(() => {
-        setAnswerInput(qna?.answer || "");
-    }, [qna]);
-
-    
 
   // 날짜 변환
   const formatDate = (dateString) => {
@@ -77,32 +76,6 @@ const QnADetail = () => {
   	const hhmm = time ? time.slice(0, 5) : '';
     return `${yyyy.slice(2)}.${mm}.${dd}`;
   };
-
-    useEffect(() => {
-        if (!qna || !qnaList.length) return;
-        const sorted = [...qnaList].sort((a, b) => Number(b.id) - Number(a.id));
-        const currentIndex = sorted.findIndex(q => String(q.id) === String(id));
-        const current = sorted[currentIndex];
-        if (!current) return;
-        if (isAdmin) {
-            setPrev(sorted[currentIndex - 1] || null);
-            setNext(sorted[currentIndex + 1] || null);
-            return;
-        }
-        // 비밀번호 접근권한 체크
-        if (current.isSecret && sessionStorage.getItem(`qna_access_${current.id}`) !== 'true') {
-            showAlert && showAlert({
-                title: '비밀번호 오류',
-                text: '잘못된 접근입니다. 비밀번호 인증 후 접근하세요.',
-                icon: 'warning',
-            });
-            navigate('/customer/qna');
-            return;
-        }
-        setPrev(sorted[currentIndex - 1] || null);
-        setNext(sorted[currentIndex + 1] || null);
-    }, [id, qna, qnaList, isAdmin, showAlert, navigate]);
-
 
 
   const handleLike = async () => {
@@ -310,83 +283,77 @@ const handleReport = async () => {
 };
 
 
-  // 댓글 추가
-  const handleCommentSubmit = (e) => {
-    e.preventDefault();
-    if (!commentInput.trim()) return;
-    setQna((prevqna) =>
-      prevqna.map((item) =>
-        item.id === qna.id
-          ? {
-              ...item,
-              comments: [
-                ...(item.comments || []),
-                {
-                  id: (item.comments?.length || 0) + 1,
-                  author: isAdmin ? '관리자' : 'me',
-                  content: commentInput,
-                  date: formatDate(new Date().toISOString().split('T')[0]),
-                },
-              ],
-            }
-          : item
-      )
-    );
-    setCommentInput('');
-  };
+    const handleCommentSubmit = async (e) => {
+        e.preventDefault();
+        if (!commentInput.trim()) return;
+
+        try {
+            await createQnaComment(qna.qnaNo, {        // ✅ 수정: qnaNo로 변경
+                qnaId: qna.qnaId,                         // 화면용이므로 그대로 사용
+                qnaCommentWriter: isAdmin ? '관리자' : user.nickname,
+                qnaCommentContent: commentInput
+                });
+
+                const updated = await fetchQnaDetail(qna.qnaNo); // ✅ 조회도 qnaNo로
+                setQna(MapQnaRaw(updated));
+                setCommentInput('');
+        } catch (error) {
+            showAlert && showAlert({
+            title: '댓글 등록 실패',
+            text: error?.message || '서버 오류',
+            icon: 'error'
+            });
+        }
+    };
 
   if (!qna) return <p>게시글을 찾을 수 없습니다.</p>;
 
-  // 관리자 답변 수정
-  const handleEditAnswer = () => {
-    setAnswerEditMode(true);
-    setAnswerInput(qna?.answer || "");
-  };
+// 관리자 답변 수정(수정 모드로 전환)
+const handleEditAnswer = () => {
+  setAnswerEditMode(true);
+  setAnswerInput(qna?.answer || "");
+};
 
-  // 답변 저장(수정) 함수
-  const handleSaveAnswer = async () => {
-    // 여기서 실제 서버에 PATCH/PUT 날리는 게 정석
-    // 예시로는 QnA 상태 바로 변경
-    // 빈칸 못넣게
-    if (!answerInput.trim()) {
-      showAlert && showAlert({
-        title: '답변 내용을 입력해주세요!',
-        imageUrl: process.env.PUBLIC_URL + '/img/what.jpg',   // ← 확장자 포함!
-        imageWidth: 300,
-        imageHeight: 300,
-        imageAlt: '에?',
-        icon: 'warning',
-        timer: 1300,
-        showConfirmButton: false,
-      });
-      return;
-    }
-    // 1. 컨펌 모달 먼저 띄움
-    const result = await showAlert({
-      title: '답변을 저장하시겠습니까?',
-      imageUrl: process.env.PUBLIC_URL + '/img/code.jpg',   // ← 확장자 포함!
+// 답변 저장(수정) 함수
+const handleSaveAnswer = async () => {
+  if (!answerInput.trim()) {
+    showAlert && showAlert({
+      title: '답변 내용을 입력해주세요!',
+      imageUrl: process.env.PUBLIC_URL + '/img/what.jpg',
       imageWidth: 300,
-      imageHeight: 250,
-      imageAlt: '코딩',
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonText: '네, 저장합니다',
-      cancelButtonText: '아니오',
+      imageHeight: 300,
+      imageAlt: '에?',
+      icon: 'warning',
+      timer: 1300,
+      showConfirmButton: false,
     });
-    if (!result || !result.isConfirmed) return; // 취소 시 아무 일도 없음
+    return;
+  }
 
-    // 2. 저장 로직
-    setQna(prev => ({
-        ...prev,
-        answer: answerInput,
-        isAnswered: true
-    }));
+  const result = await showAlert({
+    title: '답변을 저장하시겠습니까?',
+    imageUrl: process.env.PUBLIC_URL + '/img/code.jpg',
+    imageWidth: 300,
+    imageHeight: 250,
+    imageAlt: '코딩',
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonText: '네, 저장합니다',
+    cancelButtonText: '아니오',
+  });
+  if (!result || !result.isConfirmed) return;
+
+  try {
+    await updateQnaAnswer(qna.id, answerInput, user.nickname);
+
+    // 서버 저장 후, 상세를 다시 받아서 상태 갱신
+    const updated = await fetchQnaDetail(qna.id);
+    setQna(MapQnaRaw(updated));
     setAnswerEditMode(false);
 
-    // 3. 저장 완료 안내 토스트
     showAlert && showAlert({
       title: '저장되었습니다!',
-      imageUrl: process.env.PUBLIC_URL + '/img/helmetGood.png',   // ← 확장자 포함!
+      imageUrl: process.env.PUBLIC_URL + '/img/helmetGood.png',
       imageWidth: 300,
       imageHeight: 300,
       imageAlt: '좋았쓰(헬멧)',
@@ -394,33 +361,42 @@ const handleReport = async () => {
       timer: 1300,
       showConfirmButton: false,
     });
-  };
-
-  // 관리자 답변 삭제
-  const handleDeleteAnswer = async () => {
-    const result = await showAlert({
-      title: '정말 답변을 삭제하시겠습니까?',
-      imageUrl: process.env.PUBLIC_URL + '/img/what.jpg',   // ← 확장자 포함!
-      imageWidth: 300,
-      imageHeight: 300,
-      imageAlt: '에?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: '네, 삭제합니다',
-      cancelButtonText: '아니오',
+  } catch (e) {
+    showAlert && showAlert({
+      title: '답변 저장 실패',
+      text: e?.message || '서버 오류',
+      icon: 'error'
     });
-    if (!result || !result.isConfirmed) return;
-    // 삭제 로직
-    setQna(prev => ({
-        ...prev,
-        answer: '',
-        isAnswered: false
-    }));
+  }
+};
+
+// 관리자 답변 삭제
+const handleDeleteAnswer = async () => {
+  const result = await showAlert({
+    title: '정말 답변을 삭제하시겠습니까?',
+    imageUrl: process.env.PUBLIC_URL + '/img/what.jpg',
+    imageWidth: 300,
+    imageHeight: 300,
+    imageAlt: '에?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: '네, 삭제합니다',
+    cancelButtonText: '아니오',
+  });
+  if (!result || !result.isConfirmed) return;
+
+  try {
+    // ★ 서버에 PATCH로 빈값(삭제)
+    await updateQnaAnswer(qna.id, '', '');
+
+    // 서버 반영 후, 상세를 다시 받아와서 상태 갱신
+    const updated = await fetchQnaDetail(qna.id);
+    setQna(MapQnaRaw(updated));
     setAnswerEditMode(false);
 
     showAlert && showAlert({
       title: '삭제되었습니다!',
-      imageUrl: process.env.PUBLIC_URL + '/img/helmetGood.png',   // ← 확장자 포함!
+      imageUrl: process.env.PUBLIC_URL + '/img/helmetGood.png',
       imageWidth: 300,
       imageHeight: 300,
       imageAlt: '좋았쓰(헬멧)',
@@ -428,8 +404,16 @@ const handleReport = async () => {
       timer: 1200,
       showConfirmButton: false,
     });
-  };
+  } catch (e) {
+    showAlert && showAlert({
+      title: '답변 삭제 실패',
+      text: e?.message || '서버 오류',
+      icon: 'error'
+    });
+  }
+};
     if (!qna) return <p>게시글을 찾을 수 없습니다.</p>;
+
     return (
         <div className="qna-detail-wrapper">
         {/* 1. 제목 */}
@@ -525,7 +509,7 @@ const handleReport = async () => {
                     )}
                     {isAdmin && answerEditMode && (
                         <>
-                            <button className="qna-action-btn" onClick={handleSaveAnswer}>저장</button>
+                            <button className="qna-action-btn"  onClick={handleSaveAnswer}>저장</button>
                             <button className="qna-action-btn" onClick={() => setAnswerEditMode(false)}>취소</button>
                         </>
                     )}
@@ -578,52 +562,54 @@ const handleReport = async () => {
             <button className="qna-action-btn" onClick={() => navigate('/customer/qna')}>← 목록</button>
         </div>
 
-        {/* 7. 댓글 */}
-        <div style={{ margin: "35px 0 0 0" }}>
-    <h4 style={{ marginBottom: 12, fontWeight: 700, fontSize: 17 }}>
-        댓글 <span style={{ color: '#b19cd9' }}>({qna.comments ? qna.comments.length : 0})</span>
-    </h4>
-    <div style={{ marginLeft: 3 }}>
-        {/* qna.comments가 없거나 0개일 때 */}
-        {(!qna.comments || qna.comments.length === 0) && (
-        <div style={{ color: "#aaa" }}>등록된 댓글이 없습니다.</div>
-        )}
+    {/* 7. 댓글 */}
+    <div style={{ margin: "35px 0 0 0" }}>
+        <h4 style={{ marginBottom: 12, fontWeight: 700, fontSize: 17 }}>
+            댓글 <span style={{ color: '#b19cd9' }}>({qna.comments ? qna.comments.length : 0})</span>
+        </h4>
 
-        {/* qna.comments가 있을 때 */}
-        {qna.comments && qna.comments.map(c => (
-        <div key={c.id} style={{
-            marginBottom: 10,
-            fontSize: 15,
-            padding: '12px 0',
-            borderBottom: '1px solid #f1f1f1'
-        }}>
-            <b>{c.user || c.author}</b>
-            {/* 날짜 필드도 유동적으로 처리 */}
-            <span style={{ color: "#bbb", fontSize: 13, marginLeft: 8 }}>
-            {c.date}
-            </span>
-            <div style={{ marginLeft: 2 }}>{c.text || c.content}</div>
+        <div style={{ marginLeft: 3 }}>
+            {/* qna.comments가 없거나 0개일 때 */}
+            {(!qna.comments || qna.comments.length === 0) && (
+            console.log("QnA 댓글 데이터: ", qna),
+            <div style={{ color: "#aaa" }}>등록된 댓글이 없습니다.</div>
+            )}
+
+            {/* qna.comments가 있을 때 */}
+            {qna.comments && qna.comments.map(c => (
+            <div key={c.qnaCommentId} style={{
+                marginBottom: 10,
+                fontSize: 15,
+                padding: '12px 0',
+                borderBottom: '1px solid #f1f1f1'
+            }}>
+                <b>{c.qnaCommentWriter}</b>
+                <span style={{ color: "#bbb", fontSize: 13, marginLeft: 8 }}>
+                {formatDate(c.qnaCommentCreatedAt)}
+                </span>
+                <div style={{ marginLeft: 2 }}>{c.qnaCommentContent}</div>
+            </div>
+            ))}
         </div>
-        ))}
-    </div>
 
-            <form style={{ display: "flex", gap: 8, marginBottom: 18, marginTop: 12 }} onSubmit={handleCommentSubmit}>
+        <form style={{ display: "flex", gap: 8, marginBottom: 18, marginTop: 12 }} onSubmit={handleCommentSubmit}>
             <input
-                type="text"
-                placeholder="댓글을 입력하세요"
-                value={commentInput}
-                onChange={e => setCommentInput(e.target.value)}
-                style={{
+            type="text"
+            placeholder="댓글을 입력하세요"
+            value={commentInput}
+            onChange={e => setCommentInput(e.target.value)}
+            style={{
                 flex: 1,
                 border: "1px solid #b19cd9",
                 borderRadius: 7,
                 fontSize: 16,
                 padding: "8px 14px"
-                }}
+            }}
             />
             <button type="submit" className="qna-detail-recommend-btn">등록</button>
-            </form>
-        </div>
+        </form>
+    </div>
+
         
         {/* 8. 이전/다음글 네비 */}
         <div className="qna-navigation" style={{ marginTop: 36 }}>

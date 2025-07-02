@@ -12,12 +12,10 @@ import { useAdmin } from '../../../api/AdminContext';
 
 const NoticeForm = () => {
     const [title, setTitle] = useState('');
-    const [category, setCategory] = useState('');
+    const [category, setCategory] = useState('NOTICE');
     const navigate = useNavigate();
     const titleInputRef = useRef(null);
     const editorRef = useRef(null);
-
-    // const {posts} = useBoard();
 
     const API_BASE_URL = 'http://localhost:8888';
 
@@ -104,7 +102,7 @@ const NoticeForm = () => {
                         confirmButtonColor: '#6c5ce7',
                         confirmButtonText: '확인'
                     }).then(() => {
-                        navigate('/board/all')
+                        navigate('/board/notice')
                     })
                 }
             } catch (error) {
@@ -134,7 +132,7 @@ const NoticeForm = () => {
         }).then((result) => {
             if(result.isConfirmed){
                 clearTempData(); //저장된 임시데이터 삭제
-                navigate('/board/all')
+                navigate('/board/notice')
             }
         })
     }
@@ -150,11 +148,9 @@ const NoticeForm = () => {
                         value={category} 
                         onChange={(e) => setCategory(e.target.value)}
                         >
-                        <option value='' disabled hidden>선택</option>
                         {isAdmin && <option value='NOTICE'>공지사항</option>} {/* 관리자만 공지사항 글쓰기 가능 */}
                         <option value='CHAT'>속닥속닥</option>
                         <option value='REVIEW'>입양후기</option>
-                        
                     </select>
                 </div>
                 <div>

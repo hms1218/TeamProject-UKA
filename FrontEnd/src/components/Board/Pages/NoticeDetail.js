@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import './BoardDetail.css';
 import Swal from 'sweetalert2';
 import { useAdmin } from '../../../api/AdminContext';
-import { fetchPostById, deletePost, toggleLikes, toggleReport } from '../../../api/BoardApi';
+import { fetchPostById, deletePost, toggleLikes, toggleReport, incrementViewCount } from '../../../api/BoardApi';
 import { createComment, createReply, fetchCommentsByBoard, fetchRepliesByComment, updateComment, deleteComment } from '../../../api/BoardCommentApi';
 import CommentList from '../Comment/CommentList';
 
@@ -50,6 +50,7 @@ const NoticeDetail = () => {
     useEffect(() => {
         const getPostsById = async () => {
             try {
+                await incrementViewCount(id); //조회수 증가
                 const data = await fetchPostById(id);
                 setPost(data);
             } catch (error) {
@@ -59,7 +60,7 @@ const NoticeDetail = () => {
                     title: '게시글 불러오기 실패',
                     text: '서버에서 게시글을 불러오지 못했습니다.'
                 });
-                navigate('/board/all');
+                navigate('/board/notice');
             }
         }
         getPostsById();
@@ -67,11 +68,9 @@ const NoticeDetail = () => {
 
     //삭제 버튼
     const handleDelete = async () => {
-        console.log("id",id)
-        console.log("id-",post.id)
         const confirm = await Swal.fire({
             title: '삭제하시겠습니까?',
-            text: '삭제된 게시글은 복구할 수 없습니다.',
+            html: `삭제된 게시글은 복구할 수 없습니다.<br>댓글을 모두 삭제하셔야 삭제가 완료됩니다.`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d63031',
@@ -84,17 +83,17 @@ const NoticeDetail = () => {
             try {
                 await deletePost(id);
                 Swal.fire('삭제 완료', '게시글이 삭제되었습니다.', 'success');
-                navigate('/board/all');
+                navigate('/board/notice');
             } catch (error) {
                 console.error(`게시글 삭제 실패(id: ${post.id}):`, error);
-                Swal.fire('삭제 실패', '게시글 삭제 중 오류가 발생했습니다.', 'error');
+                Swal.fire('삭제 실패', '댓글을 모두 삭제해주세요.', 'error');
             }
         }
     }
 
     //이전글, 다음글
     const handleNavigate = (post) => {
-        navigate(`/board/all/detail/${post.id}`, {
+        navigate(`/board/notice/detail/${post.id}`, {
             state: {
                 filteredList: filteredList
             }
@@ -111,7 +110,11 @@ const NoticeDetail = () => {
             return;
         }
 
-        const sortedList = [...filteredList].sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+        const sortedList = [...filteredList].sort((a,b) => {
+            const dateA = a.updatedAt ? new Date(a.updatedAt) : new Date(a.createdAt);
+            const dateB = b.updatedAt ? new Date(b.updatedAt) : new Date(b.createdAt);
+            return dateB - dateA;
+        });
         const idx = sortedList.findIndex(p => p.id === post.id);
 
         setPrev(sortedList[idx - 1] || null);
@@ -220,8 +223,7 @@ const NoticeDetail = () => {
 
     // 대댓글 수정 저장
     const saveEditReply = async () => {
-        if (editReplyText.trim() === '') return;
-
+        if (!editReplyText || editReplyText.trim() === '') return;
         try {
             await updateComment(editReplyId, editReplyText.trim());
             await getAllComments(); // 수정 후 목록 재조회
@@ -230,8 +232,17 @@ const NoticeDetail = () => {
         } catch (error) {
             console.error('답글 수정 실패', error);
             Swal.fire('오류', '답글 수정에 실패했습니다.', 'error');
-        }
-        
+        }  
+    };
+
+    const EditComment = (comment) => {
+        setEditCommentId(comment.id);
+        setEditCommentText(comment.content);
+    };
+
+    const EditReply = (comment) => {
+        setEditReplyId(comment.id);
+        setEditReplyText(comment.content);
     };
 
     //댓글 삭제
@@ -326,7 +337,9 @@ const NoticeDetail = () => {
                 <p style={{fontSize: 30}}>{post.title}</p>
                 <div style={{textAlign: 'right', marginTop: 15}}>
                     <span style={{color: '#ccc'}}>작성자 : {post.author}</span><br/>
-                    <span style={{color: '#ccc'}}>{new Date(post.createdAt).toLocaleString()}</span>
+                    <span style={{color: '#ccc'}}>
+                        {post.updatedAt && post.updatedAt !== post.createdAt ? `수정됨 ${new Date(post.updatedAt).toLocaleString()}` : new Date(post.createdAt).toLocaleString()}
+                    </span>
                 </div>  
             </div>
             <hr/>
@@ -355,7 +368,7 @@ const NoticeDetail = () => {
                 > 🚨신고
                 </button>
                 <button className="board-detail-button"
-                    onClick={() => navigate(`/board/all/edit/${post.id}`, { state: post })}
+                    onClick={() => navigate(`/board/notice/edit/${post.id}`, { state: post })}
                 > ✏️ 수정
                 </button>
                 <button className="board-detail-button"
@@ -363,7 +376,7 @@ const NoticeDetail = () => {
                 > 🗑 삭제
                 </button>               
                 <button className="board-detail-button"
-                    onClick={() => navigate('/board/all')}       
+                    onClick={() => navigate('/board/notice')}       
                 > ← 목록으로
                 </button>
             </div>
@@ -377,15 +390,23 @@ const NoticeDetail = () => {
                     isAdmin={isAdmin}
                     handleDeleteComment={handleDeleteComment}
                     handleDeleteReply={handleDeleteReply}
-                    EditComment={() => {}}  // 빈 함수는 CommentList에서 상태 직접 세팅함
-                    EditReply={() => {}}
                     saveEditComment={saveEditComment}
                     saveEditReply={saveEditReply}
-                    handleReplySubmit={handleReplySubmit}  // 기존 대댓글 제출 함수
-                    replyTargetId={replyTargetId}              
-                    setReplyTargetId={setReplyTargetId}        
-                    replyInput={replyInput}                      
-                    setReplyInput={setReplyInput} 
+                    replyTargetId={replyTargetId}
+                    setReplyTargetId={setReplyTargetId}
+                    replyInput={replyInput}
+                    setReplyInput={setReplyInput}
+                    handleReplySubmit={handleReplySubmit}
+                    EditComment={EditComment}
+                    EditReply={EditReply}
+                    editCommentId={editCommentId}
+                    editCommentText={editCommentText}
+                    setEditCommentId={setEditCommentId}
+                    setEditCommentText={setEditCommentText}
+                    editReplyId={editReplyId}
+                    editReplyText={editReplyText}
+                    setEditReplyId={setEditReplyId}
+                    setEditReplyText={setEditReplyText}
                 />
             </div>
             {/* 최상위 댓글 입력폼 추가 */}

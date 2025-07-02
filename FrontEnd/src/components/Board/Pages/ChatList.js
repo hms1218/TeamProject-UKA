@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './AllBoard.css';
+import './BoardList.css';
 import Swal from 'sweetalert2';
 import { fetchAllPosts } from '../../../api/BoardApi';
 
@@ -48,13 +48,16 @@ const ChatList = () => {
             if (sortOption === 'view') return order * (b.view - a.view);
             if (sortOption === 'likes') return order * (b.likes - a.likes);
             if (sortOption === 'comment') return order * (b.comment - a.comment);
-            if (sortOption === 'latest') return order * (new Date(b.createdAt) - new Date(a.createdAt));
+            if (sortOption === 'latest') {
+                const dateA = a.updatedAt ? new Date(a.updatedAt) : new Date(a.createdAt);
+                const dateB = b.updatedAt ? new Date(b.updatedAt) : new Date(b.createdAt);
+                return order * (dateB - dateA);
+            }
             return 0;
         });
     };
 
-    const noticedPosts = sortPosts(posts.filter(p => p.category === "NOTICE"));
-    const normalPosts = sortPosts(posts.filter(p => p.category !== "NOTICE"));
+    const ChatPosts = sortPosts(posts.filter(p => p.category === "CHAT"));
 
     //검색 함수
     const handleSearch = () => {
@@ -76,7 +79,7 @@ const ChatList = () => {
             return;
         }
 
-        const filtered = normalPosts.filter(post => {
+        const filtered = ChatPosts.filter(post => {
             if(searchOption === 'title'){
                 return post.title.toLowerCase().includes(keyword.toLowerCase())
             }
@@ -94,7 +97,7 @@ const ChatList = () => {
     }
 
     // 현재 페이지에 보여줄 게시글
-    const paginatedPosts = isSearching ? filteredPosts : normalPosts;
+    const paginatedPosts = isSearching ? filteredPosts : ChatPosts;
     const displayedPosts = paginatedPosts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
     //searching 여부에 따라 페이징
@@ -113,12 +116,12 @@ const ChatList = () => {
 
 	//타이틀 클릭시
     const handleTitleClick = (post) => {
-        navigate(`/board/all/detail/${post.id}`, { state: { filteredList: isSearching ? filteredPosts : displayedPosts, } });
+        navigate(`/board/chat/detail/${post.id}`, { state: { filteredList: isSearching ? filteredPosts : displayedPosts, } });
     };
 
 	//글쓰기 버튼
     const handleWrite = () => {
-        navigate('/board/all/form');
+        navigate('/board/chat/form');
     };
 
     //검색한 키워드 강조
@@ -209,45 +212,10 @@ const ChatList = () => {
                 </tr>
                 </thead>
                 <tbody>
-                {/* 공지사항 매핑 */}
-                {noticedPosts?.map((post) => (
-                <tr key={`notice-${post.id}`} className="notice-row" style={{backgroundColor: '#ddd'}}>
-                    <td className='notice-tab'>{categoryLabels[post.category]}</td>
-                    <td className="notice-title" onClick={() => handleTitleClick(post)}>
-                        <div className='board-cell-text'>
-                            📢
-                            {searchOption === 'title' 
-                                ? highlightKeyword(post.title, isSearching ? confirmKeyword : '')
-                                : post.title
-                            }
-                        </div>
-                    </td>
-                    <td className='notice-cell'>
-                        <div className='board-cell-text'>
-                            {searchOption === 'author' 
-                                ? highlightKeyword(post.author, isSearching ? confirmKeyword : '')
-                                : post.author
-                            }
-                        </div>
-                    </td>
-                    <td className='notice-cell'>
-                        <div className='board-cell-text' style={{marginLeft:20}}>{post.view}</div>
-                    </td>
-                    <td className='notice-cell'>
-                        <div className='board-cell-text' style={{marginLeft:20}}>{post.likes}</div>
-                    </td>
-                    <td className='notice-cell'>
-                        <div className='board-cell-text' style={{marginLeft:20}}>{post.comment}</div>
-                    </td>
-                    <td className='notice-cell'>
-                        <div className='board-cell-text' style={{marginLeft:15}}>{formatDate(post.createdAt)}</div>
-                    </td>
-                </tr>
-                ))}
-                {/* 일반게시글 매핑 */}
+                {/* 속닥속닥 게시글 매핑 */}
                 {displayedPosts.length > 0 ? (
                     displayedPosts.map((post) => (
-                    <tr key={`${post.type}-${post.id}`}>
+                    <tr key={`${post.category}-${post.id}`}>
                             <td>{categoryLabels[post.category]}</td>
                             <td className="title-cell" onClick={() => handleTitleClick(post)}>
                                 <div className='board-cell-text'>
@@ -266,7 +234,7 @@ const ChatList = () => {
                                 </div>
                             </td>
                             <td>
-                                <div className='board-cell-text' style={{marginLeft:20}}>{post.view}</div>
+                                <div className='board-cell-text' style={{marginLeft:15}}>{post.view}</div>
                             </td>
                             <td>
                                 <div className='board-cell-text' style={{marginLeft:20}}>{post.likes}</div>
@@ -275,7 +243,9 @@ const ChatList = () => {
                                 <div className='board-cell-text' style={{marginLeft:20}}>{post.comment}</div>
                             </td>
                             <td>
-                                <div className='board-cell-text' style={{marginLeft:15}}>{formatDate(post.createdAt)}</div>
+                                <div className='board-cell-text' style={{marginLeft:15}}>
+                                    {post.updatedAt ? formatDate(post.updatedAt) : formatDate(post.createdAt)}
+                                </div>
                             </td>
                     </tr>           
                     ))

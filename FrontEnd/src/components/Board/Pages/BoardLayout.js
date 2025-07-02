@@ -1,7 +1,10 @@
-import { Outlet, NavLink} from 'react-router-dom';
+import { Outlet, NavLink, useLocation} from 'react-router-dom';
 import './BoardLayout.css';
 
 const BoardLayout = () => {
+
+    const location = useLocation();
+    const currentCategory = location.state?.category || null;
 
     return (
         <div>

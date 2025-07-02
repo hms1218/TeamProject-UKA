@@ -17,8 +17,6 @@ const AllBoardForm = () => {
     const titleInputRef = useRef(null);
     const editorRef = useRef(null);
 
-    // const {posts} = useBoard();
-
     const API_BASE_URL = 'http://localhost:8888';
 
     // 유저 정보
@@ -154,7 +152,6 @@ const AllBoardForm = () => {
                         {isAdmin && <option value='NOTICE'>공지사항</option>} {/* 관리자만 공지사항 글쓰기 가능 */}
                         <option value='CHAT'>속닥속닥</option>
                         <option value='REVIEW'>입양후기</option>
-                        
                     </select>
                 </div>
                 <div>

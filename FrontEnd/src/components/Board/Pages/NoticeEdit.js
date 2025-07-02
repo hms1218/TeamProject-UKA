@@ -82,7 +82,7 @@ const NoticeEdit = () => {
                         confirmButtonColor: '#6c5ce7',
                         confirmButtonText: '확인'
                     }).then(() => {
-                        navigate(`/board/all/detail/${id}`);
+                        navigate(`/board/notice/detail/${id}`);
                     });
                 } catch (error) {
                     console.error('게시글 수정 실패:', error);
@@ -105,7 +105,7 @@ const NoticeEdit = () => {
             cancelButtonText: '취소',
         }).then((result) => {
             if(result.isConfirmed){
-                navigate(`/board/all/detail/${id}`)
+                navigate(`/board/notice/detail/${id}`)
             }
         })
     }

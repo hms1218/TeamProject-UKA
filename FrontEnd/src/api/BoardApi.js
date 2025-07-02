@@ -25,6 +25,16 @@ export const fetchPostById = async (id) => {
     }
 };
 
+// 게시글 조회수 증가
+export const incrementViewCount = async (id) => {
+    try {
+        await axios.post(`${API_BASE_URL}/board/${id}/view`);
+    } catch (error) {
+        console.error(`조회수 증가 실패(id: ${id}):`, error);
+        throw error;
+    }
+};
+
 //추천 토글
 export const toggleLikes  = async (id, increment) => {
     const res = await axios.post(`${API_BASE_URL}/board/${id}/likes`, {}, {params : {increment}});

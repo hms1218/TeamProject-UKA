@@ -32,7 +32,7 @@ const CommentItem = ({
             {comment.author === currentUser && ' (작성자)'}
             </b>
             <span style={{ marginLeft: 6, color: '#bbb', fontSize: 13 }}>
-            {new Date(comment.createdAt).toLocaleString()}
+            {comment.updatedAt && comment.updatedAt !== comment.createdAt ? `수정됨 ${new Date(comment.updatedAt).toLocaleString()}` : new Date(comment.createdAt).toLocaleString()}
             </span>
         </div>
         {/* 수정 */}
@@ -43,7 +43,6 @@ const CommentItem = ({
                 type="text"
                 value={editCommentId === comment.id ? editCommentText : editReplyText}
                 onChange={e => {
-                    console.log("값", editCommentText)
                     if (editCommentId === comment.id) setEditCommentText(e.target.value);
                     else setEditReplyText(e.target.value);
                 }}
@@ -58,7 +57,7 @@ const CommentItem = ({
                 />
                 <button className="board-detail-comment-button"
                     onClick={() => {
-                        if (editCommentId === comment.id) saveEditComment();
+                        if (editCommentId === comment.id) saveEditComment(editCommentId,editCommentText);
                         else saveEditReply();
                     }}
                     style={{ cursor: 'pointer' }}
@@ -81,11 +80,13 @@ const CommentItem = ({
                 {(isAdmin || comment.author === currentUser) && (
                 <>
                     <button
-                    onClick={() =>
-                        comment.parentCommentId
-                        ? EditReply(comment)
-                        : EditComment(comment)
-                    }
+                    onClick={() =>{
+                        if (comment.parentCommentId) {
+                            EditReply(comment);
+                        } else {
+                            EditComment(comment);
+                        }
+                    }}
                     style={{
                         fontSize: 13,
                         marginLeft: 4,
@@ -145,8 +146,8 @@ const CommentItem = ({
                 type="text"
                 placeholder="답글을 입력하세요"
                 value={replyInput[comment.id] || ''}
-                onChange={e =>
-                    setReplyInput(prev => ({ ...prev, [comment.id]: e.target.value }))
+                onChange={e =>{
+                    setReplyInput(prev => ({ ...prev, [comment.id]: e.target.value }))}
                 }
                 style={{
                 flex: 1,

@@ -52,6 +52,7 @@ public class SecurityConfig {
                     	"/request/*",
                     	"/request/img/**",
                         "/board/**",
+                        "/images/**",
                         "/comment/**",
                         "/customer/faq/**",
                         "/customer/qna/**",

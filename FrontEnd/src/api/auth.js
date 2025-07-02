@@ -65,17 +65,3 @@ export async function getMe() {
 
     return body;
 }
-
-// 예시: 이미 만들어둔 api/auth.js 파일에 추가
-export async function checkUserId(userId) {
-    const res = await fetch(`http://localhost:8888/api/auth/check-userid?userId=${encodeURIComponent(userId)}`);
-    const body = await res.json();
-    // 서버에서 { exists: true/false } 또는 { available: true/false }로 응답한다고 가정
-    return body;
-}
-
-export async function checkEmail(email) {
-    const res = await fetch(`http://localhost:8888/api/auth/check-email?email=${encodeURIComponent(email)}`);
-    const body = await res.json();
-    return body;
-}

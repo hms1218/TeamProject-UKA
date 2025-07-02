@@ -21,6 +21,52 @@ export async function signup({ userId, nickname, password, email }) {
     return data;
 }
 
+// 아이디 중복 확인
+export async function checkUserId(userId) {
+  const res = await fetch(`/api/users/check-id?userId=${encodeURIComponent(userId)}`);
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || '아이디 중복 확인 실패');
+  return data; // true / false
+}
+
+// 닉네임 중복 확인
+export async function checkNickname(nickname) {
+  const res = await fetch(`/api/users/check-nickname?nickname=${encodeURIComponent(nickname)}`);
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || '닉네임 중복 확인 실패');
+  return data; // true / false
+}
+
+// 이메일 인증번호 전송
+export async function sendVerificationCode(email) {
+  const res = await fetch(`/api/users/send-verification`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ email }),
+  });
+
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || '인증번호 전송 실패');
+  return data.code; // 인증코드 (테스트용), 또는 success 메시지
+}
+
+// 이메일 인증번호 검증
+export async function verifyEmailCode(email, code) {
+  const res = await fetch(`/api/users/verify-code`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ email, code }),
+  });
+
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || '인증 실패');
+  return data.success; // true / false
+}
+
 export async function login({ userId, password }) {
     const res = await fetch("http://localhost:8888/api/auth/login", {
         method: "POST",

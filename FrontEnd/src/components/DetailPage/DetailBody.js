@@ -126,9 +126,9 @@ export const DetailBody = () => {
 
             {/* 헤더 */}
             <div className="DBcombobox">
-                <h2>지역선택</h2>
+                <h2 className="DBcombotitle">지역선택</h2>
                 {/* 시 */}
-                <div>
+                <div className="DBcomboboxcenter">
                     <select
                         id="siDo"
                         value={siDo}
@@ -146,9 +146,8 @@ export const DetailBody = () => {
                             </option>
                         ))}
                     </select>
-                </div>
+                
                 {/* 군 */}
-                <div>
                     <select
                         id="gunGu"
                         value={gunGu}
@@ -166,9 +165,8 @@ export const DetailBody = () => {
                             </option>
                         ))}
                     </select>
-                </div>
+                
                 {/* 센터 */}
-                <div>
                     <select
                         id="center"
                         value={center}
@@ -186,37 +184,39 @@ export const DetailBody = () => {
 
                 
                 {/* 센터 선택, 마커 생성 버튼 */}
-                <Button
-                    variant="contained"
-                    className="DBButton"
-                    color="info"
-                    sx={{ marginLeft: '20px'}}
-                    onClick={() => {
-                        let filteredCenters = [];
-                        if (selectedCenterData) {
-                            // 센터 선택 시 1개 센터만 마커 표시
-                            // filteredCenters = [selectedCenterData];
-                            filteredCenters=selectedCenterDataOnly;
-                        } else if (siDoName && gunGuName) {
-                            // 시군구 선택 시 그 지역 내 모든 센터 표시
-                            filteredCenters = allData.filter(
-                                item => item.orgNm === `${siDoName} ${gunGuName}`
-                            );
-                        } else if (siDoName) {
-                            // 시/도 선택 시 그 시도 내 모든 센터 표시
-                            filteredCenters = allData.filter(
-                                item => item.orgNm.startsWith(siDoName)
-                            );
-                        }
-                        setShow(true)
-                        setTargetCenters(filteredCenters);
-                        setDetailFilter(filteredCenters)
-                        console.log("마커 표시할 센터 목록:", filteredCenters);
-                        window.scrollTo({ top: 300, left: 0, behavior: 'smooth' });
-                    }}
-                ><span>
-                    검색하기</span>
-                </Button>
+                <div className="DBcomboboxright">
+                    <Button
+                        variant="contained"
+                        className="DBButton"
+                        color="info"
+                        sx={{ marginLeft: '20px'}}
+                        onClick={() => {
+                            let filteredCenters = [];
+                            if (selectedCenterData) {
+                                // 센터 선택 시 1개 센터만 마커 표시
+                                // filteredCenters = [selectedCenterData];
+                                filteredCenters=selectedCenterDataOnly;
+                            } else if (siDoName && gunGuName) {
+                                // 시군구 선택 시 그 지역 내 모든 센터 표시
+                                filteredCenters = allData.filter(
+                                    item => item.orgNm === `${siDoName} ${gunGuName}`
+                                );
+                            } else if (siDoName) {
+                                // 시/도 선택 시 그 시도 내 모든 센터 표시
+                                filteredCenters = allData.filter(
+                                    item => item.orgNm.startsWith(siDoName)
+                                );
+                            }
+                            setShow(true)
+                            setTargetCenters(filteredCenters);
+                            setDetailFilter(filteredCenters)
+                            console.log("마커 표시할 센터 목록:", filteredCenters);
+                            window.scrollTo({ top: 300, left: 0, behavior: 'smooth' });
+                        }}
+                        >
+                        <span>검색하기</span>
+                    </Button>
+                </div>
             </div>
 
 
@@ -235,11 +235,11 @@ export const DetailBody = () => {
   
                     <div className="DBboard-header-container">
                         <div className="DBboard-header-left">
-                            <h1 className="DBboard-title">상세검색</h1>
+                            <h2 className="DBboard-title">상세검색</h2>
                         </div>
                         <div className="DBboard-header-center">
 
-                            <select onChange={(e)=>{setNeuter(e.target.value)}}>
+                            <select value={neuter} onChange={(e)=>{setNeuter(e.target.value)}}>
                                 <option value="" disabled selected hidden>중성화 여부</option>
                                 <option value={''}>(전체)</option>
                                 <option value={'Y'}>완료</option>
@@ -256,21 +256,33 @@ export const DetailBody = () => {
                                 selected={selectedDate}
                                 dateFormat="YYYY/MM/dd"
                                 customInput={
-                                <CustomButton
-                                    variant="contained"
-                                >{selectedDate}</CustomButton>
+                                    <CustomButton
+                                        variant="contained"
+                                        onClick={()=>{if(!show){
+                                    }}}
+                                        >{selectedDate}
+                                    </CustomButton>
                                 }
                                 onChange={(date)=>setSelectedDate(date)}
                             />
 
-                            <select onChange={(e)=>{setKind(e.target.value)}}>
+                            <select value={kind} onChange={(e)=>{setKind(e.target.value)}}>
                                 <option value="" disabled selected hidden>종류</option>
                                 <option value="dog">강아지</option>
                                 <option value="cat" >고양이</option>
                             </select>
 
                             <Button variant="contained" onClick={
-                                kind===''?(()=>{}):()=>setOpen(true)}
+                                kind===''?(()=>{if(!show){
+                                        showAlert({
+                                            title:'지역 검색을 먼저 해주세요',
+                                            icon: 'warning'
+                                            
+                                            // showCancelButton : true,
+                                            // confirmButtonText: '네',
+                                            // cancelButtonText:'아니요',
+                                        })
+                                    }}):()=>setOpen(true)}
                             >
                                 {selectedBreed===''?'품종':selectedBreed}
                             </Button>
@@ -292,11 +304,10 @@ export const DetailBody = () => {
                                                 {Object.keys(animal)[0]}
                                             </ListItem>
                                     </ListItemButton>
-                                    ))}
-                                                            
+                                    ))}               
                             </Dialog>
 
-                            <select onChange={(e)=>{setSex(e.target.value)}}>
+                            <select value={sex} onChange={(e)=>{setSex(e.target.value)}}>
                                 <option  value="" disabled selected hidden>성별</option>
                                 <option value=''>(전체)</option>
                                 <option value='M' >수컷</option>
@@ -311,7 +322,21 @@ export const DetailBody = () => {
                                 className="DBButton"
                                 color="primary"
                                 fullWidth
-                                sx={{marginLeft:10}}
+                                sx={{marginLeft:2}}
+                                onClick={()=>{
+                                    setKind('')
+                                    setSex('')
+                                    setNeuter('')
+                                    setSelectedDate('')
+                                    setSeletedBreed('')
+                                }}>
+                            초기화
+                            </Button>
+                            <Button 
+                                variant="contained"
+                                className="DBButton"
+                                color="primary"
+                                fullWidth
                                 onClick={()=>{
                                     if(!show){
                                         showAlert({
@@ -406,7 +431,7 @@ export const DetailBody = () => {
                         <div>
                         <div><h2>표시할 데이터가 없습니다. </h2></div>
                         </div>:
-                         currentItems.map((item) => (
+                         currentItems.map((item,index) => (
                         <CardComponent
                             key={item.desertionNo}
                             row={isRow}
@@ -414,6 +439,8 @@ export const DetailBody = () => {
                             detail={item.description}
                             title={item.title}
                             list={item}
+                            filteredData={detailFilter}
+                            index={index+(currentPage*itemsPerPage)-itemsPerPage}
                         />
                     ))}
 
@@ -443,8 +470,6 @@ export const DetailBody = () => {
                     </button>
                     ))}
                     <button onClick={() => {
-                        console.log(currentPage)
-                        console.log(currentItems)
                         setCurrentPage(currentPage + 1)}} disabled={currentPage === totalPages}>›</button>
                     <button
                         onClick={() => {

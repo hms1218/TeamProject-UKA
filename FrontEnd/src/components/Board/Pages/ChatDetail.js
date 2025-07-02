@@ -2,7 +2,6 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import './BoardDetail.css';
 import Swal from 'sweetalert2';
-import { useAdmin } from '../../../api/AdminContext';
 import { fetchPostById, deletePost, toggleLikes, toggleReport, incrementViewCount } from '../../../api/BoardApi';
 import { createComment, createReply, fetchCommentsByBoard, fetchRepliesByComment, updateComment, deleteComment } from '../../../api/BoardCommentApi';
 import CommentList from '../Comment/CommentList';
@@ -12,9 +11,9 @@ const ChatDetail = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const isAdmin = useAdmin();
-    // const currentUser = localStorage.getItem("username"); //유저 정보
-    const currentUser = isAdmin.isAdmin ? "admin" : JSON.parse(localStorage.getItem("user"))?.nickname;
+    const loginData = JSON.parse(localStorage.getItem("user"));
+    const isAdmin = loginData?.userId?.includes("admin") ? true : false;
+    const currentUser = isAdmin ? "admin" : loginData.nickname;
 
     const [post, setPost] = useState(null);
     const [prev, setPrev] = useState(null);

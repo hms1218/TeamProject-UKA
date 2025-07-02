@@ -42,8 +42,7 @@ public class QnaLikeService {
             saved.getId(),
             saved.getQnaNo(),
             saved.getUserId(),
-            saved.getCreatedAt(),
-            true
+            saved.getCreatedAt()
         );
     }
     

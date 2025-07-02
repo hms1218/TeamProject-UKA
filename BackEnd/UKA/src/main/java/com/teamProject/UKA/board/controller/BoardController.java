@@ -1,8 +1,12 @@
 package com.teamProject.UKA.board.controller;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
-import com.teamProject.UKA.board.dto.BoardCommentCount;
 import com.teamProject.UKA.board.dto.BoardRequestDTO;
 import com.teamProject.UKA.board.dto.BoardResponseDTO;
 import com.teamProject.UKA.board.service.BoardService;
@@ -90,5 +94,25 @@ public class BoardController {
     	service.deleteBoard(id);
     	
     	return ResponseEntity.noContent().build();
+    }
+    
+    //이미지 업로드
+    @PostMapping("/upload-image")
+    public ResponseEntity<Map<String, String>> uploadImage(@RequestParam("image") MultipartFile file) {
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of("error", "파일이 비어있습니다."));
+        }
+        try {
+            String uploadDir = "C:\\my-app\\board"; // 경로 맞게 수정
+            String originalFilename = StringUtils.cleanPath(file.getOriginalFilename());
+            String savedFilename = System.currentTimeMillis() + "_" + originalFilename;
+            File destination = new File(uploadDir + File.separator + savedFilename);
+            file.transferTo(destination);
+            String imageUrl = "/images/" + savedFilename;
+            return ResponseEntity.ok(Map.of("url", imageUrl));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(Map.of("error", "이미지 업로드 실패"));
+        }
     }
 }

@@ -207,7 +207,7 @@ const AllBoard = () => {
                                 setSortOption('latest');
                                 setSortAsc(true);
                             }
-                        }}> 작성일 {sortOption === 'latest' ? (!sortAsc ? '∨' : '∧') : '∨'}
+                        }}> 등록일 {sortOption === 'latest' ? (!sortAsc ? '∨' : '∧') : '∨'}
                         </button>
                     </th>
                 </tr>

@@ -80,3 +80,21 @@ export const deletePost = async (id) => {
         throw error;
     }
 };
+
+// 이미지 업로드 (Toast UI Editor 용)
+export const uploadImage = async (imageBlob) => {
+    try {
+        const formData = new FormData();
+        formData.append('image', imageBlob);
+
+        const res = await axios.post(`${API_BASE_URL}/board/upload-image`, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+        });
+        // return res.data.url; 
+        // 서버가 돌려주는 이미지 URL
+        return `${API_BASE_URL}${res.data.url}`;
+    } catch (error) {
+        console.error('이미지 업로드 실패:', error);
+        throw error;
+    }
+};

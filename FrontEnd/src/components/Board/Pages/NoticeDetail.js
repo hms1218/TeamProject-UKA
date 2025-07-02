@@ -14,7 +14,7 @@ const NoticeDetail = () => {
 
     const isAdmin = useAdmin();
     // const currentUser = localStorage.getItem("username"); //유저 정보
-    const currentUser = isAdmin ? "admin" : localStorage.getItem("username") || 'me';
+    const currentUser = isAdmin.isAdmin ? "admin" : JSON.parse(localStorage.getItem("user"))?.nickname;
 
     const [post, setPost] = useState(null);
     const [prev, setPrev] = useState(null);
@@ -388,6 +388,7 @@ const NoticeDetail = () => {
                     comments={comments}
                     currentUser={currentUser}
                     isAdmin={isAdmin}
+                    post={post}
                     handleDeleteComment={handleDeleteComment}
                     handleDeleteReply={handleDeleteReply}
                     saveEditComment={saveEditComment}

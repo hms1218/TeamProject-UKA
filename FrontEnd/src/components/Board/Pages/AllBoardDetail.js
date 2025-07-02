@@ -14,7 +14,7 @@ const AllBoardDetail = () => {
 
     const isAdmin = useAdmin();
     // const currentUser = localStorage.getItem("username"); //유저 정보
-    const currentUser = isAdmin ? "admin" : localStorage.getItem("username") || 'me';
+    const currentUser = isAdmin.isAdmin ? "admin" : JSON.parse(localStorage.getItem("user"))?.nickname;
 
     const [post, setPost] = useState(null);
     const [prev, setPrev] = useState(null);
@@ -373,14 +373,18 @@ const AllBoardDetail = () => {
                     }}
                 > 🚨신고
                 </button>
-                <button className="board-detail-button"
-                    onClick={() => navigate(`/board/all/edit/${post.id}`, { state: post })}
-                > ✏️ 수정
-                </button>
-                <button className="board-detail-button"
-                    onClick={handleDelete}
-                > 🗑 삭제
-                </button>               
+                {(isAdmin.isAdmin || (!(categoryLabels[post.category] === "NOTICE") && post.author === currentUser)) && (
+                    <>
+                        <button className="board-detail-button"
+                            onClick={() => navigate(`/board/all/edit/${post.id}`, { state: post })}
+                        > ✏️ 수정
+                        </button>
+                        <button className="board-detail-button"
+                            onClick={handleDelete}
+                        > 🗑 삭제
+                        </button>
+                    </>
+                )}              
                 <button className="board-detail-button"
                     onClick={() => navigate('/board/all')}       
                 > ← 목록으로
@@ -393,6 +397,7 @@ const AllBoardDetail = () => {
                 <CommentList
                     comments={comments}
                     currentUser={currentUser}
+                    post={post}
                     isAdmin={isAdmin}
                     handleDeleteComment={handleDeleteComment}
                     handleDeleteReply={handleDeleteReply}

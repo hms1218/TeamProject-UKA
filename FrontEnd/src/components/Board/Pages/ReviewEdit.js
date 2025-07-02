@@ -8,7 +8,7 @@ import color from '@toast-ui/editor-plugin-color-syntax'
 import 'tui-color-picker/dist/tui-color-picker.css';
 import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css';
 import { useAdmin } from '../../../api/AdminContext';
-import { fetchPostById, updatePost } from '../../../api/BoardApi';
+import { fetchPostById, updatePost, uploadImage } from '../../../api/BoardApi';
 
 const ReviewEdit = () => {
     const { id } = useParams();
@@ -150,6 +150,17 @@ const ReviewEdit = () => {
                         placeholder="내용을 입력하세요."
                         plugins={[color]}
                         initialValue={post?.content||''}
+                        hooks={{
+                            addImageBlobHook: async (blob, callback) => {
+                                try {
+                                    const imageUrl = await uploadImage(blob);
+                                    console.log('업로드된 이미지 URL:', imageUrl);
+                                    callback(imageUrl, 'image');
+                                } catch (error) {
+                                    Swal.fire({ icon: 'error', title: '이미지 업로드 실패', confirmButtonColor: '#6c5ce7' });
+                                }
+                            }
+                        }}
                     />
                 </div>
                 <div className='board-write-button-container'>

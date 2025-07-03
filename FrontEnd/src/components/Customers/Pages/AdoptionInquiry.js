@@ -33,10 +33,17 @@ const AdoptionInquiry = () => {
     const location = useLocation();
     const data = location.state || {};
     const animalInfo = (data.kindFullNm && data.desertionNo)
-        ? { kindFullNm: data.kindFullNm, desertionNo: data.desertionNo }
+        ? {
+            kindFullNm: data.kindFullNm,
+            desertionNo: data.desertionNo,
+            age: data.age,              // 예: "2023(년생)"
+            weight: data.weight,        // 예: "5(Kg)"
+            sexCd: data.sexCd,          // 예: "M"
+        }
         : null;
+
     const animalImgUrl = data.animalImgUrl || data.popfile1 || '';
-    console.log('동물 품종 : ', data.kindFullNm);
+    console.log('동물 품종 : ', data);
 
     // 관리자 체크
     const isAdmin = isAdminCheck();

@@ -3,19 +3,8 @@ import { useAlert } from '../Context/AlertContext';
 import isAdminCheck from '../../Common/isAdminCheck';
 import './AdoptionInquiry.css';
 import { saveThumbnails, savePopups } from './AdoptionImageActive';
-
-// const DEFAULT_SLIDE_IMAGES = [
-//   '/AdoptionImage/photo1.jpg',
-//   '/AdoptionImage/photo2.jpg',
-//   '/AdoptionImage/photo3.jpg',
-//   '/AdoptionImage/photo4.jpg',
-//   '/AdoptionImage/photo5.jpg',
-//   '/AdoptionImage/photo6.jpg',
-// ];
-// const DEFAULT_THUMBNAILS = [
-//   '/AdoptionImage/image.png',
-//   '/AdoptionImage/image2.gif',
-// ];
+import AdoptionApplicationForm from './AdoptionForm';
+import { useLocation } from 'react-router-dom';
 
 const AdoptionInquiry = () => {
     const [open, setOpen] = useState(false);
@@ -36,8 +25,19 @@ const AdoptionInquiry = () => {
     const [photoDraft, setPhotoDraft] = useState([]);
     const [popupFileMap, setPopupFileMap] = useState({});
 
+    // 신청서 작성 모달
+    const [showApplication, setShowApplication] = useState(false);
+    const location = useLocation();
+    const data = location.state || {};
+    const animalInfo = (data.kindFullNm && data.desertionNo)
+        ? { kindFullNm: data.kindFullNm, desertionNo: data.desertionNo }
+        : null;
+    const animalImgUrl = data.animalImgUrl || data.popfile1 || '';
+    console.log('동물 품종 : ', data.kindFullNm);
+
     // 관리자 체크
     const isAdmin = isAdminCheck();
+
 
     useEffect(() => {
         setOpen(true);
@@ -662,17 +662,82 @@ const AdoptionInquiry = () => {
                 </a>
                 <button
                     className="customer-adopt-button"
-                    onClick={async () => {
-                        await showAlert({
-                            title: '입양 상담 신청',
-                            text: '입양 상담 신청 준비 중입니다.',
-                            icon: 'info'
-                        });
-                    }}
+                    onClick={() => setShowApplication(true)}
                 >
                     📝 입양 상담 신청
                 </button>
             </div>
+            {/* 입양신청서 모달 */}
+            {showApplication && (
+                <div
+                    style={{
+                        position: 'fixed',
+                        left: 0,
+                        top: 0,
+                        width: '100vw',
+                        height: '100vh',
+                        zIndex: 3000,
+                        background: 'rgba(0,0,0,0.5)',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        padding: '20px' // 추가
+                    }}
+                    onClick={() => setShowApplication(false)}
+                >
+                    <div
+                        style={{
+                            background: '#fff',
+                            borderRadius: '16px',
+                            width: '100%', // 변경
+                            maxWidth: '800px', // 추가
+                            height: '90vh', // 변경
+                            maxHeight: '800px', // 추가
+                            position: 'relative',
+                            boxShadow: '0 10px 40px rgba(0,0,0,0.15)',
+                            display: 'flex', // 추가
+                            flexDirection: 'column' // 추가
+                        }}
+                        onClick={e => e.stopPropagation()}
+                    >
+                        {/* <button
+                            onClick={() => setShowApplication(false)}
+                            style={{
+                                position: 'absolute',
+                                right: '20px',
+                                top: '20px',
+                                fontSize: '28px',
+                                background: 'none',
+                                border: 'none',
+                                color: '#666',
+                                cursor: 'pointer',
+                                zIndex: 10,
+                                width: '40px', // 추가
+                                height: '40px', // 추가
+                                borderRadius: '50%', // 추가
+                                display: 'flex', // 추가
+                                alignItems: 'center', // 추가
+                                justifyContent: 'center' // 추가
+                            }}
+                            title="닫기"
+                        >×</button> */}
+
+                        {/* 폼 컨테이너 - 스크롤 가능 */}
+                        <div style={{
+                            flex: 1,
+                            overflow: 'auto',
+                            padding: '20px',
+                            paddingTop: '60px' // 닫기 버튼 공간 확보
+                        }}>
+                            <AdoptionApplicationForm
+                                animalInfo={animalInfo}
+                                animalImgUrl={animalImgUrl}
+                                onClose={() => setShowApplication(false)}
+                            />
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

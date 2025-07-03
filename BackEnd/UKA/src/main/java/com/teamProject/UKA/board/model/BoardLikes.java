@@ -2,6 +2,8 @@ package com.teamProject.UKA.board.model;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -35,6 +37,7 @@ public class BoardLikes {
 	@Column(name = "user_id", nullable = false)
 	private String userId;
 	
+	@CreationTimestamp
 	@Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt =LocalDateTime.now();
 	

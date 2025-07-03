@@ -14,7 +14,8 @@ const AllBoardDetail = () => {
 
     const loginData = JSON.parse(localStorage.getItem("user"));
     const isAdmin = loginData?.userId?.includes("admin") ? true : false;
-    const currentUser = isAdmin ? "admin" : loginData?.nickname;
+    // const currentUser = isAdmin ? "admin" : loginData?.nickname;
+    const currentUser = loginData?.nickname;
 
     const [post, setPost] = useState(null);
     const [prev, setPrev] = useState(null);
@@ -60,7 +61,7 @@ const AllBoardDetail = () => {
                 const data = await fetchPostById(id,currentUser);
                 setPost(data);
                 setIsLiked(data.likedByCurrentUser);
-                setIsReported(data.reportedByCurrentUser)
+                setIsReported(data.reportedByCurrentUser);
             } catch (error) {
                 console.error('게시글 불러오기 실패', error);
                 Swal.fire({
@@ -190,6 +191,8 @@ const AllBoardDetail = () => {
     // 댓글 작성
     const handleCommentSubmit = async (e) => {
         e.preventDefault();
+
+        if(currentUser === undefined) return Swal.fire("로그인 필요","로그인 후 이용해주세요.","error");
 
         if (!commentInput.trim()) return;
 
@@ -335,6 +338,7 @@ const AllBoardDetail = () => {
 
     //추천 버튼
     const handleLikesButton = async () => {
+        if(currentUser === undefined) return Swal.fire("로그인 필요","로그인 후 이용해주세요.","error");
         try {
             const updatedPost = await toggleLikes(post.id, currentUser);
             setPost(updatedPost);
@@ -346,6 +350,7 @@ const AllBoardDetail = () => {
 
     //신고 버튼
     const handleReportButton = async () => {
+        if(currentUser === undefined) return Swal.fire("로그인 필요","로그인 후 이용해주세요.","error");
         try {
             const updatedPost = await toggleReport(post.id, currentUser);
             setPost(updatedPost);

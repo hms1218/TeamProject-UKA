@@ -14,7 +14,7 @@ const ChatDetail = () => {
 
     const loginData = JSON.parse(localStorage.getItem("user"));
     const isAdmin = loginData?.userId?.includes("admin") ? true : false;
-    const currentUser = isAdmin ? "admin" : loginData?.nickname;
+    const currentUser = loginData?.nickname;
 
     const [post, setPost] = useState(null);
     const [prev, setPrev] = useState(null);
@@ -183,6 +183,8 @@ const ChatDetail = () => {
     const handleCommentSubmit = async (e) => {
         e.preventDefault();
 
+        if(currentUser === undefined) return Swal.fire("로그인 필요","로그인 후 이용해주세요.","error");
+
         if (!commentInput.trim()) return;
 
         try {
@@ -323,6 +325,7 @@ const ChatDetail = () => {
 
     //추천 버튼
     const handleLikesButton = async () => {
+        if(currentUser === undefined) return Swal.fire("로그인 필요","로그인 후 이용해주세요.","error");
         try {
             const updatedPost = await toggleLikes(post.id, currentUser);
             setPost(updatedPost);
@@ -334,6 +337,7 @@ const ChatDetail = () => {
 
     //신고 버튼
     const handleReportButton = async () => {
+        if(currentUser === undefined) return Swal.fire("로그인 필요","로그인 후 이용해주세요.","error");
         try {
             const updatedPost = await toggleReport(post.id, currentUser);
             setPost(updatedPost);

@@ -18,6 +18,11 @@ const ReviewList = () => {
     const [confirmKeyword, setConfirmKeyword] = useState('');
     const [searchOption, setSearchOption] = useState('title');
 
+    // 유저 정보
+    const loginData = JSON.parse(localStorage.getItem("user"));
+    const isAdmin = loginData?.userId?.includes("admin") ? true : false;
+    const currentUser = loginData?.nickname;
+
     const itemsPerPage = 10;
 
     const categoryLabels = {
@@ -121,7 +126,7 @@ const ReviewList = () => {
 
 	//글쓰기 버튼
     const handleWrite = () => {
-        navigate('/board/review/form');
+        currentUser === undefined ? Swal.fire("로그인 필요","로그인 후 이용해주세요.","error") : navigate('/board/all/form');
     };
 
     //검색한 키워드 강조

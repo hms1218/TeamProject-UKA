@@ -5,10 +5,6 @@ import Swal from 'sweetalert2';
 import { fetchAllPosts } from '../../../api/BoardApi';
 
 const NoticeList = () => {
-    const loginData = JSON.parse(localStorage.getItem("user"));
-    const isAdmin = loginData?.userId?.includes("admin") ? true : false;
-    const currentUser = isAdmin ? "admin" : loginData?.nickname;
-
     const [posts, setPosts] = useState([]);
 
     const [currentPage, setCurrentPage] = useState(1);
@@ -21,6 +17,11 @@ const NoticeList = () => {
     const [isSearching, setIsSearching] = useState(false);
     const [confirmKeyword, setConfirmKeyword] = useState('');
     const [searchOption, setSearchOption] = useState('title');
+
+    // 유저 정보
+    const loginData = JSON.parse(localStorage.getItem("user"));
+    const isAdmin = loginData?.userId?.includes("admin") ? true : false;
+    const currentUser = loginData?.nickname;
 
     const itemsPerPage = 10;
 
@@ -125,7 +126,7 @@ const NoticeList = () => {
 
 	//글쓰기 버튼
     const handleWrite = () => {
-        isAdmin ? navigate('/board/notice/form') : Swal.fire('오류', '공지사항은 관리자만 등록가능합니다.', 'error');;
+        isAdmin ? navigate('/board/notice/form') : Swal.fire('오류', '공지사항은 관리자만 등록가능합니다.', 'error');
     };
 
     //검색한 키워드 강조

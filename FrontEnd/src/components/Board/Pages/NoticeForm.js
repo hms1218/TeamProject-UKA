@@ -20,7 +20,7 @@ const NoticeForm = () => {
     // 유저 정보
     const loginData = JSON.parse(localStorage.getItem("user"));
     const isAdmin = loginData?.userId?.includes("admin") ? true : false;
-    const currentUser = isAdmin ? "admin" : loginData?.nickname;
+    const currentUser = loginData?.nickname;
 
     //등록 버튼
     const handleSubmit = (e) => {

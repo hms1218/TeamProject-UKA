@@ -686,7 +686,7 @@ const AdoptionInquiry = () => {
                         top: 0,
                         width: '100vw',
                         height: '100vh',
-                        zIndex: 3000,
+                        zIndex: 1000,
                         background: 'rgba(0,0,0,0.5)',
                         display: 'flex',
                         justifyContent: 'center',

@@ -44,26 +44,26 @@ function AdoptionApplicationForm({ animalInfo, animalImgUrl, onClose }) {
     });
 
     useEffect(() => {
-        if (!form.animalImgUrl || form.animalImgUrl.startsWith('data:')) return;
-        fetch(form.animalImgUrl)
-            .then(res => {
-                if (!res.ok) throw new Error('이미지 fetch 실패');
-                return res.blob();
-            })
-            .then(blob => {
-                const reader = new FileReader();
-                reader.onloadend = () => {
-                    setForm(f => ({ ...f, animalImgUrl: reader.result }));
-                };
-                reader.readAsDataURL(blob);
-            })
-            .catch(err => {
-                // CORS 오류 등 모든 에러 잡아서 fallback 처리
-                console.error('이미지 변환 실패:', err);
-                //setForm(f => ({ ...f, animalImgUrl: '' })); // PDF에 이미지 빼버리기
-            });
-    }, [form.animalImgUrl]);
-    
+        if (!animalImgUrl) return;
+        // 외부 URL이면 프록시 경유
+        if (!animalImgUrl.startsWith('data:')) {
+            const proxied = `/api/proxy-image?url=${encodeURIComponent(animalImgUrl)}`;
+            fetch(proxied)
+                .then(res => res.blob())
+                .then(blob => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                        setForm(f => ({ ...f, animalImgUrl: reader.result }));
+                    };
+                    reader.readAsDataURL(blob);
+                })
+                .catch(err => {
+                    setForm(f => ({ ...f, animalImgUrl: '' }));
+                });
+        }
+        // data:image로 이미 있으면 그대로 둠
+    }, [animalImgUrl]);
+
     console.log(form.animalRescueNo);
     const [currentStep, setCurrentStep] = useState(1);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -86,7 +86,7 @@ function AdoptionApplicationForm({ animalInfo, animalImgUrl, onClose }) {
             if (!input) return;
             setIsSubmitting(true);
 
-            // 이미지 로딩 대기
+            // 이미지 모두 로드 대기
             const images = input.querySelectorAll("img");
             await Promise.all(Array.from(images).map(img => {
                 if (img.complete) return Promise.resolve();
@@ -96,27 +96,24 @@ function AdoptionApplicationForm({ animalInfo, animalImgUrl, onClose }) {
             try {
                 const canvas = await html2canvas(input, { scale: 2, useCORS: true });
                 const imgData = canvas.toDataURL('image/png');
-
                 const pdf = new jsPDF('p', 'mm', 'a4');
                 const pageWidth = pdf.internal.pageSize.getWidth();
                 const pageHeight = pdf.internal.pageSize.getHeight();
-
                 const imgWidth = pageWidth;
                 const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
                 let heightLeft = imgHeight;
                 let position = 0;
 
-                // 첫 페이지
                 pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
                 heightLeft -= pageHeight;
+                position -= pageHeight;
 
-                // 여러 페이지 나눠붙이기
                 while (heightLeft > 0) {
-                    position = heightLeft - imgHeight;
                     pdf.addPage();
                     pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
                     heightLeft -= pageHeight;
+                    position -= pageHeight;
                 }
 
                 pdf.save('adoption-form.pdf');
@@ -138,6 +135,8 @@ function AdoptionApplicationForm({ animalInfo, animalImgUrl, onClose }) {
             setForm(original);
         }, 350);
     };
+
+    console.log('animalImgUrl:', animalImgUrl);
 
     const handlePrint = () => {
         window.print();
@@ -274,10 +273,13 @@ function AdoptionApplicationForm({ animalInfo, animalImgUrl, onClose }) {
                                 <div className="section-content section-animal">
                                     {form.animalRescueNo && form.animalBreed ? (
                                         <div className="animal-info-card">
-                                            <img src={form.animalImgUrl || '/api/placeholder/80/100'} alt="입양 동물" className="animal-image" />
+                                            <img src={form.animalImgUrl || '/api/placeholder/80/100'} crossOrigin="anonymous" alt="입양 동물" className="animal-image" />
                                             <div className="animal-details">
                                                 <div><strong>보호번호:</strong> {form.animalRescueNo || '미지정'}</div>
                                                 <div><strong>품종:</strong> {form.animalBreed || '품종 정보 없음'}</div>
+                                                <div><strong>나이:</strong> {form.animalAge || '품종 정보 없음'}</div>
+                                                <div><strong>체중:</strong> {form.animalWeight || '품종 정보 없음'}</div>
+                                                <div><strong>성별:</strong> {form.animalGender || '품종 정보 없음'}</div>
                                             </div>
                                         </div>
                                     ) : (
@@ -450,7 +452,7 @@ function AdoptionApplicationForm({ animalInfo, animalImgUrl, onClose }) {
                                         {form.animalRescueNo && form.animalBreed ? (
                                             <div className="animal-info-card">
                                                 <img
-                                                    src={form.animalImgUrl || '/api/placeholder/80/100'}
+                                                    src={`/api/proxy-image?url=${encodeURIComponent(form.animalImgUrl)}`}
                                                     alt="입양 동물"
                                                     className="animal-image"
                                                 />

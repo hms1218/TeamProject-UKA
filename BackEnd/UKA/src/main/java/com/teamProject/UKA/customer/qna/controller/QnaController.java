@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -43,7 +43,6 @@ public class QnaController {
         return ResponseEntity.ok(qnaService.getAllQna());
     }
 
-    // 게시글 상세 조회
     @GetMapping("/{no}")
     public ResponseEntity<QnaResponseDTO> getQna(
         @PathVariable("no") Long no,
@@ -52,14 +51,57 @@ public class QnaController {
         QnaEntity qna = qnaService.findByQnaNo(no)
             .orElseThrow(() -> new RuntimeException("글이 없습니다."));
 
-        if ("Y".equals(qna.getQnaIsSecret())) {
+        // 관리자 권한 체크
+        boolean isAdmin = false;
+        String userId = null;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            userId = authentication.getName();
+            if (userId != null && userId.toLowerCase().contains("admin")) {
+                isAdmin = true;
+            }
+        }
+
+        // 신고글 접근 제한 (관리자는 예외)
+        if ("Y".equals(qna.getQnaIsReported()) && !isAdmin) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        // 비밀글 접근 제한 (관리자는 예외)
+        if ("Y".equals(qna.getQnaIsSecret()) && !isAdmin) {
             if (password == null || !password.equals(qna.getQnaPassword())) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             }
         }
 
-        return ResponseEntity.ok(QnaResponseDTO.fromEntity(qna));
+        // QnA + 댓글 리스트 DTO로 반환
+        QnaResponseDTO dto = qnaService.getQnaWithComments(no);
+
+        // 👇 여기에 추천여부 추가!
+        boolean isLikedByMe = false;
+        boolean isReportedByMe = false;
+        if (userId != null) {
+            isLikedByMe = qnaService.hasUserLikedQna(no, userId); // 서비스에 추가 필요
+            isReportedByMe = qnaService.hasUserReportedQna(no, userId);
+        }
+        dto.setLikedByMe(isLikedByMe);
+        dto.setReportedByMe(isReportedByMe);
+
+        return ResponseEntity.ok(dto);
     }
+
+
+    // 조회수 증가용 엔드포인트
+    @PatchMapping("/{no}/increase-view")
+    public ResponseEntity<?> increaseViewCount(@PathVariable("no") Long no) {
+        try {
+            qnaService.increaseViewCount(no);
+            return ResponseEntity.ok().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
 
     // 게시글 수정
     @PutMapping("/{no}")
@@ -88,4 +130,37 @@ public class QnaController {
         qnaService.restoreQna(no);
         return ResponseEntity.ok("복원 완료");
     }
+    
+    // 관리자 답변 저장/수정/삭제 (빈값이면 삭제)
+    @PatchMapping("/{no}/answer")
+    public ResponseEntity<?> updateQnaAnswer(
+        @PathVariable("no") Long no,
+        @RequestBody QnaRequestDTO dto
+    ) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        boolean isAdmin = false;
+        String userId = null;
+        if (authentication != null && authentication.isAuthenticated()) {
+            userId = authentication.getName();
+            // ⬇️ 여기!
+            System.out.println("[QnA PATCH] userId: " + userId);
+            if (userId != null && userId.toLowerCase().contains("admin")) {
+                isAdmin = true;
+            }
+        }
+        // ⬇️ 여기!
+        System.out.println("[QnA PATCH] isAdmin: " + isAdmin);
+
+        if (!isAdmin) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body("관리자만 답변을 등록/수정/삭제할 수 있습니다.");
+        }
+
+        // 2. 서비스 호출 (서비스에서 엔티티 조회, 값 세팅, 저장)
+        QnaResponseDTO result = qnaService.updateQnaAnswer(no, dto.getQnaAnswer(), 
+                                        dto.getQnaAnswerWriter() != null ? dto.getQnaAnswerWriter() : userId);
+
+        return ResponseEntity.ok(result);
+    }
+
 }

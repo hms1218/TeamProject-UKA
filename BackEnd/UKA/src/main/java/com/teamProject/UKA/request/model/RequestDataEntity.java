@@ -37,6 +37,9 @@ public class RequestDataEntity {
 
 	@Column(name = "kind")
 	private String kind;
+	
+	@Column(name="selectedbreed")
+	private String selectedbreed;
 
 	@Column(name = "sex")
 	private boolean sex;
@@ -50,11 +53,11 @@ public class RequestDataEntity {
 	@Column(name = "time")
 	private String time;
 
-	@Column(name = "lost_location")
-	private String lostLocation;
+	@Column(name = "local")
+	private String local;
 
-	@Column(name = "contact_number")
-	private String contactNumber;
+	@Column(name = "phone")
+	private String phone;
 
 	@Column(name = "detail")
 	private String detail;
@@ -62,7 +65,7 @@ public class RequestDataEntity {
 	//작성한 유저 아이디
 	//(fk)단방향 조인 //유저 개인페이지에서 불러올 경우 양방향으로 진행 예정.
 	@ManyToOne
-	@JoinColumn(name="user_no")
+	@JoinColumn(name="user_seq")
 	private User user;
 	
 	//toDTO
@@ -74,13 +77,14 @@ public class RequestDataEntity {
 				
 				.img(img)
 				.kind(kind) 
+				.selectedbreed(selectedbreed)
 				.sex(sex)
 				.age(age)
 				.name(name)
 				
 				.time(time)
-				.lostLocation(lostLocation)
-				.contactNumber(contactNumber)
+				.local(local)
+				.phone(phone)
 				.detail(detail)
 				.build();
 	}

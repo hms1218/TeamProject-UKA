@@ -19,4 +19,7 @@ public interface QnaRepository extends JpaRepository<QnaEntity, Long> {
 
     // qnaNo로 상세 조회
     Optional<QnaEntity> findByQnaNo(@Param("qnaNo") Long qnaNo);
+    
+    // qnaId로 상세 조회
+    Optional<QnaEntity> findByQnaId(@Param("qnaId") Long qnaId);
 }

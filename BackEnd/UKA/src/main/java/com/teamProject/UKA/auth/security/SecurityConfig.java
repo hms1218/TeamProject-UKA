@@ -50,10 +50,16 @@ public class SecurityConfig {
                         "/api/auth/reset-password",
                         "/request",
                     	"/request/*",
+                    	"/request/img/**",
                         "/board/**",
-                        "/board-detail/**",
+                        "/images/**",
+                        "/comment/**",
                         "/customer/faq/**",
-                        "/customer/qna/**"
+                        "/customer/qna/**",
+                        "/admin/**",
+                        "/customer/adoption/**",
+                        "/uploads/**",
+                        "/api/users/**"
                 ).permitAll()
                 .anyRequest().authenticated()
             )

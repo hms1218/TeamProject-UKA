@@ -27,9 +27,11 @@ public class BoardResponseDTO {
 	private int report; 
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
+	private boolean isLikedByCurrentUser;
+	private boolean isReportedByCurrentUser;
 	
 	//entity -> dto
-	public BoardResponseDTO(Board entity) {
+	public BoardResponseDTO(Board entity, boolean isLikedByCurrentUser, boolean isReportedByCurrentUser) {
         this.id = entity.getId();
         this.category = entity.getCategory();
         this.title = entity.getTitle();
@@ -38,9 +40,11 @@ public class BoardResponseDTO {
         this.view = entity.getView();
         this.likes = entity.getLikes();
         this.comment = entity.getComment();
-//        this.report = entity.getReport(); 
+        this.report = entity.getReport(); 
         this.createdAt = entity.getCreatedAt();
         this.updatedAt = entity.getUpdatedAt();
+        this.isLikedByCurrentUser = isLikedByCurrentUser;
+        this.isReportedByCurrentUser = isReportedByCurrentUser;
     }
 	
 }

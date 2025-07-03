@@ -4,10 +4,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.RequestEntity;
 import org.springframework.stereotype.Service;
 
 import com.teamProject.UKA.auth.model.User;
+import com.teamProject.UKA.auth.repository.UserRepository;
 import com.teamProject.UKA.request.dto.RequestDataDTO;
+import com.teamProject.UKA.request.model.RequestDataEntity;
 import com.teamProject.UKA.request.repository.RequestRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -16,16 +19,31 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class RequestService {
 	@Autowired final private RequestRepository repository;
-	
+	@Autowired final private UserRepository userrepository;
 	//C
 	public List<RequestDataDTO> write(RequestDataDTO dto){
 		//데이터 검증
 		valiDated(dto);
+		
+		 // 유저 ID로 실제 User 엔티티를 조회
+	    User user = userrepository.findById(dto.getUser_no())
+	            .orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다."));
+
+	    // DTO → Entity
+	    RequestDataEntity entity = dto.toEntity();
+
+	    // 연관관계 주입 (실제 영속 상태의 유저)
+	    entity.setUser(user);
+
+	    // 저장
+		
 		repository.save(dto.toEntity());
 		return findAll();
 	}
 	
-	//C-A
+	//C-image 이미지 업로드용 
+	
+	
 	
 	//R
 	public List<RequestDataDTO> findAll(){		
@@ -42,11 +60,12 @@ public class RequestService {
 			entity.setImg(dto.getImg());
 			entity.setAge(dto.getAge());
 			entity.setDetail(dto.getDetail());
-			entity.setContactNumber(dto.getContactNumber());
+			entity.setPhone(dto.getPhone());
 			entity.setSex(dto.isSex());
+			entity.setSelectedbreed(dto.getSelectedbreed());
 			entity.setKind(dto.getKind());
 			entity.setTime(dto.getTime());
-			entity.setLostLocation(dto.getLostLocation());
+			entity.setLocal(dto.getLocal());
 			entity.setName(dto.getName());
 			//내부 데이터이므로 사용안함			
 			//entity.setFind(dto.isFind());

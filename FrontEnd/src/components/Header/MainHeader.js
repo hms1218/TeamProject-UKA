@@ -40,12 +40,10 @@ const MainHeaders = () => {
 
             <div className="header-right-section">
                 <div className="header-auth-buttons">
-                    {user ? (
+                    {user && (
                         isAdminUser(user)
-                            ? <p><strong style={{color: "red"}}>관리자</strong> 계정으로 접속하였습니다.</p>
+                            ? <p><strong style={{ color: "red" }}>관리자</strong> 계정으로 접속하였습니다.</p>
                             : <p>{user.userId} 회원님 반갑습니다.</p>
-                    ) : (
-                        <p>로그인 해주세요.</p>
                     )}
                 {/* 여기 위 까지 관리자 테스트 */}
                     {user ? (
@@ -75,12 +73,12 @@ const MainHeaders = () => {
                     <Link to="/request" style={{marginRight : 10}}>찾고있어요</Link>
                     <DropDownMenu
                         title="게시판"
-                        to="/board"
+                        to="/board/all"
                         items={[
                             { label: '전체', to: '/board/all' },
                             { label: '공지사항', to: '/board/notice' },
                             { label: '속닥속닥', to: '/board/chat' },
-                            { label: '입양후기', to: '/board/adoptionReview' },
+                            { label: '입양후기', to: '/board/review' },
                         ]}
                     />
                     <DropDownMenu

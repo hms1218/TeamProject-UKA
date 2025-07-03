@@ -30,7 +30,7 @@ public class BoardRequestDTO {
                 .view(0)
                 .likes(0)
                 .comment(0)
-//                .report(0)
+                .report(0)
                 .build();
     }
 }

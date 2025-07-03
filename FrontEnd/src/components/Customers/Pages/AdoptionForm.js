@@ -32,9 +32,6 @@ function AdoptionApplicationForm({ animalInfo, animalImgUrl, onClose }) {
     const pdfRef = useRef();
     const { showAlert } = useAlert();
 
-
-
-
     const [form, setForm] = useState({
         ...initialForm,
         animalRescueNo: animalInfo?.desertionNo || '',
@@ -44,30 +41,30 @@ function AdoptionApplicationForm({ animalInfo, animalImgUrl, onClose }) {
         animalGender: animalInfo?.sexCd || '',
         animalImgUrl: animalImgUrl || '',
     });
-useEffect(() => {
-    if (!animalImgUrl) return;
+    useEffect(() => {
+        if (!animalImgUrl) return;
 
-    // base64라면 프록시 없이 바로 저장
-    if (animalImgUrl.startsWith('data:')) {
-        setForm(f => ({ ...f, animalImgUrl })); // 직접 저장, fetch/프록시 안 감
-        return;
-    }
+        // 1. base64라면 프록시 fetch 절대 안 탐 (431 차단)
+        if (animalImgUrl.startsWith('data:')) {
+            setForm(f => ({ ...f, animalImgUrl }));
+            return;
+        }
 
-    // 외부 url이면 프록시 경유 fetch 후 base64 변환
-    const proxied = `${API_BASE_URL}/api/proxy-image?url=${encodeURIComponent(animalImgUrl)}`;
-    fetch(proxied)
-        .then(res => res.blob())
-        .then(blob => {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setForm(f => ({ ...f, animalImgUrl: reader.result }));
-            };
-            reader.readAsDataURL(blob);
-        })
-        .catch(err => {
-            setForm(f => ({ ...f, animalImgUrl: '' }));
-        });
-}, [animalImgUrl]);
+        // 2. 외부 url이면 프록시 경유 fetch 후 base64 변환
+        const proxied = `${API_BASE_URL}/api/proxy-image?url=${encodeURIComponent(animalImgUrl)}`;
+        fetch(proxied)
+            .then(res => res.blob())
+            .then(blob => {
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    setForm(f => ({ ...f, animalImgUrl: reader.result }));
+                };
+                reader.readAsDataURL(blob);
+            })
+            .catch(err => {
+                setForm(f => ({ ...f, animalImgUrl: '' }));
+            });
+    }, [animalImgUrl]);
 
     console.log(form.animalRescueNo);
     const [currentStep, setCurrentStep] = useState(1);
@@ -278,7 +275,18 @@ useEffect(() => {
                                 <div className="section-content section-animal">
                                     {form.animalRescueNo && form.animalBreed ? (
                                         <div className="animal-info-card">
-                                            <img src={form.animalImgUrl || '/api/placeholder/80/100'} crossOrigin="anonymous" alt="입양 동물" className="animal-image" />
+                                            <img
+                                                src={
+                                                    !form.animalImgUrl
+                                                        ? `${API_BASE_URL}/api/placeholder/80/100`
+                                                        : form.animalImgUrl.startsWith('http')
+                                                            ? `${API_BASE_URL}/api/proxy-image?url=${encodeURIComponent(form.animalImgUrl)}`
+                                                            : form.animalImgUrl
+                                                }
+                                                crossOrigin="anonymous"
+                                                alt="입양 동물"
+                                                className="animal-image"
+                                            />
                                             <div className="animal-details">
                                                 <div><strong>보호번호:</strong> {form.animalRescueNo || '미지정'}</div>
                                                 <div><strong>품종:</strong> {form.animalBreed || '품종 정보 없음'}</div>
@@ -457,7 +465,11 @@ useEffect(() => {
                                         {form.animalRescueNo && form.animalBreed ? (
                                             <div className="animal-info-card">
                                                 <img
-                                                    src={`/api/proxy-image?url=${encodeURIComponent(form.animalImgUrl)}`}
+                                                    src={
+                                                        form.animalImgUrl.startsWith('http')
+                                                            ? `${API_BASE_URL}/api/proxy-image?url=${encodeURIComponent(form.animalImgUrl)}`
+                                                            : form.animalImgUrl // 이미 base64면 바로 출력
+                                                    }
                                                     alt="입양 동물"
                                                     className="animal-image"
                                                 />

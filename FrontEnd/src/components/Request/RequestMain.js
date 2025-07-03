@@ -3,11 +3,12 @@ import { RequestComponent } from './RequestComponent'
 import img from "../../assets/test1.jpg"
 import './RequestMain.css'
 import { useNavigate } from 'react-router-dom'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 export const RequestMain = () => {
     const navigate = useNavigate();
     const [card,setCard] = useState([]);
+    const refs = useRef([]);
 
     useEffect(()=>{
         const requestApi = async () => {
@@ -56,8 +57,8 @@ export const RequestMain = () => {
                 {/* 데이터 시작 */}
                 <div style={{marginTop:'20px'}}></div>
 
-                {card.map((list)=>(
-                    <div key={list.no}>
+                {card.reverse().map((list,index)=>(
+                    <div key={list.no} ref={el => refs.current[index] = el}>
                         <div className='RMone' >
                             <RequestComponent 
                                 img={list.img}
@@ -79,7 +80,7 @@ export const RequestMain = () => {
                         {/* 밑줄 */}
                         <div className='RMhr'></div>
                     </div>
-                )).reverse()}
+                ))}
 
             </Box>
         </div>

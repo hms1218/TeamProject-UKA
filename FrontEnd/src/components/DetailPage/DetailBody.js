@@ -1,13 +1,15 @@
 import { forwardRef, useEffect, useState } from "react"
 import { useLocation } from "react-router-dom"
-import { animal } from "./DetailBodyData";
+import { animal as animalData } from "./DetailBodyData";
 import './DetailBody.css'
 import { CardComponent } from "./CardComponent";
-import { Box, Button, Dialog, DialogTitle, ListItem, ListItemButton, ToggleButton, ToggleButtonGroup} from "@mui/material";
+import { Box, Button, Dialog, DialogTitle, ListItem, ListItemButton, TextField, ToggleButton, ToggleButtonGroup} from "@mui/material";
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import AppsIcon from '@mui/icons-material/Apps';
 import DatePicker from 'react-datepicker';
 import { useAlert } from '../Customers/Context/AlertContext';
+import SearchIcon from '@mui/icons-material/Search';
+import RefreshIcon from '@mui/icons-material/Refresh';
 // css검사해보니 모든 클래스들이 react-datepicker로 시작해서 사용해도 괜찮을듯.
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -24,6 +26,8 @@ export const DetailBody = () => {
     const params = new URLSearchParams(search)
     const regionNm = params.get("regionNm") || "";
     console.log("받아온 regionNm:", regionNm);
+
+    const [animal,setAnimal] = useState([]);
 
     //콤보박스 시군구+센터이름
     const [siDo, setSiDo] = useState('');
@@ -253,41 +257,90 @@ export const DetailBody = () => {
                             />
 
                             <select value={kind} onChange={(e)=>{setKind(e.target.value)}}>
-                                <option value="" disabled selected hidden>종류</option>
-                                <option value="dog">강아지</option>
-                                <option value="cat" >고양이</option>
-                            </select>
+                                                    <option value="" disabled hidden>종류</option>
+                                                    <option value="dog">강아지</option>
+                                                    <option value="cat" >고양이</option>
+                                                    <option value="etc" >기타</option>
+                                                </select>
 
-                            <Button variant="contained" onClick={
-                                kind===''?(()=>{if(!show){
-                                        showAlert({
-                                            title:'지역 검색을 먼저 해주세요',
-                                            icon: 'warning'
-                                        })
-                                    }}):()=>setOpen(true)}
-                            >
-                                {selectedBreed===''?'품종':selectedBreed}
-                            </Button>
-                            <Dialog
-                                onClose={()=>{setOpen(!open)}}
-                                open={open}
-                            >
-                                <DialogTitle
-                                    sx={{background:'#cceeff'}}
-                                >품종을 선택하세요</DialogTitle>
-                                    {animal[kind === 'cat' ? 'cat' : 'dog'].map((animal, index) => (
-                                        <ListItemButton key={index} 
-                                        onClick={()=>{
-                                            setSeletedBreed(Object.keys(animal)[0])
-                                            setOpen(false);
-                                        }}>
-                                            <ListItem disablePadding sx={{border:'1px solid #cceeff'}}>
-                                                {<img className="DBdialogimg" src={`/img/${kind}_picture/${Object.values(animal)[0]}.jpg`} alt="고양이 이미지" />}
-                                                {Object.keys(animal)[0]}
-                                            </ListItem>
-                                    </ListItemButton>
-                                    ))}               
-                            </Dialog>
+                                                <Button variant="contained" onClick={
+                                                    kind===''?(()=>{
+                                                        showAlert({
+                                                            title:`종류를 먼저 선택해주세요`,
+                                                            icon:'warning',
+                                                        })
+                                                    }):kind==='etc'?()=>{    
+                                                        //동작안함.
+                                                    }:()=>{
+                                                        setOpen(true)
+                                                        setAnimal(animalData[kind]);
+                                                    }}
+                                                    sx={{opacity:kind==='etc'?'0.3':'1'}}
+                                                >
+                                                    {selectedBreed===''?'품종':selectedBreed}
+                                                </Button>
+                                            
+                                                <Dialog
+                                                    fullWidth={true}
+                                                    maxWidth={'sm'}
+                                                    onClose={()=>{setOpen(!open)}}
+                                                    open={open}
+                                                >
+                                                    <DialogTitle
+                                                        sx={{background:'#cceeff'}}
+                                                    >품종을 선택하세요</DialogTitle>
+                                                    <div className='dialogSearch'>
+                                                        <TextField
+                                                            fullWidth
+                                                            placeholder='검색어를 입력해주세요'
+                                                            onChange={e=>{
+                                                                const keyword = e.target.value.trim();
+
+                                                                if(keyword===''){
+                                                                    setAnimal(animalData[kind])
+                                                                    return;
+                                                                }
+                                                                const filtered = (animalData[kind] || []).filter(item => {
+                                                                    const breedName = Object.keys(item)[0];
+                                                                    return breedName.includes(keyword);
+                                                                });
+
+                                                                setAnimal(filtered);
+                                                            }}
+                                                        />
+                                                        <RefreshIcon
+                                                            onClick={()=>{
+                                                                setAnimal(animalData[kind])
+                                                            }}
+                                                        sx={{fontSize:'50px'}} /> 
+                                                        <SearchIcon 
+                                                        sx={{fontSize:'50px'}} /> 
+                                                    </div>
+
+                                                    {(animal||[]).map((animalItem, index) => {
+                                                        const breedName = Object.keys(animalItem)[0];
+                                                        const breedImg = Object.values(animalItem)[0];
+                                                        return (
+                                                            <ListItemButton
+                                                                key={index}
+                                                                onClick={() => {
+                                                                    setSeletedBreed(breedName)
+                                                                    setOpen(false);
+                                                                    setAnimal(animalData[kind] || []);
+                                                                }}
+                                                                >
+                                                                <ListItem disablePadding sx={{ border: '1px solid #cceeff' }}>
+                                                                    <img
+                                                                    className="DBdialogimg"
+                                                                    src={`/img/${kind}_picture/${breedImg}.jpg`}
+                                                                    alt={`${breedName} 이미지`}
+                                                                    />
+                                                                    {breedName}
+                                                                </ListItem>
+                                                            </ListItemButton>
+                                                        );
+                                                        })}
+                                                </Dialog>
                             <select value={sex} onChange={(e)=>{setSex(e.target.value)}}>
                                 <option  value="" disabled selected hidden>성별</option>
                                 <option value=''>(전체)</option>

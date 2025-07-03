@@ -1,4 +1,5 @@
 import { forwardRef, useEffect, useState } from "react"
+import { useLocation } from "react-router-dom"
 import { animal } from "./DetailBodyData";
 import './DetailBody.css'
 import { CardComponent } from "./CardComponent";
@@ -17,8 +18,12 @@ import SiGunGooData from "../Map/KoreaSiGunGooData";
 import { fetchSavedAnimals } from "../../api/AnimalApiData.js";
 import Loading from "../Common/Loading.js";
 
-
 export const DetailBody = () => {
+    // 1) useLocation() 으로 쿼리스트링 읽어오기
+    const { search } = useLocation()
+    const params = new URLSearchParams(search)
+    const regionNm = params.get("regionNm") || "";
+    console.log("받아온 regionNm:", regionNm);
 
     //콤보박스 시군구+센터이름
     const [siDo, setSiDo] = useState('');
@@ -46,7 +51,6 @@ export const DetailBody = () => {
         loadData();
     }, []);
 
-
     const [neuter,setNeuter] = useState('');
     const [sex,setSex] = useState('');
     const [kind,setKind] = useState('')
@@ -57,16 +61,13 @@ export const DetailBody = () => {
     // 품종 모달창 열기 옵션
     const [open,setOpen] = useState(false);
 
-
     //하단 정보 보여주기 옵션들
     const [isRow,setIsRow] = useState(false);
     const [show,setShow] = useState(false);
 
-
     // 페이징 상태
     const [currentPage,setCurrentPage] = useState(1);
     const itemsPerPage = 12;
-    
 
     const gunList = siDo ? SiGunGooData.filter(item => item.uprCd === siDo) : [];
     const siDoName = siDo ? SiDoData.find(x => x.orgCd === siDo)?.orgdownNm : "";
@@ -74,7 +75,6 @@ export const DetailBody = () => {
     const centerOptions = getFilteredCentersByOrgNm(allData, siDoName, gunGuName);
     const selectedCenterData = center ? allData.find(item => item.careRegNo === center) : null;
     const selectedCenterDataOnly = center ? allData.filter(item => item.careRegNo === center) : null;
-
 
     // 유틸 함수-센터명
     function getFilteredCentersByOrgNm(allData, siDoName, gunGuName) {
@@ -112,7 +112,6 @@ export const DetailBody = () => {
 
         return Array.from({ length: end - start + 1 }, (_, i) => start + i);
     };
-
     // 날짜 형식 변환 함수
     const formatDateToYYYYMMDD = (date) => {
         const year = date.getFullYear();
@@ -120,10 +119,8 @@ export const DetailBody = () => {
         const day = `${date.getDate()}`.padStart(2, '0');
         return `${year}${month}${day}`;
     };
-
     return(
         <div className="DBcontainer">
-
             {/* 헤더 */}
             <div className="DBcombobox">
                 <h2 className="DBcombotitle">지역선택</h2>
@@ -146,7 +143,6 @@ export const DetailBody = () => {
                             </option>
                         ))}
                     </select>
-                
                 {/* 군 */}
                     <select
                         id="gunGu"
@@ -165,7 +161,6 @@ export const DetailBody = () => {
                             </option>
                         ))}
                     </select>
-                
                 {/* 센터 */}
                     <select
                         id="center"
@@ -181,8 +176,6 @@ export const DetailBody = () => {
                         ))}
                     </select>
                 </div>
-
-                
                 {/* 센터 선택, 마커 생성 버튼 */}
                 <div className="DBcomboboxright">
                     <Button
@@ -218,8 +211,6 @@ export const DetailBody = () => {
                     </Button>
                 </div>
             </div>
-
-
             {/* 상단 div */}
             <div className="DBtop">
                 {/* 여기에 지도 들어갈 것 같아요. */}
@@ -228,11 +219,7 @@ export const DetailBody = () => {
                     <NaverMap centers={targetCenters} onMapReady={()=>setMapLoad(true)} />
                 </div>
             </div>{/* end top */}
-
-            
-
             {/* 보드에서 가져온 헤더 */}
-  
                     <div className="DBboard-header-container">
                         <div className="DBboard-header-left">
                             <h2 className="DBboard-title">상세검색</h2>
@@ -246,7 +233,6 @@ export const DetailBody = () => {
                                 <option value={'N'}>미완료</option>
                                 <option value={'U'}>불확실</option>
                             </select>
-
                             {/* 달력 */}
                             <DatePicker
                                 showIcon
@@ -277,10 +263,6 @@ export const DetailBody = () => {
                                         showAlert({
                                             title:'지역 검색을 먼저 해주세요',
                                             icon: 'warning'
-                                            
-                                            // showCancelButton : true,
-                                            // confirmButtonText: '네',
-                                            // cancelButtonText:'아니요',
                                         })
                                     }}):()=>setOpen(true)}
                             >
@@ -306,7 +288,6 @@ export const DetailBody = () => {
                                     </ListItemButton>
                                     ))}               
                             </Dialog>
-
                             <select value={sex} onChange={(e)=>{setSex(e.target.value)}}>
                                 <option  value="" disabled selected hidden>성별</option>
                                 <option value=''>(전체)</option>
@@ -314,7 +295,6 @@ export const DetailBody = () => {
                                 <option value='F'>암컷</option>
                             </select>
                         </div>
-                            
                             {/* 상세검색 오른쪽 */}
                         <div className="DBboard-header-right">
                             <Button 
@@ -342,25 +322,8 @@ export const DetailBody = () => {
                                         showAlert({
                                             title:'지역 검색을 먼저 해주세요',
                                             icon: 'warning'
-                                            
-                                            // showCancelButton : true,
-                                            // confirmButtonText: '네',
-                                            // cancelButtonText:'아니요',
                                         })
                                     }
-                                    // setShow(!show)
-                                    // console.log(...new Set(allData.map(item=>item.processState)))
-                                    // setTargetCenters(targetCenters.filter((item)=>item.kindNm===kind))
-
-                                    //중성화 필터 알고리즘
-                                    // setDetailFilter(targetCenters.filter((item)=>!neuter||item.neuterYn===neuter))
-                                    //품종 필터 알고리즘 완성
-                                    // setDetailFilter(targetCenters.filter((item)=>!selectedBreed||item.kindNm===selectedBreed))
-                                    // 성별 필터 알고리즘 완성
-                                    // setDetailFilter(targetCenters.filter((item)=>!sex||item.sexCd===sex))
-                                    // 개,고양이 필터 알고리즘 완성
-                                    // setDetailFilter(targetCenters.filter((item)=>!kind||item.upKindNm===(kind==='dog'?'개':'고양이')))
-
                                     // 통합 필터
                                     setDetailFilter(
                                         targetCenters.filter((item) =>
@@ -376,17 +339,11 @@ export const DetailBody = () => {
                             </Button>
                         </div>   
                     </div>
-
-
-
-
-
 {/* ================================================================================================ */}
             {/* 지역선택하면 값을 받아서 렌더링하게 설정할것(지금은 일단 보임.) */}
             <div className="DBbottom">
                 {/* 렌더링 방식 정하는 드롭다운. */}
                 <div className="DBdropdown">
-                    
                     {/* 토글 버튼 두개 */}
                     <ToggleButtonGroup
                         value={isRow}
@@ -403,30 +360,13 @@ export const DetailBody = () => {
                         <ToggleButton value={false}>
                             <AppsIcon/>
                         </ToggleButton>
-
                         <ToggleButton value={true}>
                             <FormatListBulletedIcon/>
                         </ToggleButton>
-                        
                     </ToggleButtonGroup>
-
-                    
                 </div>
-
-
                 {/* 상세정보 하나 들어가는 박스 */}
                 {show&&<><Box className="DBdetail-box">
-                    {/* 상세정보 */}
-                    {/* {currentItems.map((item) => (
-                        <CardComponent
-                            key={item.id}
-                            row={isRow}
-                            img={item.img}
-                            description={item.description}
-                            title={item.title}
-                        />
-                    ))} */}
-
                     {currentItems.length<1?
                         <div>
                         <div><h2>표시할 데이터가 없습니다. </h2></div>
@@ -443,8 +383,6 @@ export const DetailBody = () => {
                             index={index+(currentPage*itemsPerPage)-itemsPerPage}
                         />
                     ))}
-
-
                 </Box>
                 {/* 페이징 버튼 */}
                 <div className="DBpagination">
@@ -483,9 +421,7 @@ export const DetailBody = () => {
                     »
                     </button>
                 </div></>}
-
             </div>{/* end bottom */}
-            
                 {/* 통합검색  */}
                 {show&&<nav className="DBmini-tab-bar">
                     <div className="DBboard-header-center">

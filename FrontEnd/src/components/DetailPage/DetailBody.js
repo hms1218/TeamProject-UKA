@@ -1,5 +1,5 @@
 import { forwardRef, useEffect, useState } from "react"
-import { useLocation } from "react-router-dom"
+import { Navigate, useLocation, useNavigate } from "react-router-dom"
 import { animal as animalData } from "./DetailBodyData";
 import './DetailBody.css'
 import { CardComponent } from "./CardComponent";
@@ -25,8 +25,11 @@ export const DetailBody = () => {
     const { search } = useLocation()
     const params = new URLSearchParams(search)
     const regionNm = params.get("regionNm") || "";
-    console.log("받아온 regionNm:", regionNm);
+    // console.log("받아온 regionNm:", regionNm);
 
+    const navigate = useNavigate();
+    
+    // 품종 버튼을 위한  데이터 저장소
     const [animal,setAnimal] = useState([]);
 
     //콤보박스 시군구+센터이름
@@ -54,6 +57,24 @@ export const DetailBody = () => {
         }
         loadData();
     }, []);
+
+    // 주소 변화 감지해서 데이터 다시 가져오기
+    useEffect(() => {
+        const newSido = params.get('siDo')||'';
+        const newGungu = params.get('gunGu')||'';
+        const newCenter = params.get('center') ||'';
+        setSiDo(newSido);
+        setGunGu(newGungu);
+        setCenter(newCenter);
+        console.log("뒤로가기 후 받은 siDo:", newSido);
+        console.log("뒤로가기 후 받은 gunGu:", newGungu);
+        console.log("뒤로가기 후 받은 gunGu:", newCenter);
+        //강제 클릭
+        // document.querySelector('.DBButton')?.click();
+        setTimeout(() => {
+            document.querySelector('.DBButton')?.click();
+        }, 200); 
+    }, [search]);
 
     const [neuter,setNeuter] = useState('');
     const [sex,setSex] = useState('');
@@ -134,6 +155,7 @@ export const DetailBody = () => {
                         id="siDo"
                         value={siDo}
                         onChange={e => {
+                            navigate(`?siDo=${e.target.value}`,{replace:true})
                             setSiDo(e.target.value);
                             setGunGu("");
                             setCenter("");
@@ -152,6 +174,7 @@ export const DetailBody = () => {
                         id="gunGu"
                         value={gunGu}
                         onChange={e => {
+                            navigate(`?siDo=${siDo}&gunGu=${e.target.value}`,{replace:true})
                             setGunGu(e.target.value);
                             setCenter('');
                             setTargetAddress('');
@@ -169,7 +192,10 @@ export const DetailBody = () => {
                     <select
                         id="center"
                         value={center}
-                        onChange={e => setCenter(e.target.value)}
+                        onChange={e => {
+                            setCenter(e.target.value)
+                            navigate(`?siDo=${siDo}&gunGu=${gunGu}&center=${e.target.value}`,{replace:true})
+                        }}
                         disabled={!gunGu}
                     >
                         <option value="">센터 선택</option>
@@ -208,7 +234,7 @@ export const DetailBody = () => {
                             setTargetCenters(filteredCenters);
                             setDetailFilter(filteredCenters)
                             console.log("마커 표시할 센터 목록:", filteredCenters);
-                            window.scrollTo({ top: 300, left: 0, behavior: 'smooth' });
+                            // window.scrollTo({ top: 300, left: 0, behavior: 'smooth' });
                         }}
                         >
                         <span>검색하기</span>

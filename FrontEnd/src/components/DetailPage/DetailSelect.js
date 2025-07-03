@@ -1,31 +1,35 @@
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import './DetailSelect.css'
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import defimg from '../../assets/noImage.jpg';
 
 export const DetailSelect = () => {
-    const { search } = useLocation();
-    const params = new URLSearchParams(search);
-    const desertionNo = params.get("desertionNo") || "";
-    console.log("받아온 desertionNo:", desertionNo);
 
-  const filteredData = useLocation().state.list
-  const index = useLocation().state.index;
-  const data = filteredData[index];
-  // console.log('전달받은 filter : ',filteredData)
-  // console.log('몇번째 : ',index)
-  // console.log('현재 페이지 데이터 : ',data)
+  const { search } = useLocation();
+  const params = new URLSearchParams(search);
+  const desertionNo = params.get("desertionNo") || "";
+  // console.log("받아온 desertionNo:", desertionNo);
 
-  // Params를 사용해서 선택한 정보 전달
-  const {id} = useParams();
+  //데이터 저장할 저장소.
+  const [data,setData] = useState([])
+
+  // 백엔드에서 id(혹은 더 자세한 정보)로 조회해서 단건 정보 받아옴.
+  useEffect(()=>{
+      const apiFetch = async () => {
+        const response = await fetch(`http://localhost:8888/api/animals?desertionNo=${desertionNo}`)
+        const result = await response.json();
+        setData(result)
+        console.log(result)
+      }
+      apiFetch();
+
+  },[])
+
+  // const filteredData = useLocation()?.state?.list
+  // const index = useLocation()?.state?.index;
 
   const navigate = useNavigate();
 
-  // 백엔드에서 id(혹은 더 자세한 정보)로 조회해서 단건 정보 받아올 예정.
-  useEffect(()=>{
-      // fetch
-
-  },[])
 
 // ========================================================
   //날짜 데이터 포멧팅
@@ -224,24 +228,6 @@ export const DetailSelect = () => {
       <div style={{ marginTop: '32px',display:'flex', justifyContent:'space-around' }}>
         <button 
           className='DSbuttonStyle'
-          onClick={()=>{
-            navigate('/about/select',{state:{list:filteredData,index:index-1<0?index:index-1}})
-            window.scrollTo(0,0)
-          }}
-          onMouseEnter={(e) => {
-            e.target.style.transform = 'scale(1.05)';
-            e.target.style.boxShadow = '0 6px 20px rgba(238, 90, 82, 0.6)';
-          }}
-          onMouseLeave={(e) => {
-            e.target.style.transform = 'scale(1)';
-            e.target.style.boxShadow = '0 4px 15px rgba(238, 90, 82, 0.4)';
-          }}
-        >
-          ⬅️ 이전 동물
-        </button>
-
-        <button 
-          className='DSbuttonStyle'
           onClick={()=>{navigate('/customer/adoption',{state:data})}}
           onMouseEnter={(e) => {
             e.target.style.transform = 'scale(1.05)';
@@ -258,7 +244,7 @@ export const DetailSelect = () => {
         <button 
           className='DSbuttonStyle'
             onClick={()=>{
-            navigate('/about/select',{state:{list:filteredData,index:index+1>=filteredData.length?index:index+1}})
+            navigate('/')
             window.scrollTo(0,0)
           }}
           onMouseEnter={(e) => {
@@ -270,7 +256,7 @@ export const DetailSelect = () => {
             e.target.style.boxShadow = '0 4px 15px rgba(238, 90, 82, 0.4)';
           }}
         >
-          다음 동물 ➡️
+          돌아가기 ➡️
         </button>
       </div>
     </div>

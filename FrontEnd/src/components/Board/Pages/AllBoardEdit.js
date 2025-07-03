@@ -13,7 +13,10 @@ import { fetchPostById, updatePost, uploadImage } from '../../../api/BoardApi';
 const AllBoardEdit = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const isAdmin = useAdmin();
+    
+    const loginData = JSON.parse(localStorage.getItem("user"));
+    const isAdmin = loginData?.userId?.includes("admin") ? true : false;
+    const currentUser = isAdmin ? "admin" : loginData?.nickname;
 
     const titleInputRef = useRef(null);
     const editorRef = useRef(null);
@@ -62,8 +65,6 @@ const AllBoardEdit = () => {
             content: updatedContent,
         }
 
-        console.log("수정시간",post.updatedAt)
-        console.log("현재시간",new Date(post.updatedAt).toLocaleString())
         Swal.fire({
             title: '게시글 수정',
             text: '수정하시겠습니까?',

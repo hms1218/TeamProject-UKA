@@ -25,15 +25,16 @@ const CommentItem = ({
     handleReplySubmit,
     renderCommentTree,
 }) => {
-    console.log("author: ",comment.author)
-    console.log("currentUser: ",currentUser)
-    console.log("post.author:", post.author)
+    // console.log("author: ",comment.author)
+    // console.log("currentUser: ",currentUser)
+    // console.log("post.author:", post.author)
     return (
         <div style={{ marginLeft: level > 0 ? 20 : 0, marginBottom: 12 }}>
         <div style={{ fontSize: 15 }}>
             <b>
             {comment.author}
             {comment.author === post.author && ' (작성자)'}
+            {comment.author.includes('admin') && ' (관리자)'}
             </b>
             <span style={{ marginLeft: 6, color: '#bbb', fontSize: 13 }}>
             {comment.updatedAt && comment.updatedAt !== comment.createdAt ? `수정됨 ${new Date(comment.updatedAt).toLocaleString()}` : new Date(comment.createdAt).toLocaleString()}

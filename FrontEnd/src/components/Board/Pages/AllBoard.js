@@ -57,7 +57,14 @@ const AllBoard = () => {
         });
     };
 
-    const noticedPosts = sortPosts(posts.filter(p => p.category === "NOTICE"));
+    // const noticedPosts = sortPosts(posts.filter(p => p.category === "NOTICE"));
+    const noticedPosts = [...posts.filter(p => p.category === "NOTICE")]
+        .sort((a, b) => {
+            const dateA = a.updatedAt ? new Date(a.updatedAt) : new Date(a.createdAt);
+            const dateB = b.updatedAt ? new Date(b.updatedAt) : new Date(b.createdAt);
+            return dateB - dateA;
+    });
+
     const normalPosts = sortPosts(posts.filter(p => p.category !== "NOTICE"));
 
     //검색 함수
@@ -97,13 +104,15 @@ const AllBoard = () => {
         // setSearchKeyword('')
     }
 
+    //공지사항 3개 제한
+    const limitedNoticedPosts = noticedPosts.slice(0, 3);
     // 현재 페이지에 보여줄 게시글
     const paginatedPosts = isSearching ? filteredPosts : normalPosts;
     const displayedPosts = paginatedPosts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
     //searching 여부에 따라 페이징
     const totalPages = Math.max(1, Math.ceil(
-        (isSearching ? filteredPosts.length : displayedPosts.length) / itemsPerPage));
+        (isSearching ? filteredPosts.length : normalPosts.length) / itemsPerPage));
 
 	// 페이지 버튼 생성 로직
     const getPageNumbers = () => {
@@ -214,7 +223,7 @@ const AllBoard = () => {
                 </thead>
                 <tbody>
                 {/* 공지사항 매핑 */}
-                {noticedPosts?.map((post) => (
+                {limitedNoticedPosts?.map((post) => (
                 <tr key={`notice-${post.id}`} className="notice-row" style={{backgroundColor: '#ddd'}}>
                     <td className='notice-tab'>{categoryLabels[post.category]}</td>
                     <td className="notice-title" onClick={() => handleTitleClick(post)}>
@@ -235,7 +244,7 @@ const AllBoard = () => {
                         </div>
                     </td>
                     <td className='notice-cell'>
-                        <div className='board-cell-text' style={{marginLeft:15}}>{post.view}</div>
+                        <div className='board-cell-text' style={{marginLeft:20}}>{post.view}</div>
                     </td>
                     <td className='notice-cell'>
                         <div className='board-cell-text' style={{marginLeft:20}}>{post.likes}</div>
@@ -253,14 +262,19 @@ const AllBoard = () => {
                 {/* 일반게시글 매핑 */}
                 {displayedPosts.length > 0 ? (
                     displayedPosts.map((post) => (
-                    <tr key={`${post.type}-${post.id}`}>
+                    <tr key={`${post.type}-${post.id}`}
+                        style={{color: post.report >= 5 && 'red'}}
+                    >
                             <td>{categoryLabels[post.category]}</td>
-                            <td className="title-cell" onClick={() => handleTitleClick(post)}>
+                            <td className='title-cell' onClick={() => handleTitleClick(post)}>
                                 <div className='board-cell-text'>
-                                    {searchOption === 'title' 
-                                        ? highlightKeyword(post.title, isSearching ? confirmKeyword : '')
-                                        : post.title
-                                    }
+                                    {post.report >= 5 ? (
+                                        <span style={{ color: 'red' }}>{post.title} (신고차단된 글)</span>
+                                    ) : (
+                                        searchOption === 'title'
+                                            ? highlightKeyword(post.title, isSearching ? confirmKeyword : '')
+                                            : post.title
+                                    )}
                                 </div>
                             </td>
                             <td>

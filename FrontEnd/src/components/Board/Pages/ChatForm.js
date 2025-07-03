@@ -18,9 +18,9 @@ const ChatForm = () => {
     const editorRef = useRef(null);
 
     // 유저 정보
-    const user = JSON.parse(localStorage.getItem('user'));
-    console.log("user :", user);
-    const isAdmin = useAdmin();
+    const loginData = JSON.parse(localStorage.getItem("user"));
+    const isAdmin = loginData?.userId?.includes("admin") ? true : false;
+    const currentUser = isAdmin ? "admin" : loginData?.nickname;
 
     //등록 버튼
     const handleSubmit = (e) => {
@@ -49,7 +49,7 @@ const ChatForm = () => {
         const newPost = {
             category: category,  // 반드시 Category enum 이름과 일치해야 함
             title: title,
-            author: !!user ? user.nickname : "익명",
+            author: currentUser,
             content: content
         }
 

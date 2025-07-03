@@ -6,7 +6,6 @@ export const useAdmin = () => useContext(AdminContext);
 
 export const AdminProvider = ({ children }) => {
     const user = JSON.parse(localStorage.getItem("user"));
-    console.log(user);
 
     const [isAdmin, setIsAdmin] = useState(() => user?.userId?.includes("admin") || false);
 

@@ -2,9 +2,10 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import './BoardDetail.css';
 import Swal from 'sweetalert2';
-import { fetchPostById, deletePost, toggleLikes, toggleReport, incrementViewCount } from '../../../api/BoardApi';
+import { fetchPostById, deletePost, toggleLikes, toggleReport, restorePost } from '../../../api/BoardApi';
 import { createComment, createReply, fetchCommentsByBoard, fetchRepliesByComment, updateComment, deleteComment } from '../../../api/BoardCommentApi';
 import CommentList from '../Comment/CommentList';
+import { ViewCount } from '../utils/ViewCount';
 
 const AllBoardDetail = () => {
     const { id } = useParams();
@@ -13,7 +14,7 @@ const AllBoardDetail = () => {
 
     const loginData = JSON.parse(localStorage.getItem("user"));
     const isAdmin = loginData?.userId?.includes("admin") ? true : false;
-    const currentUser = isAdmin ? "admin" : loginData.nickname;
+    const currentUser = isAdmin ? "admin" : loginData?.nickname;
 
     const [post, setPost] = useState(null);
     const [prev, setPrev] = useState(null);
@@ -43,6 +44,9 @@ const AllBoardDetail = () => {
     //추천, 신고 상태
     const [isLiked, setIsLiked] = useState(false);
     const [isReported, setIsReported] = useState(false);
+    const [blocked, setBlocked] = useState(false);
+
+    const [isEdit, setIsEdit] = useState(false);
 
     //검색 필터링 리스트(useLocation)
     const filteredList = location.state?.filteredList || [];
@@ -52,9 +56,11 @@ const AllBoardDetail = () => {
     useEffect(() => {
         const getPostsById = async () => {
             try {
-                await incrementViewCount(id); //조회수 증가
-                const data = await fetchPostById(id);
+                await ViewCount(id); //조회수 증가
+                const data = await fetchPostById(id,currentUser);
                 setPost(data);
+                setIsLiked(data.likedByCurrentUser);
+                setIsReported(data.reportedByCurrentUser)
             } catch (error) {
                 console.error('게시글 불러오기 실패', error);
                 Swal.fire({
@@ -66,7 +72,24 @@ const AllBoardDetail = () => {
             }
         }
         getPostsById();
-    },[id, navigate])
+    },[id, navigate,currentUser])
+
+    // 신고수 검사 및 일반유저 차단 처리
+    useEffect(() => {
+        if (post && post.report >= 5 && !isAdmin) {
+        Swal.fire({
+            icon: 'warning',
+            title: '열람 불가',
+            text: '신고가 5회 이상 접수되어 열람할 수 없습니다.',
+            confirmButtonText: '목록으로 이동',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+        }).then(() => {
+            navigate('/board/all');
+        });
+        setBlocked(true);
+        }
+    }, [post, isAdmin, navigate]);
 
     //삭제 버튼
     const handleDelete = async () => {     
@@ -305,12 +328,17 @@ const AllBoardDetail = () => {
         return <p>게시글을 찾을 수 없습니다.</p>;
     }
 
+    // 신고 5회 이상이고 일반유저라면 게시글 내용 렌더링 차단
+    if (blocked) {
+        return null;
+    }
+
     //추천 버튼
     const handleLikesButton = async () => {
         try {
-            const updatedPost = await toggleLikes(post.id, !isLiked);
+            const updatedPost = await toggleLikes(post.id, currentUser);
             setPost(updatedPost);
-            setIsLiked(!isLiked);
+            setIsLiked(updatedPost.likedByCurrentUser);
         } catch (error) {
             console.error('추천 처리 실패:', error);
         }
@@ -319,13 +347,39 @@ const AllBoardDetail = () => {
     //신고 버튼
     const handleReportButton = async () => {
         try {
-            const updatedPost = await toggleReport(post.id, !isReported);
+            const updatedPost = await toggleReport(post.id, currentUser);
             setPost(updatedPost);
-            setIsReported(!isReported);
+            setIsReported(updatedPost.reportedByCurrentUser);
         } catch (error) {
             console.error('신고 처리 실패:', error);
         }
     };
+
+    //복원 버튼
+    const handleRestore = async () => {
+        const confirm = await Swal.fire({
+            title: '신고 해제',
+            text: '복원하시겠습니까?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: '해제',
+            cancelButtonText: '취소',
+        });
+
+        if (confirm.isConfirmed) {
+            try {
+                await restorePost(post.id);
+                Swal.fire('해제 완료', '신고 누적 상태가 해제되었습니다.', 'success');
+                // 게시글 정보 새로고침
+                const data = await fetchPostById(post.id, currentUser);
+                setPost(data);
+                setBlocked(false);
+            } catch (error) {
+                console.error('신고 해제 실패:', error);
+                Swal.fire('오류', '신고 해제에 실패했습니다.', 'error');
+            }
+        }
+    }
 
     return (
         <div style={{ minWidth:'1075px' }}>
@@ -364,14 +418,21 @@ const AllBoardDetail = () => {
                     }}
                 > 👍추천
                 </button>
-                <button className="board-detail-report-button"
-                    onClick={handleReportButton}
-                    style={{
-                        backgroundColor: isReported ? 'red' : '#fff',
-                        color: isReported ? '#fff' : '#000',
-                    }}
-                > 🚨신고
-                </button>
+                {post.category !== "NOTICE" &&
+                    <button className="board-detail-report-button"
+                        onClick={handleReportButton}
+                        style={{
+                            backgroundColor: isReported ? 'red' : '#fff',
+                            color: isReported ? '#fff' : '#000',
+                        }}
+                    > 🚨신고
+                    </button>
+                }
+                {isAdmin && 
+                    <button className='board-detail-report-button' onClick={handleRestore}>
+                        복원
+                    </button>
+                }
                 {(isAdmin || (post.author === currentUser)) && (
                     <>
                         <button className="board-detail-button"

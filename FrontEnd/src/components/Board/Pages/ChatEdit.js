@@ -13,7 +13,10 @@ import { fetchPostById, updatePost, uploadImage } from '../../../api/BoardApi';
 const ChatEdit = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const isAdmin = useAdmin();
+    
+    const loginData = JSON.parse(localStorage.getItem("user"));
+    const isAdmin = loginData?.userId?.includes("admin") ? true : false;
+    const currentUser = isAdmin ? "admin" : loginData?.nickname;
 
     const titleInputRef = useRef(null);
     const editorRef = useRef(null);

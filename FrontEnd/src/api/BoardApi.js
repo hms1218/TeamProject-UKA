@@ -15,9 +15,9 @@ export const fetchAllPosts = async () => {
 };
 
 // 게시글 상세 조회
-export const fetchPostById = async (id) => {
+export const fetchPostById = async (id, userId) => {
     try {
-        const res = await axios.get(`${API_BASE_URL}/board/${id}`);
+        const res = await axios.get(`${API_BASE_URL}/board/${id}`, {params: {userId}});
         return res.data;
     } catch (error) {
         console.error(`상세 조회 실패(id: ${id}):`, error);
@@ -36,15 +36,25 @@ export const incrementViewCount = async (id) => {
 };
 
 //추천 토글
-export const toggleLikes  = async (id, increment) => {
-    const res = await axios.post(`${API_BASE_URL}/board/${id}/likes`, {}, {params : {increment}});
-    return res.data;
+export const toggleLikes  = async (postId, userId) => {
+    try {
+        const res = await axios.post(`${API_BASE_URL}/board/${postId}/likes`, {userId});
+        return res.data;    
+    } catch (error) {
+        console.error("추천 처리 실패",error);
+        throw error;
+    }
 };
 
 //신고 토글
-export const toggleReport  = async (id, increment) => {
-    const res = await axios.post(`${API_BASE_URL}/board/${id}/report`, {}, {params : {increment}});
-    return res.data;
+export const toggleReport  = async (postId, userId) => {
+    try {
+        const res = await axios.post(`${API_BASE_URL}/board/${postId}/report`, {userId});    
+        return res.data;
+    } catch (error) {
+        console.error("신고 처리 실패",error);
+        throw error;
+    }
 };
 
 // 게시글 등록
@@ -72,9 +82,7 @@ export const updatePost = async (id, updatedPost) => {
 // 게시글 삭제
 export const deletePost = async (id) => {
     try {
-        // const res = 
         await axios.delete(`${API_BASE_URL}/board/${id}`);
-        // return res.data;
     } catch (error) {
         console.error(`게시글 삭제 실패(id: ${id}):`, error);
         throw error;
@@ -98,3 +106,14 @@ export const uploadImage = async (imageBlob) => {
         throw error;
     }
 };
+
+//복원 
+export const restorePost = async (id) => {
+    try {
+        const res = await axios.put(`${API_BASE_URL}/board/${id}/restore`);
+        return res.data;
+    } catch (error) {
+        console.error("복원 실패", error);
+        throw error;
+    }
+}

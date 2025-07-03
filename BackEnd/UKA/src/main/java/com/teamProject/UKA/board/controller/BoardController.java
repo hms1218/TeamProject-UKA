@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.teamProject.UKA.board.dto.BoardRequestDTO;
 import com.teamProject.UKA.board.dto.BoardResponseDTO;
+import com.teamProject.UKA.board.dto.BoardUserIdDTO;
 import com.teamProject.UKA.board.service.BoardService;
 
 import jakarta.validation.Valid;
@@ -48,35 +49,12 @@ public class BoardController {
 
 	// 게시글 조회
     @GetMapping("/{id}")
-    public ResponseEntity<BoardResponseDTO> getBoard(@PathVariable("id") String id) {
+    public ResponseEntity<BoardResponseDTO> getBoard(
+    		@PathVariable("id") String id,
+    		@RequestParam(value = "userId", required = false) String userId) {
     	// id : board_250630_0004
-        BoardResponseDTO responseDTO = service.getBoard(id);
+        BoardResponseDTO responseDTO = service.getBoard(id, userId);
         return ResponseEntity.ok(responseDTO);
-    }
-    
-    //게시글 조회수 증가
-    @PostMapping("/{id}/view")
-    public ResponseEntity<Void> incrementView(@PathVariable("id") String id) {
-        service.incrementViewCount(id);
-        return ResponseEntity.ok().build();
-    }
-    
-    //게시글 추천 카운트
-    @PostMapping("/{id}/likes")
-    public ResponseEntity<BoardResponseDTO> toggleLikes(
-            @PathVariable("id") String id,
-            @RequestParam("increment") boolean increment) {
-        BoardResponseDTO updated = service.toggleLikes(id, increment);
-        return ResponseEntity.ok(updated);
-    }
-
-    //게시글 신고 카운트
-    @PostMapping("/{id}/report")
-    public ResponseEntity<BoardResponseDTO> toggleReport(
-            @PathVariable("id") String id,
-            @RequestParam("increment") boolean increment) {
-        BoardResponseDTO updated = service.toggleReport(id, increment);
-        return ResponseEntity.ok(updated);
     }
 
     //게시글 수정
@@ -94,6 +72,31 @@ public class BoardController {
     	service.deleteBoard(id);
     	
     	return ResponseEntity.noContent().build();
+    }
+    
+    //게시글 조회수 증가
+    @PostMapping("/{id}/view")
+    public ResponseEntity<Void> incrementView(@PathVariable("id") String id) {
+        service.incrementViewCount(id);
+        return ResponseEntity.ok().build();
+    }
+    
+    //게시글 추천 카운트
+    @PostMapping("/{id}/likes")
+    public ResponseEntity<BoardResponseDTO> toggleLikes(
+            @PathVariable("id") String id,
+            @RequestBody BoardUserIdDTO boardUserIdDTO) {
+        BoardResponseDTO updated = service.toggleLikes(id, boardUserIdDTO.getUserId());
+        return ResponseEntity.ok(updated);
+    }
+
+    //게시글 신고 카운트
+    @PostMapping("/{id}/report")
+    public ResponseEntity<BoardResponseDTO> toggleReport(
+            @PathVariable("id") String id,
+            @RequestBody BoardUserIdDTO boardUserIdDTO) {
+        BoardResponseDTO updated = service.toggleReport(id, boardUserIdDTO.getUserId());
+        return ResponseEntity.ok(updated);
     }
     
     //이미지 업로드
@@ -114,5 +117,12 @@ public class BoardController {
             e.printStackTrace();
             return ResponseEntity.status(500).body(Map.of("error", "이미지 업로드 실패"));
         }
+    }
+    
+    //복원
+    @PutMapping("/{id}/restore")
+    public ResponseEntity<?> restoreReportedBoard(@PathVariable("id") String id){
+    	service.restoreReportedBoard(id);
+    	return ResponseEntity.ok().build();
     }
 }

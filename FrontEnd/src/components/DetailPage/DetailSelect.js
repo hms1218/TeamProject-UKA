@@ -4,6 +4,10 @@ import { useEffect } from 'react';
 import defimg from '../../assets/noImage.jpg';
 
 export const DetailSelect = () => {
+    const { search } = useLocation();
+    const params = new URLSearchParams(search);
+    const desertionNo = params.get("desertionNo") || "";
+    console.log("받아온 desertionNo:", desertionNo);
 
   const filteredData = useLocation().state.list
   const index = useLocation().state.index;

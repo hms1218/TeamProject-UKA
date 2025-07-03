@@ -1,9 +1,11 @@
 import { Button,Box } from '@mui/material'
 import { RequestComponent } from './RequestComponent'
-import img from "../../assets/test1.jpg"
 import './RequestMain.css'
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useRef, useState } from 'react'
+
+// const API_BASE_URL = "http://localhost:8888";
+const API_BASE_URL = "http://192.168.3.24:8888";
 
 export const RequestMain = () => {
     const navigate = useNavigate();
@@ -13,7 +15,7 @@ export const RequestMain = () => {
     useEffect(()=>{
         const requestApi = async () => {
             try {
-                const response = await (await fetch("http://www.localhost:8888/request"))
+                const response = await (await fetch(`${API_BASE_URL}/request`))
                 const list = await response.json()
                 setCard(list)
             } catch (error) {

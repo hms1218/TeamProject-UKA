@@ -5,6 +5,9 @@ import { useState } from 'react';
 import { useAlert } from '../Customers/Context/AlertContext';
 import { animal } from "../DetailPage/DetailBodyData.js";
 
+// const API_BASE_URL = "http://localhost:8888";
+const API_BASE_URL = "http://192.168.3.24:8888";
+
 export const RequestComponent = ({
   img = `${defimg}`, kind='', sex = '성별', age = '나이',
   name = '이름', local = '지역', time = '시간', phone,
@@ -74,7 +77,7 @@ export const RequestComponent = ({
     console.log('수정된 값:', editedValues);
     // 여기서 서버 저장
     try {
-        const result = await fetch('http://localhost:8888/request',{
+        const result = await fetch(`${API_BASE_URL}/request`,{
           method:'PUT',
           headers:{
             'Content-Type':'application/json'
@@ -107,7 +110,7 @@ export const RequestComponent = ({
 
       // '네' 버튼 눌렀을 시
       if(result.isConfirmed){
-        const result =  await fetch(`http://localhost:8888/request/${list.no}`,{
+        const result =  await fetch(`${API_BASE_URL}/request/${list.no}`,{
           method:'DELETE'
         })
         await showAlert({title:'삭제가 완료 되었습니다.'})

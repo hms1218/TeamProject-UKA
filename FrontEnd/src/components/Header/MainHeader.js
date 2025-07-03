@@ -5,13 +5,11 @@ import DropDownMenu from './DropDownMenu';
 import MainLogo from '../../assets/MainLogo.png';
 
 import { AuthContext } from '../../AuthContext';
-import { useAdmin } from '../../api/AdminContext';
 
 import './MainHeader.css';
 
 const MainHeaders = () => {
     const { user, logout } = useContext(AuthContext);
-    const { isAdmin, setIsAdmin } = useAdmin(); // 어드민 테스트중
     const navigate = useNavigate();
 
     const handleLogout = () => {
@@ -24,6 +22,14 @@ const MainHeaders = () => {
         return;
     }
 
+    function isAdminUser(user) {
+        if (!user) return false;
+        // userId 또는 username에 "admin" 또는 "관리자"가 포함된 경우
+        return (
+            (user.userId && user.userId.toLowerCase().includes('admin'))
+        );
+    }
+
     return (
         <header className="main-header">
             <div className="header-left-section">
@@ -34,23 +40,11 @@ const MainHeaders = () => {
 
             <div className="header-right-section">
                 <div className="header-auth-buttons">
-                    {isAdmin ? <p> <strong style={{color: "red"}}>관리자</strong> 계정으로 접속하였습니다.
-
-                    </p> : <p>OOO 회원님 반갑습니다.</p>}
-                {/* 관리자 토글 버튼 추가 */}
-                <button
-                    onClick={() => setIsAdmin(v => !v)}
-                    style={{
-                        background: isAdmin ? "#ffe066" : "#e9ecef",
-                        border: "1px solid #adb5bd",
-                        borderRadius: 8,
-                        marginRight: 10,
-                        padding: "4px 10px",
-                        cursor: "pointer"
-                    }}
-                >
-                    {isAdmin ? "관리자 모드" : "일반 모드"}
-                </button>
+                    {user && (
+                        isAdminUser(user)
+                            ? <p><strong style={{ color: "red" }}>관리자</strong> 계정으로 접속하였습니다.</p>
+                            : <p>{user.userId} 회원님 반갑습니다.</p>
+                    )}
                 {/* 여기 위 까지 관리자 테스트 */}
                     {user ? (
                         <>
@@ -79,12 +73,12 @@ const MainHeaders = () => {
                     <Link to="/request" style={{marginRight : 10}}>찾고있어요</Link>
                     <DropDownMenu
                         title="게시판"
-                        to="/board"
+                        to="/board/all"
                         items={[
                             { label: '전체', to: '/board/all' },
                             { label: '공지사항', to: '/board/notice' },
                             { label: '속닥속닥', to: '/board/chat' },
-                            { label: '입양후기', to: '/board/adoptionReview' },
+                            { label: '입양후기', to: '/board/review' },
                         ]}
                     />
                     <DropDownMenu
@@ -94,7 +88,7 @@ const MainHeaders = () => {
                             { label: 'FAQ', to: '/customer/faq' },
                             { label: 'Q&A', to: '/customer/qna' },
                             { label: '입양문의', to: '/customer/adoption' },
-                            ...(isAdmin ? [{ label: '관리자 페이지', to: '/admin/reported' }] : []),
+                            ...(user && isAdminUser(user) ? [{ label: '관리자 페이지', to: '/admin/reported' }] : []),
                         ]}
                     />
                 </nav>

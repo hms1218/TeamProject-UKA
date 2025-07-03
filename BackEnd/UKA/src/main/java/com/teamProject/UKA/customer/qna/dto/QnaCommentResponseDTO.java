@@ -20,7 +20,7 @@ public class QnaCommentResponseDTO {
     public static QnaCommentResponseDTO fromEntity(QnaCommentEntity entity) {
         QnaCommentResponseDTO dto = new QnaCommentResponseDTO();
         dto.setQnaCommentId(entity.getQnaCommentId());
-        dto.setQnaId(entity.getQnaId());
+        dto.setQnaId(entity.getQna().getQnaId()); // 💥 QnaEntity에서 qnaId 추출
         dto.setQnaCommentNo(entity.getQnaCommentNo());
         dto.setQnaCommentWriter(entity.getQnaCommentWriter());
         dto.setQnaCommentContent(entity.getQnaCommentContent());

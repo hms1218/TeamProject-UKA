@@ -1,7 +1,5 @@
 package com.teamProject.UKA.request.dto;
 
-import org.springframework.http.RequestEntity;
-
 import com.teamProject.UKA.auth.model.User;
 import com.teamProject.UKA.request.model.RequestDataEntity;
 
@@ -21,13 +19,14 @@ public class RequestDataDTO {
 	
 	private String img;
 	private String kind;
+	private String selectedbreed;
 	private boolean sex;
 	private String age;
 	private String name;
 	
 	private String time;
-	private String lostLocation;
-	private String contactNumber;
+	private String local;
+	private String phone;
 	private String detail;
 	
 	private Long user_no;
@@ -40,13 +39,14 @@ public class RequestDataDTO {
 				
 				.img(img)
 				.kind(kind)
+				.selectedbreed(selectedbreed)
 				.sex(sex)
 				.age(age)
 				.name(name)
 				
 				.time(time)
-				.lostLocation(lostLocation)
-				.contactNumber(contactNumber)
+				.local(local)
+				.phone(phone)
 				.detail(detail)
 				.build();
 	}

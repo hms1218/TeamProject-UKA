@@ -1,6 +1,5 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useChat } from '../Context/ChatContext';
 import './FormButton.css';
 import { Editor } from '@toast-ui/react-editor';
 import '@toast-ui/editor/toastui-editor.css'
@@ -9,48 +8,25 @@ import 'tui-color-picker/dist/tui-color-picker.css';
 import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css';
 import Swal from 'sweetalert2';
 import { useAdmin } from '../../../api/AdminContext';
-
+import { createPost, uploadImage } from '../../../api/BoardApi';
 
 const AllBoardForm = () => {
     const [title, setTitle] = useState('');
-    const [postType, setPostType] = useState('');
+    const [category, setCategory] = useState('');
     const navigate = useNavigate();
     const titleInputRef = useRef(null);
     const editorRef = useRef(null);
 
-    const { addChat } = useChat();
-    const { isAdmin } = useAdmin();
-
-    //글쓰기 시 제목 포커스
-    //로컬 스토리지에서 데이터 불러오기
-    useEffect(() => {
-        const savedTitle = localStorage.getItem('post-title');
-        const savedType = localStorage.getItem('post-type');
-        const savedContent = localStorage.getItem('post-content');
-        
-        if (savedTitle) setTitle(savedTitle);
-        if (savedType) setPostType(savedType);
-        if (savedContent && editorRef.current) {
-            setTimeout(() => {
-                editorRef.current.getInstance().setMarkdown(savedContent);
-            }, 0); // ref가 초기화된 후에 실행되도록
-        }
-
-        titleInputRef.current?.focus();
-    },[])
-
-    // 저장된 데이터 삭제 함수
-    const clearTempData = () => {
-        localStorage.removeItem('post-title');
-        localStorage.removeItem('post-type');
-        localStorage.removeItem('post-content');
-    };
+    // 유저 정보
+    const loginData = JSON.parse(localStorage.getItem("user"));
+    const isAdmin = loginData?.userId?.includes("admin") ? true : false;
+    const currentUser = isAdmin ? "admin" : loginData?.nickname;
 
     //등록 버튼
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        if(!postType){
+        if(!category){
             Swal.fire({
                 icon: 'warning',
                 title: '카테고리를 선택해주세요',
@@ -68,18 +44,13 @@ const AllBoardForm = () => {
             return;
         }
 
-        const content = editorRef.current?.getInstance().getMarkdown();
+        const content = editorRef.current?.getInstance().getHTML();
 
         const newPost = {
-            title,
-            content,
-            author: '나야나', // 추후 사용자 정보로 교체 가능
-            comment: 0,
-            views: 0,
-            likes: 0,
-            createdAt: new Date(),
-            isSecret: false,
-            type: postType,
+            category: category,  // 반드시 Category enum 이름과 일치해야 함
+            title: title,
+            author: currentUser,
+            content: content
         }
 
         Swal.fire({
@@ -91,19 +62,29 @@ const AllBoardForm = () => {
             cancelButtonColor: '#636e72',   // 회색 취소 버튼
             confirmButtonText: '확인',
             cancelButtonText: '취소',
-        }).then((result) => {
-            if(result.isConfirmed){
-                addChat(newPost, postType);
-                clearTempData(); //저장된 임시데이터 삭제
+        }).then(async (result) => {
+            try {
+                if(result.isConfirmed){
+                    await createPost(newPost)
+                    Swal.fire({
+                        title: '등록 완료',
+                        text: '게시글이 등록되었습니다.',
+                        icon: 'success',
+                        confirmButtonColor: '#6c5ce7',
+                        confirmButtonText: '확인'
+                    }).then(() => {
+                        navigate('/board/all')
+                    })
+                }
+            } catch (error) {
+                console.error(error);
                 Swal.fire({
-                    title: '등록 완료',
-                    text: '게시글이 등록되었습니다.',
-                    icon: 'success',
+                    title: '오류',
+                    text: '게시글 등록 중 오류가 발생했습니다.',
+                    icon: 'error',
                     confirmButtonColor: '#6c5ce7',
                     confirmButtonText: '확인'
-                }).then(() => {
-                    navigate('/board/all')
-                })
+                });
             }
         })
     };
@@ -121,26 +102,9 @@ const AllBoardForm = () => {
             cancelButtonText: '취소',
         }).then((result) => {
             if(result.isConfirmed){
-                clearTempData(); //저장된 임시데이터 삭제
                 navigate('/board/all')
             }
         })
-    }
-
-    //임시저장 버튼
-    const handleTempSave = () => {
-        const content = editorRef.current?.getInstance().getMarkdown();
-        localStorage.setItem('post-title', title);
-        localStorage.setItem('post-type', postType);
-        localStorage.setItem('post-content', content);
-
-        Swal.fire({
-            title: '임시 저장 완료',
-            text: '작성 중인 글이 임시 저장되었습니다.',
-            icon: 'success',
-            confirmButtonColor: '#6c5ce7',
-            confirmButtonText: '확인'
-        });
     }
 
     return (
@@ -151,15 +115,13 @@ const AllBoardForm = () => {
                     <label style={{marginRight:10, fontWeight: 'bold'}}>카테고리</label>
                     <select 
                         style={{marginBottom: 16, padding: 5}} 
-                        value={postType} 
-                        onChange={(e) => setPostType(e.target.value)}
-                        // required
+                        value={category} 
+                        onChange={(e) => setCategory(e.target.value)}
                         >
-                        <option value=''>선택</option>
-                        {isAdmin && <option value='notice'>공지사항</option>} {/* 관리자만 공지사항 글쓰기 가능 */}
-                        <option value='chat'>속닥속닥</option>
-                        <option value='review'>입양후기</option>
-                        
+                        <option value='' disabled hidden>선택</option>
+                        {isAdmin && <option value='NOTICE'>공지사항</option>} {/* 관리자만 공지사항 글쓰기 가능 */}
+                        <option value='CHAT'>속닥속닥</option>
+                        <option value='REVIEW'>입양후기</option>
                     </select>
                 </div>
                 <div>
@@ -169,7 +131,6 @@ const AllBoardForm = () => {
                         type="text"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
-                        // required
                         style={{ width: '50%', padding: '10px', marginBottom: '16px' }}
                         onKeyDown={(e) => {
                             if(e.key === 'Enter'){
@@ -189,11 +150,21 @@ const AllBoardForm = () => {
                         hideModeSwitch={true}
                         placeholder="내용을 입력하세요."
                         plugins={[color]}
+                        hooks={{
+                            addImageBlobHook: async (blob, callback) => {
+                                try {
+                                    const imageUrl = await uploadImage(blob);
+                                    console.log('업로드된 이미지 URL:', imageUrl);
+                                    callback(imageUrl, 'image');
+                                } catch (error) {
+                                    Swal.fire({ icon: 'error', title: '이미지 업로드 실패', confirmButtonColor: '#6c5ce7' });
+                                }
+                            }
+                        }}
                     />
                 </div>
                 <div className='board-write-button-container'>
                     <button type="submit" className="board-write-button">등록</button>
-                    <button type="button" className="board-write-button" onClick={handleTempSave}>임시 저장</button>
                     <button type="button" className="board-write-button" onClick={handleCancel}>취소</button>
                 </div>
             </form>

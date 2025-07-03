@@ -1,6 +1,7 @@
 package com.teamProject.UKA.customer.qna.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.teamProject.UKA.customer.qna.entity.QnaEntity;
 
@@ -22,6 +23,13 @@ public class QnaResponseDTO {
     private LocalDateTime qnaCreatedAt;
     private LocalDateTime qnaUpdatedAt;
     private Integer qnaReportCount;
+    private Integer qnaLikeCount;
+    private Integer qnaViews;
+    private boolean isLikedByMe;
+    private boolean isReportedByMe;
+    
+    // 댓글 리스트 필드 추가
+    private List<QnaCommentResponseDTO> comments;
 
     public static QnaResponseDTO fromEntity(QnaEntity entity) {
         QnaResponseDTO dto = new QnaResponseDTO();
@@ -39,6 +47,16 @@ public class QnaResponseDTO {
         dto.setQnaCreatedAt(entity.getQnaCreatedAt());
         dto.setQnaUpdatedAt(entity.getQnaUpdatedAt());
         dto.setQnaReportCount(entity.getQnaReportCount());
+        dto.setQnaLikeCount(entity.getQnaLikeCount());
+        dto.setQnaViews(entity.getQnaViews());
+        return dto;
+    }
+    
+
+    // 댓글까지 포함하는 버전 (서비스에서 사용)
+    public static QnaResponseDTO fromEntity(QnaEntity entity, List<QnaCommentResponseDTO> comments) {
+        QnaResponseDTO dto = fromEntity(entity); // 위에서 기본 세팅
+        dto.setComments(comments);               // 댓글 세팅
         return dto;
     }
 }

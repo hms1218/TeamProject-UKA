@@ -68,6 +68,7 @@ public class AuthService {
 				.compact();
 
 		UserResponse ur = new UserResponse(
+			u.getSeq(),
 		    u.getUserId(), 
 		    u.getNickname(), 
 		    u.getEmail(), 
@@ -78,8 +79,8 @@ public class AuthService {
 		return new LoginResponse(token, ur);
 	}
 
-	public User getMe(Long userId) {
-		return userRepo.findById(userId)
+	public User getMe(String userId) {
+		return userRepo.findByUserId(userId)
 				.orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
 	}
 	
@@ -95,9 +96,6 @@ public class AuthService {
 	public void requestPasswordReset(String userId, String email) {
 		User u = userRepo.findByUserIdAndEmail(userId, email)
 				.orElseThrow(() -> new RuntimeException("아이디/이메일이 일치하지 않습니다."));
-		System.out.println("u ::: "+ u);
-		
-		
 
 	    // 기존 토큰 삭제
 	    tokenRepo.deleteByUser(u);

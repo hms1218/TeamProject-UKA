@@ -83,7 +83,7 @@ const MainBodys = () => {
         // 오늘과 7일 전 날짜 계산
         const today = new Date();
         const sevenDaysAgo = new Date(today);
-        sevenDaysAgo.setDate(today.getDate() - 7);
+        sevenDaysAgo.setDate(today.getDate() - 3);
 
         // YYYY-MM-DD 포맷을 만드는 헬퍼
         const pad = n => n.toString().padStart(2, '0');

@@ -9,6 +9,7 @@ import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-sy
 import './WriteButton.css';
 import './Form.css';
 import { createQna } from '../../../api/CustomerApiData';
+import SecretToggle from './SecretToggle';
 
 const QnAForm = () => {
     const [title, setTitle] = useState('');
@@ -17,36 +18,36 @@ const QnAForm = () => {
     const { showAlert } = useAlert();
     const [isSecret, setIsSecret] = useState(false);
     const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(true);
+    const user = JSON.parse(localStorage.getItem('user'));
 
-    // 로그인 유저 정보 가져오기
-    const [user] = useState(() => JSON.parse(localStorage.getItem('user')));
-
-    
     useEffect(() => {
+        const token = localStorage.getItem('token');
         // 로그인 안 되어 있으면 로그인 페이지로 리다이렉트
-        if (!user) {
+        if (!token) {
             showAlert({
                 title: '로그인이 필요합니다.',
                 icon: 'warning'
             }).then(() => {
-                navigate('/login'); // 로그인 페이지로 이동
+                navigate('/login');
             });
+            return;
         }
-    }, [user, navigate, showAlert]);
+    }, [navigate, showAlert]);
 
 
     useEffect(() => {
         // 제목 포커싱
         document.querySelector('.customer-qna-form-title input')?.focus();
     }, []);
-    
+
     // 이후 user가 없으면 return null로 렌더링 막기
-    if (!user) return null;
+    // if (!user) return null;
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const content = editorRef.current?.getInstance().getMarkdown();
+        const content = editorRef.current?.getInstance().getHTML();
 
         // 제목/내용 비어있으면 경고
         if (!title.trim()) {
@@ -80,7 +81,7 @@ const QnAForm = () => {
             qnaContent: content,
             qnaIsSecret: isSecret ? 'Y' : 'N',
             qnaPassword: password,
-            // qnaWriter: user?.nickname // 또는 user.name 등 로그인 정보 기반
+            qnaWriter: user?.nickname // 또는 user.name 등 로그인 정보 기반
         });
 
         await showAlert({
@@ -93,43 +94,43 @@ const QnAForm = () => {
         navigate('/customer/qna');
     };
 
-        //취소 버튼
-        const handleCancel = async () => {
-            const result = await showAlert({
-                title: '작성 취소',
-                text: '작성을 취소하시겠습니까?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#6c5ce7',
-                cancelButtonColor: '#636e72',
-                confirmButtonText: '확인',
-                cancelButtonText: '취소',
-            });
-            if(result.isConfirmed){
-                navigate('/customer/qna')
-            }
+    //취소 버튼
+    const handleCancel = async () => {
+        const result = await showAlert({
+            title: '작성 취소',
+            text: '작성을 취소하시겠습니까?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#6c5ce7',
+            cancelButtonColor: '#636e72',
+            confirmButtonText: '확인',
+            cancelButtonText: '취소',
+        });
+        if (result.isConfirmed) {
+            navigate('/customer/qna')
         }
+    }
 
     return (
         <div className="customer-qna-form">
             <h2>QnA 글쓰기</h2>
             <form onSubmit={handleSubmit}>
                 <div className="customer-qna-form-title">
-                    <label style={{marginRight:10, fontWeight: 'bold'}}>제목</label><br />
+                    <label style={{ marginRight: 10, fontWeight: 'bold' }}>제목</label><br />
                     <input
                         type="text"
                         value={title}
                         onChange={e => setTitle(e.target.value)}
                         style={{ width: '98%', padding: '10px', marginBottom: '16px' }}
                         onKeyDown={(e) => {
-                            if(e.key === 'Enter'){
+                            if (e.key === 'Enter') {
                                 e.preventDefault();
                             }
                         }}
                     />
                 </div>
                 <div>
-                    <label style={{fontWeight: 'bold'}}>내용</label><br />
+                    <label style={{ fontWeight: 'bold' }}>내용</label><br />
                     <Editor
                         ref={editorRef}
                         previewStyle="vertical"
@@ -142,31 +143,16 @@ const QnAForm = () => {
                     />
                 </div>
                 <div style={{ marginTop: '16px' }}>
-                    <label>
-                        <input
-                            type="checkbox"
-                            checked={isSecret}
-                            onChange={() => setIsSecret(!isSecret)}
-                        />
-                        비밀글로 등록
-                    </label>
+                    <SecretToggle
+                        isSecret={isSecret}
+                        setIsSecret={setIsSecret}
+                        password={password}
+                        setPassword={setPassword}
+                    />
                 </div>
-
-                {isSecret && (
-                    <div style={{ marginTop: '8px' }}>
-                        <label>비밀번호</label><br />
-                        <input
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            placeholder="비밀번호를 입력하세요"
-                            style={{ padding: '10px', width: '98%' }}
-                        />
-                    </div>
-                )}
-                <div className='board-write-button-container'>
-                    <button type="submit" className="customer-form-write-button">등록</button>
-                    <button type="button" className="customer-form-write-button" onClick={handleCancel}>취소</button>
+                <div className='customer-write-button-container'>
+                    <button type="submit" className="qna-action-btn">등록</button>
+                    <button type="button" className="qna-action-btn" onClick={handleCancel}>취소</button>
                 </div>
             </form>
         </div>

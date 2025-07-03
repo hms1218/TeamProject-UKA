@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import './FormButton.css';
 import { Editor } from '@toast-ui/react-editor';
@@ -7,61 +7,63 @@ import '@toast-ui/editor/toastui-editor.css'
 import color from '@toast-ui/editor-plugin-color-syntax'
 import 'tui-color-picker/dist/tui-color-picker.css';
 import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css';
-import { useChat } from '../Context/ChatContext';
 import { useAdmin } from '../../../api/AdminContext';
+import { fetchPostById, updatePost, uploadImage } from '../../../api/BoardApi';
 
 const AllBoardEdit = () => {
-    const { id, type } = useParams();
+    const { id } = useParams();
     const navigate = useNavigate();
+    
+    const loginData = JSON.parse(localStorage.getItem("user"));
+    const isAdmin = loginData?.userId?.includes("admin") ? true : false;
+    const currentUser = isAdmin ? "admin" : loginData?.nickname;
 
     const titleInputRef = useRef(null);
     const editorRef = useRef(null);
 
-    const [postType, setPostType] = useState('');
+    const [post, setPost] = useState('');
+    const [category, setCategory] = useState('');
     const [title, setTitle] = useState('');
 
-    const {notice, chats, review, updateChat} = useChat();
-    const { isAdmin } = useAdmin();
-
-    let post;
-    if (type === 'chat') {
-        post = chats.find((item) => item.id === Number(id));
-    } else if (type === 'notice') {
-        post = notice.find((item) => item.id === Number(id));
-    } else if (type === 'review') {
-        post = review.find((item) => item.id === Number(id));
-    }
+    const categoryLabels = {
+        NOTICE: '공지사항',
+        CHAT: '속닥속닥',
+        REVIEW: '입양후기'
+    };
 
     useEffect(() => {
-        if(post && editorRef.current){
-            setTitle(post.title);
-            setPostType(type);
-
-            editorRef.current.getInstance().setMarkdown(post.content);
-        }
-        setTimeout(() => {
-            titleInputRef.current?.focus();
-        }, 0);
-    }, [post]);
+        const loadPost = async () => {
+            try {
+                const fetchedPost = await fetchPostById(id);
+                setPost(fetchedPost);
+                setTitle(fetchedPost.title);
+                setCategory(fetchedPost.category);
+                editorRef.current?.getInstance().setMarkdown(fetchedPost.content);
+                titleInputRef.current?.focus();
+            } catch (error) {
+                console.error('게시글 불러오기 실패:', error);
+                Swal.fire('오류', '게시글을 불러오는 데 실패했습니다.', 'error');
+            }
+        };
+        loadPost();
+    }, [id]);
 
     if(!post){
         return <div>게시글이 없습니다.</div>
     }
 
+    //수정
     const handleSubmit = (e) => {
         e.preventDefault();
         
-        const updatedContent = editorRef.current.getInstance().getMarkdown();
+        const updatedContent = editorRef.current.getInstance().getHTML();
 
         const updatedPost = {
             ...post,
             title,
-            type: postType,
+            category,
             content: updatedContent,
-            updatedAt: new Date(),
         }
-
-        updateChat(updatedPost, postType);
 
         Swal.fire({
             title: '게시글 수정',
@@ -72,17 +74,23 @@ const AllBoardEdit = () => {
             cancelButtonColor: '#636e72',   // 회색 취소 버튼
             confirmButtonText: '확인',
             cancelButtonText: '취소',
-        }).then((result) => {
+        }).then(async (result) => {
             if(result.isConfirmed){
-                Swal.fire({
-                    title: '수정 완료',
-                    text: '게시글이 수정되었습니다.',
-                    icon: 'success',
-                    confirmButtonColor: '#6c5ce7',
-                    confirmButtonText: '확인'
-                }).then(() => {
-                    navigate(`/board/all/detail/${id}`);
-                });
+                try {
+                    await updatePost(id, updatedPost);
+                    Swal.fire({
+                        title: '수정 완료',
+                        text: '게시글이 수정되었습니다.',
+                        icon: 'success',
+                        confirmButtonColor: '#6c5ce7',
+                        confirmButtonText: '확인'
+                    }).then(() => {
+                        navigate(`/board/all/detail/${id}`);
+                    });
+                } catch (error) {
+                    console.error('게시글 수정 실패:', error);
+                    Swal.fire('오류', '게시글 수정에 실패했습니다.', 'error');
+                }
             };
         })
     }
@@ -100,10 +108,6 @@ const AllBoardEdit = () => {
             cancelButtonText: '취소',
         }).then((result) => {
             if(result.isConfirmed){
-                setTitle(post.title);
-                setPostType(type);
-                editorRef.current?.getInstance().setMarkdown(post.content);
-
                 navigate(`/board/all/detail/${id}`)
             }
         })
@@ -117,13 +121,13 @@ const AllBoardEdit = () => {
                     <label style={{marginRight:10, fontWeight: 'bold'}}>카테고리</label>
                     <select 
                         style={{marginBottom: 16, padding: 5}} 
-                        value={postType} 
-                        onChange={(e) => setPostType(e.target.value)}
-                        // required
+                        value={category} 
+                        onChange={(e) => setCategory(e.target.value)}
+                        required
                         >
-                        {isAdmin && <option value='notice'>공지사항</option>} {/* 관리자만 공지사항 글쓰기 가능 */}
-                        <option value='chat'>속닥속닥</option>
-                        <option value='review'>입양후기</option>                  
+                        {isAdmin && <option value='NOTICE'>{categoryLabels['NOTICE']}</option>} {/* 관리자만 공지사항 글쓰기 가능 */}
+                        <option value='CHAT'>{categoryLabels['CHAT']}</option>
+                        <option value='REVIEW'>{categoryLabels['REVIEW']}</option>                  
                     </select>
                 </div>
                 <div>
@@ -148,6 +152,18 @@ const AllBoardEdit = () => {
                         hideModeSwitch={true}
                         placeholder="내용을 입력하세요."
                         plugins={[color]}
+                        initialValue={post?.content||''}
+                        hooks={{
+                            addImageBlobHook: async (blob, callback) => {
+                                try {
+                                    const imageUrl = await uploadImage(blob);
+                                    console.log('업로드된 이미지 URL:', imageUrl);
+                                    callback(imageUrl, 'image');
+                                } catch (error) {
+                                    Swal.fire({ icon: 'error', title: '이미지 업로드 실패', confirmButtonColor: '#6c5ce7' });
+                                }
+                            }
+                        }}
                     />
                 </div>
                 <div className='board-write-button-container'>

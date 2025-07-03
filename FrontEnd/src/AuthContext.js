@@ -1,4 +1,3 @@
-// src/AuthContext.js
 import { createContext, useState, useEffect } from 'react';
 import { getMe } from './api/auth';
 
@@ -6,44 +5,59 @@ export const AuthContext = createContext({
     user: null,
     setUser: () => {},
     logout: () => {},
+    loginToken: null,
+    setLoginToken: () => {},
 });
 
 export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
-    const [initializing, setInitializing] = useState(true);  // 초기 로딩 플래그
+    const [loginToken, setLoginToken] = useState(localStorage.getItem('token'));
+    const [loading, setLoading] = useState(true);
 
-    // 페이지 새로고침해도 로그인 유지
+    // 로그인 상태 복원 및 동기화
     useEffect(() => {
-        // 1) 앱 시작 시 토큰이 남아 있으면 /me 호출
-        const initAuth = async () => {
-            const token = localStorage.getItem('token');
-            if (token) {
+        const fetchUser = async () => {
+            if (loginToken) {
                 try {
-                    const me = await getMe();   // /api/auth/me
+                    const me = await getMe(); // /api/auth/me
                     setUser(me);
+                    // localStorage의 user 정보도 동기화
+                    localStorage.setItem('user', JSON.stringify(me));
                 } catch (err) {
-                    // 토큰이 만료되었거나 유효하지 않으면 제거
                     localStorage.removeItem('token');
+                    localStorage.removeItem('user');
                     setUser(null);
+                    setLoginToken(null);
                 }
+            } else {
+                setUser(null);
+                localStorage.removeItem('user');
             }
-            setInitializing(false);
-            };
-            
-        initAuth();
-    }, []);
+            setLoading(false);
+        };
+        fetchUser();
+    }, [loginToken]);
 
+    // 로그아웃 함수 개선
     const logout = () => {
         localStorage.removeItem('token');
+        localStorage.removeItem('user');
         setUser(null);
+        setLoginToken(null);
     };
 
-    if (initializing) {
+    if (loading) {
         return <div>로딩 중...</div>;
     }
-    
+
     return (
-        <AuthContext.Provider value={{ user, setUser, logout }}>
+        <AuthContext.Provider value={{
+            user,
+            setUser,
+            logout,
+            loginToken,
+            setLoginToken,
+        }}>
             {children}
         </AuthContext.Provider>
     );

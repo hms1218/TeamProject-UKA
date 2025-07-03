@@ -150,7 +150,7 @@ export const RequestComponent = ({
               select
               label="종류"
               name="kind"
-              value={editedValues.kind==='고양이'?'cat':'dog'}
+              value={editedValues.kind==='etc'?'기타':editedValues.kind==='고양이'?'cat':'dog'}
               onChange={handleChange}
               size="small"
               sx={{minWidth: 100,marginRight:'10px','& .MuiFilledInput-root': {

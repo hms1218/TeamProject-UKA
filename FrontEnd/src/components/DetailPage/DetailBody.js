@@ -216,13 +216,13 @@ export const DetailBody = () => {
                         color="info"
                         sx={{ marginLeft: '20px'}}
                         onClick={() => {
-                            if(!show){
-                                showAlert({
-                                    title:'지역 검색을 먼저 해주세요',
-                                    icon: 'warning'
-                                })
-                                return
-                            }
+                            // if(!show){
+                            //     showAlert({
+                            //         title:'지역 검색을 먼저 해주세요',
+                            //         icon: 'warning'
+                            //     })
+                            //     return
+                            // }
                             let filteredCenters = [];
                             if (selectedCenterData) {
                                 // 센터 선택 시 1개 센터만 마커 표시

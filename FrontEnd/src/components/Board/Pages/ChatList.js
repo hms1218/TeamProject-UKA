@@ -18,6 +18,11 @@ const ChatList = () => {
     const [confirmKeyword, setConfirmKeyword] = useState('');
     const [searchOption, setSearchOption] = useState('title');
 
+    // 유저 정보
+    const loginData = JSON.parse(localStorage.getItem("user"));
+    const isAdmin = loginData?.userId?.includes("admin") ? true : false;
+    const currentUser = loginData?.nickname;
+
     const itemsPerPage = 10;
 
     const categoryLabels = {
@@ -96,8 +101,10 @@ const ChatList = () => {
         // setSearchKeyword('')
     }
 
+    //검색 결과 정렬
+    const sortedFilteredPosts = sortPosts(filteredPosts);
     // 현재 페이지에 보여줄 게시글
-    const paginatedPosts = isSearching ? filteredPosts : ChatPosts;
+    const paginatedPosts = isSearching ? sortedFilteredPosts : ChatPosts;
     const displayedPosts = paginatedPosts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
     //searching 여부에 따라 페이징
@@ -121,7 +128,7 @@ const ChatList = () => {
 
 	//글쓰기 버튼
     const handleWrite = () => {
-        navigate('/board/chat/form');
+        currentUser === undefined ? Swal.fire("로그인 필요","로그인 후 이용해주세요.","error") : navigate('/board/all/form');
     };
 
     //검색한 키워드 강조

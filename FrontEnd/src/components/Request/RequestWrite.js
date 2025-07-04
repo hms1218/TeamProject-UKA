@@ -9,6 +9,9 @@ import  {animal as animalData}  from "../DetailPage/DetailBodyData.js";
 import SearchIcon from '@mui/icons-material/Search';
 import RefreshIcon from '@mui/icons-material/Refresh';
 
+// const API_BASE_URL = "http://localhost:8888";
+const API_BASE_URL = "http://192.168.3.24:8888";
+
 export const RequestWrite = () => {
 
     const navigate = useNavigate();
@@ -120,7 +123,7 @@ export const RequestWrite = () => {
                 // imageUrl = 'default.jpg';
             }else{
                 try {
-                    const uploadImg = await fetch("http://localhost:8888/request/image",{
+                    const uploadImg = await fetch(`${API_BASE_URL}/request/image`,{
                     method:"POST",
                     body:imageForm
                     })
@@ -159,7 +162,7 @@ export const RequestWrite = () => {
             }
 
             try {
-                const response = await fetch('http://www.localhost:8888/request',option)
+                const response = await fetch(`${API_BASE_URL}/request`,option)
 
                 const list = await response.json()
 
@@ -327,11 +330,13 @@ export const RequestWrite = () => {
                                                                 }}
                                                                 >
                                                                 <ListItem disablePadding sx={{ border: '1px solid #cceeff' }}>
-                                                                    <img
-                                                                    className="DBdialogimg"
-                                                                    src={`/img/${formData.kind}_picture/${breedImg}.jpg`}
-                                                                    alt={`${breedName} 이미지`}
+                                                                    <div style={{backgroundColor:'#e5f4ff'}}>
+                                                                        <img
+                                                                        className="DBdialogimg"
+                                                                        src={`/img/${formData.kind}_picture/${breedImg}.jpg`}
+                                                                        alt={`${breedName} 이미지`}
                                                                     />
+                                                                    </div>
                                                                     {breedName}
                                                                 </ListItem>
                                                             </ListItemButton>

@@ -20,7 +20,7 @@ const ReviewForm = () => {
     // 유저 정보
     const loginData = JSON.parse(localStorage.getItem("user"));
     const isAdmin = loginData?.userId?.includes("admin") ? true : false;
-    const currentUser = isAdmin ? "admin" : loginData?.nickname;
+    const currentUser = loginData?.nickname;
 
     //등록 버튼
     const handleSubmit = (e) => {
@@ -45,6 +45,16 @@ const ReviewForm = () => {
         }
 
         const content = editorRef.current?.getInstance().getHTML();
+        const plainText = content?.replace(/<[^>]*>/g, '').trim();
+                
+        if(!plainText){
+            Swal.fire({
+                icon: 'warning',
+                title: '내용을 입력해주세요',
+                confirmButtonColor: '#6c5ce7',
+            });
+            return;
+        }
 
         const newPost = {
             category: category,  // 반드시 Category enum 이름과 일치해야 함

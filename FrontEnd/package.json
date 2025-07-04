@@ -2,6 +2,7 @@
   "name": "abandoned-animal-center",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://192.168.3.24:8888",
   "dependencies": {
     "@amcharts/amcharts5": "^5.13.2",
     "@amcharts/amcharts5-fonts": "^5.0.1",

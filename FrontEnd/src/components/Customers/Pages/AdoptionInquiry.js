@@ -6,6 +6,9 @@ import { saveThumbnails, savePopups } from './AdoptionImageActive';
 import AdoptionApplicationForm from './AdoptionForm';
 import { useLocation } from 'react-router-dom';
 
+// const BASE_URL = "http://localhost:8888";
+const BASE_URL = "http://192.168.3.24:8888";
+
 const AdoptionInquiry = () => {
     const [open, setOpen] = useState(false);
     const [slide, setSlide] = useState(0);
@@ -30,10 +33,17 @@ const AdoptionInquiry = () => {
     const location = useLocation();
     const data = location.state || {};
     const animalInfo = (data.kindFullNm && data.desertionNo)
-        ? { kindFullNm: data.kindFullNm, desertionNo: data.desertionNo }
+        ? {
+            kindFullNm: data.kindFullNm,
+            desertionNo: data.desertionNo,
+            age: data.age,              // 예: "2023(년생)"
+            weight: data.weight,        // 예: "5(Kg)"
+            sexCd: data.sexCd,          // 예: "M"
+        }
         : null;
+
     const animalImgUrl = data.animalImgUrl || data.popfile1 || '';
-    console.log('동물 품종 : ', data.kindFullNm);
+    console.log('동물 품종 : ', data);
 
     // 관리자 체크
     const isAdmin = isAdminCheck();
@@ -44,12 +54,12 @@ const AdoptionInquiry = () => {
         // TODO: 서버에서 이미지 fetch 예시
         const fetchImages = async () => {
             try {
-                const res1 = await fetch('http://localhost:8888/customer/adoption/POPUP');
+                const res1 = await fetch(`${BASE_URL}/customer/adoption/POPUP`);
                 const slideData = await res1.json();
                 console.log('슬라이드 이미지 데이터:', slideData); // 디버깅용
                 setSlideImages(slideData);
                 setPhotoDraft(slideData);
-                const res2 = await fetch('http://localhost:8888/customer/adoption/THUMBNAIL');
+                const res2 = await fetch(`${BASE_URL}/customer/adoption/THUMBNAIL`);
                 const thumbData = await res2.json();
                 setThumbnails(thumbData);
                 setThumbnailDraft(thumbData);
@@ -171,7 +181,7 @@ const AdoptionInquiry = () => {
                             key={item.id}
                             src={item.src.startsWith("blob:")
                                 ? item.src
-                                : `http://localhost:8888${item.src}`}
+                                : `${BASE_URL}${item.src}`}
                             alt={`썸네일${idx + 1}`}
                             style={{ marginRight: 12, verticalAlign: 'middle' }}
                         />
@@ -206,7 +216,7 @@ const AdoptionInquiry = () => {
                                     <img
                                         src={img.src.startsWith("blob:")
                                             ? img.src
-                                            : `http://localhost:8888${img.src}`}
+                                            : `${BASE_URL}${img.src}`}
                                         alt={`썸네일${idx + 1}`}
                                         style={{
                                             width: 100,
@@ -350,7 +360,7 @@ const AdoptionInquiry = () => {
                                         <img
                                             src={img.src.startsWith("blob:")
                                                 ? img.src
-                                                : `http://localhost:8888${img.src}`}
+                                                : `${BASE_URL}${img.src}`}
                                             alt={`팝업${idx + 1}`}
                                             style={{
                                                 width: 120,
@@ -545,7 +555,7 @@ const AdoptionInquiry = () => {
                                         src={
                                             slideImages[slide]?.src?.startsWith("blob:")
                                                 ? slideImages[slide].src
-                                                : `http://localhost:8888${slideImages[slide]?.src}`
+                                                : `${BASE_URL}${slideImages[slide]?.src}`
                                         }
                                         alt={`사진${slide + 1}`}
                                         className="customer-slide"
@@ -676,7 +686,7 @@ const AdoptionInquiry = () => {
                         top: 0,
                         width: '100vw',
                         height: '100vh',
-                        zIndex: 3000,
+                        zIndex: 1000,
                         background: 'rgba(0,0,0,0.5)',
                         display: 'flex',
                         justifyContent: 'center',

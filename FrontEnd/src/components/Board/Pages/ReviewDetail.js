@@ -15,7 +15,7 @@ const ReviewDetail = () => {
 
     const loginData = JSON.parse(localStorage.getItem("user"));
     const isAdmin = loginData?.userId?.includes("admin") ? true : false;
-    const currentUser = isAdmin ? "admin" : loginData?.nickname;
+    const currentUser = loginData?.nickname;
 
     const [post, setPost] = useState(null);
     const [prev, setPrev] = useState(null);
@@ -184,6 +184,8 @@ const ReviewDetail = () => {
     const handleCommentSubmit = async (e) => {
         e.preventDefault();
 
+        if(currentUser === undefined) return Swal.fire("로그인 필요","로그인 후 이용해주세요.","error");
+
         if (!commentInput.trim()) return;
 
         try {
@@ -204,6 +206,7 @@ const ReviewDetail = () => {
     const handleReplySubmit = async (e, parentId) => {
         e.preventDefault();
 
+        if(currentUser === undefined) return Swal.fire("로그인 필요","로그인 후 이용해주세요.","error");
         // const input = replyInput[parentId]?.trim();
         const input = e.target.elements[0].value.trim();
 
@@ -324,6 +327,7 @@ const ReviewDetail = () => {
 
     //추천 버튼
     const handleLikesButton = async () => {
+        if(currentUser === undefined) return Swal.fire("로그인 필요","로그인 후 이용해주세요.","error");
         try {
             const updatedPost = await toggleLikes(post.id, currentUser);
             setPost(updatedPost);
@@ -335,6 +339,7 @@ const ReviewDetail = () => {
 
     //신고 버튼
     const handleReportButton = async () => {
+        if(currentUser === undefined) return Swal.fire("로그인 필요","로그인 후 이용해주세요.","error");
         try {
             const updatedPost = await toggleReport(post.id, currentUser);
             setPost(updatedPost);
@@ -417,8 +422,16 @@ const ReviewDetail = () => {
                     > 🚨신고
                     </button>
                 }
-                {isAdmin && 
-                    <button className='board-detail-report-button' onClick={handleRestore}>
+                {isAdmin &&
+                    <button 
+                        className='board-detail-report-button' 
+                        onClick={handleRestore}
+                        disabled={post.report < 5}
+                        style={{
+                            opacity: post.report < 5 ? 0.5 : 1,
+                            cursor: post.report < 5 ? 'not-allowed' : 'pointer'
+                        }}
+                    >
                         복원
                     </button>
                 }

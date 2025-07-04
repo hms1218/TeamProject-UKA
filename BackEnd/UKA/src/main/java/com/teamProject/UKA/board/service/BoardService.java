@@ -121,8 +121,6 @@ public class BoardService {
   	//게시글 추천 카운트
   	@Transactional
   	public BoardResponseDTO toggleLikes(String postId, String userId) {
-  	    Board board = repository.findById(postId)
-  	            .orElseThrow(() -> new IllegalArgumentException("게시글이 없습니다. id=" + postId));
 
   	    Optional<BoardLikes> existingLike = boardLikesRepository.findByPostIdAndUserId(postId, userId);
 
@@ -135,18 +133,20 @@ public class BoardService {
   	    }
 
   	    long likesCount = boardLikesRepository.countByPostId(postId);
-  	    boolean isLikedByCurrentUser = boardLikesRepository.existsByPostIdAndUserId(postId, userId);
-  	    boolean isReportedByCurrentUser = boardReportRepository.existsByPostIdAndUserId(postId, userId);
-
-//  	    board.setLikes((int) likesCount);
   	    repository.updateLikes(postId, (int) likesCount);
+      
   	    
   	    long reportCount = boardReportRepository.countByPostId(postId);
-//	    board.setReport((int) reportCount);
   	    repository.updateReport(postId, (int) reportCount);
 	    
 	    entityManager.flush();
 	    entityManager.clear();
+	    
+	    Board board = repository.findById(postId)
+  	            .orElseThrow(() -> new IllegalArgumentException("게시글이 없습니다. id=" + postId));
+	    
+	    boolean isLikedByCurrentUser = boardLikesRepository.existsByPostIdAndUserId(postId, userId);
+  	    boolean isReportedByCurrentUser = boardReportRepository.existsByPostIdAndUserId(postId, userId);
 
   	    return new BoardResponseDTO(board, isLikedByCurrentUser, isReportedByCurrentUser);
   	}
@@ -154,8 +154,6 @@ public class BoardService {
   	//게시글 신고 카운트
   	@Transactional
   	public BoardResponseDTO toggleReport(String postId, String userId) {
-  	    Board board = repository.findById(postId)
-  	            .orElseThrow(() -> new IllegalArgumentException("게시글이 없습니다. id=" + postId));
   	    
   	    Optional<BoardReport> existingReport = boardReportRepository.findByPostIdAndUserId(postId, userId);
 
@@ -165,19 +163,20 @@ public class BoardService {
 	    	boardReportRepository.save(new BoardReport(null, postId, userId, LocalDateTime.now()));
 	    }
   	    
-  	    long reportCount = boardReportRepository.countByPostId(postId);
-  	    boolean isLikedByCurrentUser = boardLikesRepository.existsByPostIdAndUserId(postId, userId);
-	    boolean isReportedByCurrentUser = boardReportRepository.existsByPostIdAndUserId(postId, userId);
-
-//	    board.setReport((int) reportCount);
-	    repository.updateReport(postId, (int) reportCount);
+  	    long likesCount = boardLikesRepository.countByPostId(postId);
+  	    repository.updateLikes(postId, (int) likesCount);
 	    
-	    long likesCount = boardLikesRepository.countByPostId(postId);
-//	    board.setLikes((int) likesCount);
-	    repository.updateLikes(postId, (int) likesCount);
+	    long reportCount = boardReportRepository.countByPostId(postId);
+	    repository.updateReport(postId, (int) reportCount);
 	    
 	    entityManager.flush();
 	    entityManager.clear();
+	    
+	    Board board = repository.findById(postId)
+  	            .orElseThrow(() -> new IllegalArgumentException("게시글이 없습니다. id=" + postId));
+	    
+	    boolean isLikedByCurrentUser = boardLikesRepository.existsByPostIdAndUserId(postId, userId);
+	    boolean isReportedByCurrentUser = boardReportRepository.existsByPostIdAndUserId(postId, userId);
 
 	    return new BoardResponseDTO(board, isLikedByCurrentUser, isReportedByCurrentUser);
   	}

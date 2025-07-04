@@ -18,6 +18,11 @@ const AllBoard = () => {
     const [confirmKeyword, setConfirmKeyword] = useState('');
     const [searchOption, setSearchOption] = useState('title');
 
+    // 유저 정보
+    const loginData = JSON.parse(localStorage.getItem("user"));
+    const isAdmin = loginData?.userId?.includes("admin") ? true : false;
+    const currentUser = loginData?.nickname;
+
     const itemsPerPage = 10;
 
     const categoryLabels = {
@@ -57,7 +62,6 @@ const AllBoard = () => {
         });
     };
 
-    // const noticedPosts = sortPosts(posts.filter(p => p.category === "NOTICE"));
     const noticedPosts = [...posts.filter(p => p.category === "NOTICE")]
         .sort((a, b) => {
             const dateA = a.updatedAt ? new Date(a.updatedAt) : new Date(a.createdAt);
@@ -104,10 +108,12 @@ const AllBoard = () => {
         // setSearchKeyword('')
     }
 
+    //검색 결과 정렬
+    const sortedFilteredPosts = sortPosts(filteredPosts);
     //공지사항 3개 제한
     const limitedNoticedPosts = noticedPosts.slice(0, 3);
     // 현재 페이지에 보여줄 게시글
-    const paginatedPosts = isSearching ? filteredPosts : normalPosts;
+    const paginatedPosts = isSearching ? sortedFilteredPosts : normalPosts;
     const displayedPosts = paginatedPosts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
     //searching 여부에 따라 페이징
@@ -131,7 +137,7 @@ const AllBoard = () => {
 
 	//글쓰기 버튼
     const handleWrite = () => {
-        navigate('/board/all/form');
+        currentUser === undefined ? Swal.fire("로그인 필요","로그인 후 이용해주세요.","error") : navigate('/board/all/form');
     };
 
     //검색한 키워드 강조

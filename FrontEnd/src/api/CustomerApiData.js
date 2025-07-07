@@ -189,13 +189,24 @@ export const editQnaComment = async (commentId, newContent) => {
     }
 };
 
-// QnA 댓글 삭제
-export const deleteQnaComment = async (commentId) => {
+// QnA 댓글 숨김(가림)
+export const hideQnaComment = async (commentId) => {
     try {
         const res = await axios.delete(`${API_BASE_URL}/customer/qna/comments/${commentId}`);
         return res.data;
     } catch (error) {
-        console.error('deleteQnaComment API 에러:', error.response ? error.response.data : error.message);
+        console.error('hideQnaComment API 에러:', error.response ? error.response.data : error.message);
+        throw error;
+    }
+};
+
+// QnA 댓글 완전 삭제
+export const deleteQnaComment = async (commentId) => {
+    try {
+        const res = await axios.delete(`${API_BASE_URL}/customer/qna/comments/${commentId}/real`);
+        return res.data;
+    } catch (error) {
+        console.error('deleteQnaComment(실제삭제) API 에러:', error.response ? error.response.data : error.message);
         throw error;
     }
 };

@@ -5,12 +5,14 @@ const QnACommentItem = ({
     user,
     isAdmin,
     handleEditSave,
-    handleDeleteComment
+    handleDeleteComment,
+    handleHideComment, // 관리자만 전달
 }) => {
     const [editMode, setEditMode] = useState(false);
     const [editContent, setEditContent] = useState(comment.qnaCommentContent);
 
-    const isMine = isAdmin || comment.qnaCommentWriter === user?.nickname;
+    // 본인 여부
+    const isOwner = user?.nickname === comment.qnaCommentWriter;
 
     return (
         <div
@@ -21,13 +23,25 @@ const QnACommentItem = ({
                 borderBottom: '1px solid #f1f1f1',
             }}
         >
-            {/* 작성자 + 날짜 + (수정/삭제) 버튼 한 줄 */}
+            {/* 작성자 + 날짜 + (수정/삭제/숨김) 버튼 한 줄 */}
             <div style={{ display: 'flex', alignItems: 'center', marginBottom: 4 }}>
                 <b>{comment.qnaCommentWriter}</b>
                 <span style={{ color: "#bbb", fontSize: 13, marginLeft: 8 }}>
                     {comment.qnaCommentCreatedAt?.slice(0, 10)}
                 </span>
-                {isMine && !editMode && comment.deleted !== "Y" && (
+                {/* 관리자 */}
+                {isAdmin && !editMode && comment.deleted !== "Y" && (
+                    <>
+                        <button className='customer-comment-action-btn' style={{ marginLeft: 16 }} onClick={() => handleHideComment(comment.qnaCommentId)}>
+                            숨김
+                        </button>
+                        <button className='customer-comment-action-btn' style={{ marginLeft: 4 }} onClick={() => handleDeleteComment(comment.qnaCommentId)}>
+                            삭제
+                        </button>
+                    </>
+                )}
+                {/* 일반 사용자 본인 */}
+                {!isAdmin && isOwner && !editMode && comment.deleted !== "Y" && (
                     <>
                         <button className='customer-comment-action-btn' style={{ marginLeft: 16 }} onClick={() => setEditMode(true)}>
                             수정
@@ -37,6 +51,7 @@ const QnACommentItem = ({
                         </button>
                     </>
                 )}
+                {/* 아무 조건도 아니면 버튼 없음 */}
             </div>
 
             {/* 댓글 내용 or 수정모드 입력창 */}
@@ -58,7 +73,7 @@ const QnACommentItem = ({
                     </>
                 ) : (
                     comment.deleted === "Y"
-                        ? <span style={{ color: "#888" }}><del>관리자에 의해 삭제된 댓글입니다.</del></span>
+                        ? <span style={{ color: "#888" }}><del>관리자에 의해 숨김처리된 댓글입니다.</del></span>
                         : <span style={{ marginRight: 10 }}>{comment.qnaCommentContent}</span>
                 )}
             </div>

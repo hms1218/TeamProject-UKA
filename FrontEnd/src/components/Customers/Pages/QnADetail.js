@@ -576,6 +576,7 @@ const QnADetail = () => {
                         setCommentInput: resetInput,
                         showAlert,
                         MapQnaRaw,
+                        password,
                     });
                     await fetchData(); // 댓글 등록 후 전체 새로고침
                 }}

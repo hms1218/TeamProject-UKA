@@ -133,7 +133,8 @@ export async function handleCommentSubmit({
     setQna,
     setCommentInput,
     showAlert,
-    MapQnaRaw
+    MapQnaRaw,
+    password
 }) {
     e.preventDefault();
     if (!commentInput.trim()) return;
@@ -145,7 +146,7 @@ export async function handleCommentSubmit({
             qnaCommentContent: commentInput
         });
 
-        const updated = await fetchQnaDetail(qna.qnaNo);
+        const updated = await fetchQnaDetail(qna.qnaNo, password);
         setQna(MapQnaRaw(updated));
         setCommentInput('');
     } catch (error) {

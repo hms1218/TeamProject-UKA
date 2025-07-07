@@ -27,6 +27,8 @@ const FAQList = ({ searchKeyword = "", onDelete = () => { } }) => {
 
     // 테스트용
     const {isAdmin} = useAdmin();
+    console.log('isAdmin:', isAdmin, 'user:', JSON.parse(localStorage.getItem('user')));
+
 
     useEffect(() => {
         fetchFaqs().then(setFaqList);

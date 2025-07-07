@@ -4,6 +4,7 @@ import './RequestMain.css'
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useRef, useState } from 'react'
 import Swal from 'sweetalert2'
+import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
 
 // const API_BASE_URL = "http://localhost:8888";
 const API_BASE_URL = "http://192.168.3.24:8888";
@@ -53,7 +54,8 @@ export const RequestMain = () => {
 
                 onClick={()=>{
                     currentUser === undefined ? Swal.fire("로그인 필요","로그인 후 이용해주세요.","error") : navigate('/request/write');
-                }}>작성하기
+                }}>작성하기 
+                <CreateOutlinedIcon/>
             </Button>
 
             <Box className='RMtop'>

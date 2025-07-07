@@ -1,7 +1,7 @@
 import DatePicker from 'react-datepicker';
 import defimg from '../../assets/default.jpg'
 import './RequestWrite.css'
-import { Button, Dialog, DialogTitle, ListItem, ListItemButton, Switch, TextField} from "@mui/material";
+import { Button, Dialog, DialogTitle, ListItem, ListItemButton, MenuItem, Switch, TextField} from "@mui/material";
 import { forwardRef, useEffect, useState } from "react";
 import {useNavigate} from 'react-router-dom'
 import { useAlert } from '../Customers/Context/AlertContext';
@@ -22,11 +22,13 @@ export const RequestWrite = () => {
     // 사진 세팅
     const [newImg,setNewImg] = useState('')
     // 에러 메세지
-    const [error,setError] = useState(' ');
+    const [error,setError] = useState('');
     // 한번이라도 수정했는지-에러 컨트롤
     const [isTouched,setIsTouched] = useState(false);
     // 품종선택 열기
     const [open,setOpen] = useState(false);
+    // 품종 기타
+    const [semiKind,setSemiKind] = useState(false);
     // 폼 데이터
     const [formData, setFormData] = useState({
         kind:'',
@@ -34,7 +36,7 @@ export const RequestWrite = () => {
         age:'',
         name:'',
         image:'default.jpg',
-        selectedBreed:'',
+        selectedbreed:'',
         date:'',
         local:'',
         phone:'',
@@ -71,9 +73,25 @@ export const RequestWrite = () => {
 
         if(formData.name===''){
             setError('이름을 입력해주세요')
+        }else if(formData.kind===''){
+            setError('종류를 선택해주세요')
+        }else if(formData.selectedbreed===''){
+            setError('품종을 선택해주세요')
+        }else if(formData.age===''){
+            setError('나이를 선택해주세요')
+        }else if(formData.local===''){
+            setError('실종 장소를 입력해주세요')
+        }else if(formData.date===''){
+            setError('날짜를 입력해주세요')
+        }else if(formData.phone===''){
+            setError('연락수단을 입력해주세요')
+        }else if(formData.detail===''){
+            setError('특징을 입력해주세요')
+        }else{
+            setError('')
         }
-        // setError(' ')
-    },[formData.name])
+        
+    },[formData,isTouched])
     
     
 
@@ -112,11 +130,14 @@ export const RequestWrite = () => {
         // '네' 버튼 눌렀을 시
         if(result.isConfirmed){
 
+            setIsTouched(true);
+            if(error!=='')return;
+
             // 이미지 파일 백엔드에 저장 후 접근 URL받기
             const imageForm = new FormData();
             imageForm.append("file",newImg);
             imageForm.append("userId",JSON.parse(localStorage.getItem('user')).userId)
-            console.log("img",newImg)
+            // console.log("img",newImg)
             let imageUrl = null;
 
             
@@ -128,7 +149,7 @@ export const RequestWrite = () => {
                 const result = await uploadImg.json();            
                 imageUrl= result.imageUrl;
                 } catch (error) {
-                    console.log(error)                    
+                console.log(error)                    
             }
             
 
@@ -138,11 +159,11 @@ export const RequestWrite = () => {
 
                 name : formData.name,
                 kind : formData.kind==='cat'?'고양이':'강아지',
-                selectedbreed: formData.selectedBreed,
+                selectedbreed: formData.selectedbreed,
                 // JSON.stringify(body.user)
                 user_no : JSON.parse(localStorage.getItem('user')).seq,
                 // user_seq : localStorage.getItem('userId'),
-                img : imageUrl,          //이미지 파일 Url
+                img : imageUrl===undefined?defimg:imageUrl,          //이미지 파일 Url
                 sex : formData.sex==='on',    // 성별
                 detail:formData.detail,      // 특징
                 age:formData.age,                // 나이
@@ -244,7 +265,9 @@ export const RequestWrite = () => {
                                                     placeholder='이름'
                                                     style={{width:'150px'}}
                                                     value={formData.name}
-                                                    onChange={(e)=>{setFormData(prev=>({...prev,name:e.target.value}))}}
+                                                    onChange={(e)=>{
+                                                        setFormData(prev=>({...prev,name:e.target.value}))
+                                                    }}
                                                     className='RWinput_main'
                                             /></span>
 
@@ -254,13 +277,26 @@ export const RequestWrite = () => {
                                                 <select value={formData.kind} onChange={(e)=>{
                                                     setFormData(prev=>({...prev,kind:e.target.value}))
                                                     setAnimal(animalData[formData.kind]);
-                                                }}>
+                                                }}
+                                                style={{height:'40px'}}
+                                                >
                                                     <option value="" disabled hidden>종류</option>
                                                     <option value="dog">강아지</option>
                                                     <option value="cat" >고양이</option>
                                                     <option value="etc" >기타</option>
                                                 </select>
 
+                                                {formData.kind==='etc'?
+                                                    <input type='text' 
+                                                        style={{width:'90px'}}
+                                                        placeholder='품종'
+                                                        value={formData.selectedbreed} 
+                                                        className='RWinput_main'
+                                                        onChange={(e)=>{
+                                                        setFormData(prev=>({...prev,selectedbreed:e.target.value}))
+                                                        }} />
+                                                :
+                                                <>
                                                 <Button variant="contained" onClick={
                                                     formData.kind===''?(()=>{
                                                         showAlert({
@@ -275,7 +311,7 @@ export const RequestWrite = () => {
                                                     }}
                                                     sx={{opacity:formData.kind==='etc'?'0.3':'1'}}
                                                 >
-                                                    {formData.selectedBreed===''?'품종':formData.selectedBreed}
+                                                    {formData.selectedbreed===''?'품종':formData.selectedbreed}
                                                 </Button>
                                             
                                                 <Dialog
@@ -293,7 +329,6 @@ export const RequestWrite = () => {
                                                             placeholder='검색어를 입력해주세요'
                                                             onChange={e=>{
                                                                 const keyword = e.target.value.trim();
-
                                                                 if(keyword===''){
                                                                     setAnimal(animalData[formData.kind])
                                                                     return;
@@ -322,7 +357,7 @@ export const RequestWrite = () => {
                                                             <ListItemButton
                                                                 key={index}
                                                                 onClick={() => {
-                                                                    setFormData(prev => ({ ...prev, selectedBreed: breedName }));
+                                                                    setFormData(prev => ({ ...prev, selectedbreed: breedName }));
                                                                     setOpen(false);
                                                                     setAnimal(animalData[formData.kind] || []);
                                                                 }}
@@ -341,6 +376,7 @@ export const RequestWrite = () => {
                                                         );
                                                         })}
                                                 </Dialog>
+                                                </>}
                                             </span>
                                         </div>
                                         <div style={{display:'flex',gap :'20px'}}>   
@@ -349,8 +385,9 @@ export const RequestWrite = () => {
                                                     style={{width:'150px'}}
                                                     placeholder='나이(몸무게)'
                                                     value={formData.age}
-                                                    onChange={(e)=>setFormData(prev=>({...prev,age:e.target.value}))
-                                                    }
+                                                    onChange={(e)=>{
+                                                        setFormData(prev=>({...prev,age:e.target.value}))
+                                                    }}
                                                     className='RWinput_main'/>
                                             </span>
                                             |
@@ -372,7 +409,9 @@ export const RequestWrite = () => {
                                         type="text"
                                         name="lostLocation"
                                         value={formData.local}
-                                        onChange={(e)=>{setFormData(prev=>({...prev,local:e.target.value}))}}
+                                        onChange={(e)=>{
+                                            setFormData(prev=>({...prev,local:e.target.value}))
+                                        }}
                                         className="RWinput"
                                         placeholder="실종된 장소를 입력하세요"
                                     />
@@ -403,7 +442,9 @@ export const RequestWrite = () => {
                                         type="tel"
                                         name="contactNumber"
                                         value={formData.phone}
-                                        onChange={(e)=>{setFormData(prev=>({...prev,phone:e.target.value}))}}
+                                        onChange={(e)=>{
+                                            setFormData(prev=>({...prev,phone:e.target.value}))
+                                        }}
                                         className="RWinput"
                                         placeholder="연락 가능한 전화번호 또는 SNS아이디를 입력해주세요"
                                     />
@@ -414,10 +455,13 @@ export const RequestWrite = () => {
                                     <textarea
                                         name="characteristics"
                                         value={formData.detail}
-                                        onChange={e=>{setFormData(prev=>({...prev,detail:e.target.value}))}}
+                                        onChange={e=>{
+                                            setFormData(prev=>({...prev,detail:e.target.value}))
+                                        }}
                                         className="RWtextarea"
                                         placeholder="외모나 특이사항을 입력하세요"
                                         rows={3}
+                                        maxLength={140}
                                     />
                                     </div>
 
@@ -434,7 +478,7 @@ export const RequestWrite = () => {
                </div>{/* end ex */}
                     <div className='RWbuttonbox'>
                         <Button 
-                            variant="contained"
+                            variant="outlined"
                             className="DBButton"
                             color="primary"
                             onClick={()=>{
@@ -443,7 +487,7 @@ export const RequestWrite = () => {
                         </Button>
 
                         <Button 
-                            variant="contained"
+                            variant="outlined"
                             className="DBButton"
                             color="primary"
                             

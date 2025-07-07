@@ -12,8 +12,15 @@ const API_BASE_URL = "http://192.168.3.24:8888";
 export const RequestComponent = ({
   img = `${defimg}`, kind='', sex = '성별', age = '나이',
   name = '이름', local = '지역', time = '시간', phone,
-  detail = '특징', url = '', row = false, no,list,selectedBreed
+  detail = '특징', url = '', row = false, no,list,selectedbreed,
 }) => {
+
+  const inputTheme = { 
+    border:'1px solid #cceeff',
+    borderRadius:'8px',
+    padding : '7px 10px',
+    fontSize: '18px' 
+  }
 
   // 유저 정보
   const loginData = JSON.parse(localStorage.getItem("user"));
@@ -31,7 +38,8 @@ export const RequestComponent = ({
       border: '1px solid #ccc',
       borderRadius: '8px',
       overflow: 'hidden',
-      width:'98%'
+      // width:'98%',
+      height:'60px'
     },
     '& .MuiFilledInput-root:hover': {
       backgroundColor: '#f5f5f5',
@@ -47,10 +55,14 @@ export const RequestComponent = ({
   const navigate = useNavigate();
   // 고객센터에 만들어진 alert 가져오기
   const { showAlert } = useAlert();
+  // 품종 기타
+  const [semiKind,setSemiKind] = useState(false);
   // 수정모드 상태관리
   const [isEditing, setIsEditing] = useState(false);
   const [editedValues, setEditedValues] = useState({
-    kind, sex, age, name, local, time, phone, detail, no,selectedBreed,img
+    sex, age, name, local, time, phone, detail, no,img
+    ,kind:list.kind
+    ,selectedbreed:list.selectedbreed
   });
 
   const [open,setOpen] = useState(false);
@@ -59,9 +71,10 @@ export const RequestComponent = ({
     const { name, value } = e.target;
     setEditedValues(prev => ({
       ...prev,
-      [name]: name === 'sex' ? (value === 'true') : value  // sex는 boolean 처리
+      [name]:value  // sex는 boolean 처리
     }));
   };
+  
 
   // 수정모드 시작
   const handleUpdate = () => {
@@ -76,8 +89,13 @@ export const RequestComponent = ({
       return
     }
     
-    setEditedValues(prev=>({...prev,no:no,img:list.img,selectedBreed:list.selectedbreed}))
+    // 초기값 세팅
+    setEditedValues(prev=>({
+      ...prev,no:no,img:list.img,selectedbreed:list.selectedbreed
+      ,kind:list.kind==='기타'?'etc':list.kind==='강아지'?'dog':'cat'
+    }))
     setIsEditing(true)
+    console.log(list)
     
   };
 
@@ -122,14 +140,16 @@ export const RequestComponent = ({
         } catch (error) {
             console.log(error)                    
     }
-
     
     setIsEditing(false);
 
-    const newData = {...editedValues,kind:editedValues.kind==='etc'?'기타':editedValues.kind==='cat'?'고양이':'강아지',img:imageUrl}
+    const newData = {...editedValues
+      ,kind:editedValues.kind==='etc'?'기타':editedValues.kind==='cat'?'고양이':'강아지'
+      ,img:imageUrl===undefined?list.img:imageUrl
+    }
     setEditedValues(newData)
     console.log("imageUrl",imageUrl)
-    console.log('수정된 값:', editedValues);
+    console.log('수정된 값:', newData);
     // 여기서 서버 저장
     try {
       const result = await fetch(`${API_BASE_URL}/request`,{
@@ -137,7 +157,7 @@ export const RequestComponent = ({
           headers:{
             'Content-Type':'application/json'
           },
-          body: JSON.stringify(editedValues)
+          body: JSON.stringify(newData)
         })
         await showAlert({title:'수정이 완료 되었습니다.'})
         // 새로고침
@@ -197,30 +217,23 @@ export const RequestComponent = ({
       <div style={{ display: 'flex', flexDirection: 'column'}}>
         {/* 상단 바 */}
         {isEditing ? (
-          <div style={{ display: 'flex', gap: '10px',  color: 'white', padding: '10px 15px',width:'92%'}}>
+          <div style={{ display: 'flex', gap: '20px',  color: 'white', padding: '10px 15px',width:'92%'}}>
             {/* <TextField sx={theme} variant='filled' label="종류" name="kind" value={editedValues.kind} onChange={handleChange} size="small" /> */}
 
             {/* 안보이는 input버튼 */}  
             <input className='RWimageinput' type='file' onChange={handleImgChange}/>
             {/* 품종 선택 상자 */}
             <span style={{display:'flex',flexDirection:'row'}}>
-
-              {/* <select value={editedValues.kind} onChange={(e)=>{setEditedValues(prev=>({...prev,kind:e.target.value}))}}>
-                  <option value="" disabled selected hidden>종류</option>
-                  <option value="dog">강아지</option>
-                  <option value="cat" >고양이</option>
-              </select> */}
-
             
             <TextField
               variant='filled'
               select
               label="종류"
               name="kind"
-              value={editedValues.kind==='etc'?'기타':editedValues.kind==='고양이'?'cat':'dog'}
+              value={editedValues.kind}
               onChange={handleChange}
               size="small"
-              sx={{minWidth: 100,marginRight:'10px','& .MuiFilledInput-root': {
+              sx={{minWidth: 120,marginRight:'10px','& .MuiFilledInput-root': {
                   backgroundColor: '#fff',
                   border: '1px solid #ccc',
                   borderRadius: '8px',
@@ -239,14 +252,23 @@ export const RequestComponent = ({
             >
               <MenuItem  value={'dog'}>강아지</MenuItem>
               <MenuItem  value={'cat'}>고양이</MenuItem>
+              <MenuItem  value={'etc'}>기타</MenuItem>
             </TextField>
-
-
+            
+            {editedValues.kind==='etc'?
+            <input type='text' value={editedValues.selectedbreed} 
+            onChange={(e)=>{
+              setEditedValues(prev=>({...prev,selectedbreed:e.target.value}))
+              console.log(editedValues.kind)
+              console.log(editedValues.selectedbreed)
+            }} />
+            :
+            <>
               <Button variant="contained"
                 sx={{minWidth:'80px'}}
                onClick={editedValues.kind===''?(()=>{}):()=>setOpen(true)}
               >
-                  {editedValues.selectedBreed}
+                  {editedValues.selectedbreed}
               </Button>
           
               <Dialog
@@ -259,8 +281,10 @@ export const RequestComponent = ({
                       {animal[editedValues.kind === 'cat' ? 'cat' : 'dog'].map((animal, index) => (
                           <ListItemButton key={index} 
                           onClick={()=>{
-                              setEditedValues(prev=>({...prev,selectedBreed:Object.keys(animal)[0]}))
+                              setEditedValues(prev=>({...prev,selectedbreed:Object.keys(animal)[0]}))
                               // setSeletedBreed(Object.keys(animal)[0])
+                              console.log(editedValues.kind)
+                              console.log(editedValues.selectedbreed)
                               setOpen(false);
                           }}>
                               <ListItem disablePadding sx={{border:'1px solid #cceeff'}}>
@@ -270,6 +294,8 @@ export const RequestComponent = ({
                       </ListItemButton>
                       ))}               
               </Dialog>
+            </>
+          }
           </span>
 
             <TextField
@@ -280,7 +306,7 @@ export const RequestComponent = ({
               value={editedValues.sex}
               onChange={handleChange}
               size="small"
-              sx={{minWidth: 80,'& .MuiFilledInput-root': {
+              sx={{minWidth: 100,'& .MuiFilledInput-root': {
                   backgroundColor: '#fff',
                   border: '1px solid #ccc',
                   borderRadius: '8px',
@@ -325,7 +351,7 @@ export const RequestComponent = ({
                 border: '1px solid #ccc',
                 borderRadius: '8px',
                 overflow: 'hidden',
-                width:'130px'
+                width:'150px'
               },
               '& .MuiFilledInput-root:hover': {
                 backgroundColor: '#f5f5f5',
@@ -342,10 +368,10 @@ export const RequestComponent = ({
         ) : (
           <Typography
             sx={{ backgroundColor: '#ff6666', color: 'white', textAlign: 'center',padding: '10px 20px' }}
-            variant="h5"
+            variant="h6"
             component="div"
           >
-            🐾[{editedValues.kind}] {editedValues.selectedBreed} | 🧸{editedValues.sex === true ? '수컷' : '암컷'} | 🕒{editedValues.age} | 🏷️{editedValues.name}
+            🐾[{editedValues.kind}] {editedValues.selectedbreed} | 🧸{editedValues.sex === true ? '수컷' : '암컷'} | 🕒{editedValues.age} | 🏷️{editedValues.name}
           </Typography>
         )}
 
@@ -354,10 +380,12 @@ export const RequestComponent = ({
             sx={{ width: '92%', display: 'flex', flexDirection: 'column', justifyContent: 'center', height:'250px',}}
           >
             {isEditing ? (
-              <>
-                <TextField sx={theme} variant='filled' label="실종 장소" name="local" value={editedValues.local} onChange={handleChange} />
-                <TextField sx={theme} variant='filled' label="실종 시간" name="time" value={editedValues.time} onChange={handleChange} />
-                <TextField sx={theme} variant='filled' label="연락수단" name="phone" value={editedValues.phone} onChange={handleChange} />
+              <div style={{display:'flex', flexDirection:'column', gap:'10px'}}>
+                <div style={{display:'flex',justifyContent:'space-between',gap:'20px'}}>
+                  <TextField sx={theme} fullWidth variant='filled' label="실종 장소" name="local" value={editedValues.local} onChange={handleChange} />
+                  <TextField sx={theme} fullWidth variant='filled' label="실종 날짜" name="time" value={editedValues.time} onChange={handleChange} />
+                </div>
+                <TextField sx={theme} variant='filled' label="연락수단"  value={editedValues.phone} onChange={(e)=>{setEditedValues(prev=>({...prev,phone:e.target.value}))}} />
                 <TextField
                   sx={theme}
                   variant='filled'
@@ -367,20 +395,20 @@ export const RequestComponent = ({
                   onChange={handleChange}
                   multiline
                 />
-              </>
+              </div>
             ) : (
               <div>
-                <Typography sx={{ fontSize: '20px' }} gutterBottom variant="h5" component="div">
+                <Typography sx={inputTheme} gutterBottom variant="h5" component="div">
                   <b>실종 장소</b>: {editedValues.local}
                 </Typography>
-                <Typography sx={{ fontSize: '20px' }} gutterBottom variant="h5" component="div">
+                <Typography sx={inputTheme} gutterBottom variant="h5" component="div">
                   <b>실종 시간</b>: {editedValues.time}
                 </Typography>
-                <Typography sx={{ fontSize: '20px' }} gutterBottom variant="h5" component="div">
+                <Typography sx={inputTheme} gutterBottom variant="h5" component="div">
                   <b>연락수단</b>: {editedValues.phone}
                 </Typography>
                 <Typography
-                  sx={{ fontSize: '20px', whiteSpace: 'pre-line', height: '100px' }}
+                  sx={{...inputTheme, fontSize: '18px', whiteSpace: 'pre-line', height: '70px' }}
                   gutterBottom
                   variant="h5"
                   component="div"
@@ -392,8 +420,11 @@ export const RequestComponent = ({
             {/* 버튼 쪽 */}
             <div style={{ position:'relative', top:'10px',display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', gap: '10px' }}>
               {isEditing ? (<>
-                <Button variant="contained" color="success" onClick={handleSave}>저장</Button>
-                <Button variant="contained" color="error" onClick={()=>{setIsEditing(false)}}>취소</Button></>
+                <Button variant="outlined" color="success" onClick={handleSave}>저장</Button>
+                <Button variant="outlined" color="error" onClick={()=>{
+                  setIsEditing(false)
+                  navigate(0)
+                }}>취소</Button></>
               ) : (
                 <Button variant="outlined" color="primary" onClick={handleUpdate}>수정</Button>
               )}

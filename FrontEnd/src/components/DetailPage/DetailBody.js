@@ -19,6 +19,7 @@ import SiDoData from "../Map/koreaSiDoData";
 import SiGunGooData from "../Map/KoreaSiGunGooData";
 import { fetchSavedAnimals } from "../../api/AnimalApiData.js";
 import Loading from "../Common/Loading.js";
+import Swal from "sweetalert2";
 
 export const DetailBody = () => {
     // 1) useLocation() 으로 쿼리스트링 읽어오기
@@ -528,8 +529,11 @@ export const DetailBody = () => {
                             className="DBboard-search-input"
                             type="text"
                             placeholder="통합검색"
+                            onClick={()=>{Swal.fire("미구현","기능 준비중입니다","warning")}}
                         />
-                        <button className="DBboard-search-button">
+                        <button className="DBboard-search-button"
+                        onClick={()=>{Swal.fire("미구현","기능 준비중입니다","warning")}}
+                        >
                         🔍
                         </button>
                     </div>

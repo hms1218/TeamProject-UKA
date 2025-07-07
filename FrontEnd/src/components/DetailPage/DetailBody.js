@@ -506,15 +506,16 @@ export const DetailBody = () => {
                     </button>
                     ))}
                     <button onClick={() => {
-                        setCurrentPage(currentPage + 1)}} disabled={currentPage === totalPages}>›</button>
+                        setCurrentPage(currentPage + 1)}} disabled={currentPage === totalPages||totalPages===0}>›</button>
                     <button
                         onClick={() => {
+
                             const nextGroupStart = Math.floor((currentPage - 1) / 5 + 1) * 5 + 1;
                             //ex) currentPage = 14 -> floor((14-1)/5+1) = 3, 3*5+1 = 16page
                             const nextGroupPage = Math.min(nextGroupStart, totalPages); //둘중에 최솟값의 페이지의로 이동
                             setCurrentPage(nextGroupPage);
                         }}
-                        disabled={currentPage === totalPages}
+                        disabled={currentPage === totalPages||totalPages===0}
                     >
                     »
                     </button>

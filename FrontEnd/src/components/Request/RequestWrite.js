@@ -2,7 +2,7 @@ import DatePicker from 'react-datepicker';
 import defimg from '../../assets/default.jpg'
 import './RequestWrite.css'
 import { Button, Dialog, DialogTitle, ListItem, ListItemButton, Switch, TextField} from "@mui/material";
-import { forwardRef, useState } from "react";
+import { forwardRef, useEffect, useState } from "react";
 import {useNavigate} from 'react-router-dom'
 import { useAlert } from '../Customers/Context/AlertContext';
 import  {animal as animalData}  from "../DetailPage/DetailBodyData.js";
@@ -20,7 +20,7 @@ export const RequestWrite = () => {
     // 사진 예시로 보여주기.
     const [preview,setPreview] = useState(defimg);
     // 사진 세팅
-    const [img,setImg] = useState('default.jpg')
+    const [newImg,setNewImg] = useState('')
     // 에러 메세지
     const [error,setError] = useState(' ');
     // 한번이라도 수정했는지-에러 컨트롤
@@ -50,7 +50,7 @@ export const RequestWrite = () => {
             const file = e.target.files[0];
             if(!file) return;
 
-            setImg(file)
+            setNewImg(file)
             console.log(file)
             //받은 이미지 저장 (유저아이디+파일명으로 파일 이름 저장.)
             // setFormData(prev=>({...prev,image:localStorage.getItem('userId')+file.name}))
@@ -66,7 +66,7 @@ export const RequestWrite = () => {
     }
 
     // 에러메세지 작동
-    useState(()=>{
+    useEffect(()=>{
         if(!isTouched) return;
 
         if(formData.name===''){
@@ -114,25 +114,23 @@ export const RequestWrite = () => {
 
             // 이미지 파일 백엔드에 저장 후 접근 URL받기
             const imageForm = new FormData();
-            imageForm.append("file",img);
+            imageForm.append("file",newImg);
             imageForm.append("userId",JSON.parse(localStorage.getItem('user')).userId)
-            console.log("img",img)
+            console.log("img",newImg)
             let imageUrl = null;
 
-            if(img==='default.jpg'){
-                // imageUrl = 'default.jpg';
-            }else{
-                try {
-                    const uploadImg = await fetch(`${API_BASE_URL}/request/image`,{
-                    method:"POST",
-                    body:imageForm
-                    })
-                    const result = await uploadImg.json();            
-                    imageUrl= result.imageUrl;
-                    } catch (error) {
-                        console.log(error)                    
-                }
+            
+            try {
+                const uploadImg = await fetch(`${API_BASE_URL}/request/image`,{
+                method:"POST",
+                body:imageForm
+                })
+                const result = await uploadImg.json();            
+                imageUrl= result.imageUrl;
+                } catch (error) {
+                    console.log(error)                    
             }
+            
 
             // request 게시판 데이터 업로드
             const data = {
@@ -202,7 +200,7 @@ export const RequestWrite = () => {
                         e.preventDefault();
                         const file = e.dataTransfer.files[0];
                         setFormData(prev=>({...prev,image:file}))
-                        setImg(file)
+                        setNewImg(file)
                         setPreview(URL.createObjectURL(file))
                     }}
                     onDragOver={(e)=>{

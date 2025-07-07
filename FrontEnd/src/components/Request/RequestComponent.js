@@ -4,6 +4,7 @@ import { Card, CardContent, CardMedia, Typography, Button, TextField, MenuItem, 
 import { useState } from 'react';
 import { useAlert } from '../Customers/Context/AlertContext';
 import { animal } from "../DetailPage/DetailBodyData.js";
+import Swal from 'sweetalert2';
 
 // const API_BASE_URL = "http://localhost:8888";
 const API_BASE_URL = "http://192.168.3.24:8888";
@@ -14,7 +15,15 @@ export const RequestComponent = ({
   detail = '특징', url = '', row = false, no,list,selectedBreed
 }) => {
 
-  // console.log(list.selectedbreed)
+  // 유저 정보
+  const loginData = JSON.parse(localStorage.getItem("user"));
+  const isAdmin = loginData?.userId?.includes("admin") ? true : false;
+  const currentUser = loginData?.nickname;
+
+  // 사진 예시로 보여주기.
+  const [preview,setPreview] = useState(img);
+  // 사진 세팅
+  const [newImg,setNewImg] = useState('')
 
   const theme={
     '& .MuiFilledInput-root': {
@@ -41,7 +50,7 @@ export const RequestComponent = ({
   // 수정모드 상태관리
   const [isEditing, setIsEditing] = useState(false);
   const [editedValues, setEditedValues] = useState({
-    kind, sex, age, name, local, time, phone, detail, no,selectedBreed,
+    kind, sex, age, name, local, time, phone, detail, no,selectedBreed,img
   });
 
   const [open,setOpen] = useState(false);
@@ -56,28 +65,74 @@ export const RequestComponent = ({
 
   // 수정모드 시작
   const handleUpdate = () => {
-    try {
-      // 여기서 아이디 검사 해야할듯 (작성자와 접속자 비교 해서 처리)
-    } catch (error) {
-      console.log("권한없음")
+    
+    if(currentUser===undefined){
+      Swal.fire("로그인 필요","로그인 후 이용해주세요.","error")
+      return
     }
 
-    try {
-      setEditedValues(prev=>({...prev,no:no,img:list.img,selectedBreed:list.selectedbreed}))
-      setIsEditing(true);
-    } catch (error) {
-      console.log('수정 실패')
-    } 
+    if(!isAdmin&&loginData.seq!==list.user_no){
+      Swal.fire("수정 실패","작성자만 수정 할 수 있습니다.","error")
+      return
+    }
+    
+    setEditedValues(prev=>({...prev,no:no,img:list.img,selectedBreed:list.selectedbreed}))
+    setIsEditing(true)
+    
   };
+
+  //이미지 등록
+    const handleImgChange = (e) => {
+        try {
+            const file = e.target.files[0];
+            if(!file) return;
+
+            setNewImg(file)
+            // console.log(file)
+            //받은 이미지 저장 (유저아이디+파일명으로 파일 이름 저장.)
+            // setFormData(prev=>({...prev,image:localStorage.getItem('userId')+file.name}))
+            //받은 이미지로 프리뷰에 쓸 임시 URL 만들고 세팅.
+            setPreview(URL.createObjectURL(file));    
+        } catch (error) {
+            console.error('이미지 변경 중 오류:', error);
+        }
+    }
+    // 간접 클릭
+    const handleOnClick = () => {
+        document.querySelector('.RWimageinput').click();
+    }
 
   // [PUT]
   const handleSave = async() => {
+
+    // 이미지 파일 백엔드에 저장 후 접근 URL받기
+    const imageForm = new FormData();
+    imageForm.append("file",newImg);
+    imageForm.append("userId",JSON.parse(localStorage.getItem('user')).userId)
+    // console.log("img",newImg)
+    let imageUrl = null;
+
+    try {
+        const uploadImg = await fetch(`${API_BASE_URL}/request/image`,{
+        method:"POST",
+        body:imageForm
+        })
+        const result = await uploadImg.json();            
+        imageUrl= result.imageUrl;
+        } catch (error) {
+            console.log(error)                    
+    }
+
+    
     setIsEditing(false);
-    setEditedValues(prev=>({...prev,kind:editedValues.kind==='cat'?'고양이':'강아지'}))
+
+    const newData = {...editedValues,kind:editedValues.kind==='etc'?'기타':editedValues.kind==='cat'?'고양이':'강아지',img:imageUrl}
+    setEditedValues(newData)
+    console.log("imageUrl",imageUrl)
     console.log('수정된 값:', editedValues);
     // 여기서 서버 저장
     try {
-        const result = await fetch(`${API_BASE_URL}/request`,{
+      const result = await fetch(`${API_BASE_URL}/request`,{
           method:'PUT',
           headers:{
             'Content-Type':'application/json'
@@ -86,6 +141,7 @@ export const RequestComponent = ({
         })
         await showAlert({title:'수정이 완료 되었습니다.'})
         // 새로고침
+        navigate(0)
     } catch (error) {
       console.log("수정하기 연결 실패",error)
     }
@@ -93,10 +149,14 @@ export const RequestComponent = ({
 
   //[Delete]
   const handleDelete = async() => {
-    try {
-      // 여기서 아이디 검사 해야할듯 (작성자와 접속자 비교 해서 처리)
-    } catch (error) {
-      console.log("권한없음")
+    if(currentUser===undefined){
+      Swal.fire("로그인 필요","로그인 후 이용해주세요.","error")
+      return
+    }
+
+    if(!isAdmin&&loginData.seq!==list.user_no){
+      Swal.fire("삭제 실패","작성자만 삭제 할 수 있습니다.","error")
+      return
     }
 
     try {
@@ -128,7 +188,8 @@ export const RequestComponent = ({
         <CardMedia
           component="img"
           height="auto"
-          image={img}
+          image={preview}
+          onClick={isEditing?()=>{handleOnClick()}:()=>{}}
           sx={{ width: 360, height: 360, objectFit: 'cover' }}
         />
       </div>
@@ -138,6 +199,9 @@ export const RequestComponent = ({
         {isEditing ? (
           <div style={{ display: 'flex', gap: '10px',  color: 'white', padding: '10px 15px',width:'92%'}}>
             {/* <TextField sx={theme} variant='filled' label="종류" name="kind" value={editedValues.kind} onChange={handleChange} size="small" /> */}
+
+            {/* 안보이는 input버튼 */}  
+            <input className='RWimageinput' type='file' onChange={handleImgChange}/>
             {/* 품종 선택 상자 */}
             <span style={{display:'flex',flexDirection:'row'}}>
 

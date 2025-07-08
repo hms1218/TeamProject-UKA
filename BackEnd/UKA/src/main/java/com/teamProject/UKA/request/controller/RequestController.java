@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.teamProject.UKA.request.dto.RequestDataDTO;
 import com.teamProject.UKA.request.service.RequestService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -37,6 +38,7 @@ public class RequestController {
 	
 	//C - 찾고 있어요 '단건' 작성.
 	@PostMapping
+	@Operation(summary = "찾고있어요 쓰기", description = "찾고있어요 쓰기")
 	public ResponseEntity<?> write(@RequestBody RequestDataDTO dto){
 		List<RequestDataDTO> result = service.write(dto);
 		return ResponseEntity.ok().body(result);

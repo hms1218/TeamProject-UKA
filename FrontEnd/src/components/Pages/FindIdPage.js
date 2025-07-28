@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 import MainLogo from '../../assets/MainLogo.png';
 
-import { BASE_URL } from '../../api/BaseUrl';
+// const API_BASE_URL = "http://localhost:8888";
+const API_BASE_URL = "http://192.168.3.24:8888";
 
 export default function FindIdPage() {
     const [email, setEmail] = useState('');
@@ -13,24 +15,23 @@ export default function FindIdPage() {
 
     const handleSubmit = async e => {
         e.preventDefault();
-        setError(''); 
+        setError('');
         setResult(null);
         try {
-            const res = await fetch(`${BASE_URL}api/auth/find-userId`, {
-                method: 'POST',
+            const res = await axios.post(`${API_BASE_URL}/api/auth/find-userId`, {
+                email
+            }, {
                 headers: {
-                    'Content-Type':'application/json'
-                },
-                body: JSON.stringify({ 
-                    email 
-                })
+                    'Content-Type': 'application/json'
+                }
             });
-            const body = await res.json();
-            console.log("body ::", body);
-            if (!res.ok) throw new Error(body.message);
-            setResult(body.userId);
+
+            // axios는 2xx가 아니면 자동으로 catch로 이동!
+            setResult(res.data.userId);
         } catch (err) {
-            setError(err.message);
+            // 에러 구조가 다를 수 있으니 아래와 같이 처리
+            const msg = err.response?.data?.message || err.message || '알 수 없는 에러';
+            setError(msg);
         }
     };
 

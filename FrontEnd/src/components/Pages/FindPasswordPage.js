@@ -7,7 +7,7 @@ import MainLogo from '../../assets/MainLogo.png';
 import Loading from "../Common/Loading";
 import Error from "../Common/Error";
 
-import { BASE_URL } from "./BaseUrl";
+import { BASE_URL } from '../../api/BaseUrl';
 
 export default function FindPasswordPage() {
     const [userId, setUserId] = useState('');

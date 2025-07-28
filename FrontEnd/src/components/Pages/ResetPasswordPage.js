@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { BASE_URL } from "./BaseUrl";
+import { BASE_URL } from '../../api/BaseUrl';
 
 export default function ResetPasswordPage() {
     const navigate = useNavigate();

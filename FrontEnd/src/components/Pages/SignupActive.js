@@ -1,4 +1,4 @@
-import { BASE_URL } from "./BaseUrl";
+import { BASE_URL } from "../../api/BaseUrl";
 
 // ✅ 아이디 중복 확인
 export const checkUserIdDuplicate = async (userId, showAlert, setIsUserIdChecked) => {

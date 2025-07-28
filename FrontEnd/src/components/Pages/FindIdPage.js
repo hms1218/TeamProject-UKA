@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import MainLogo from '../../assets/MainLogo.png';
 
-import { BASE_URL } from "./BaseUrl";
+import { BASE_URL } from '../../api/BaseUrl';
 
 export default function FindIdPage() {
     const [email, setEmail] = useState('');

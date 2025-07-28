@@ -3,7 +3,7 @@ import './DetailSelect.css'
 import { useEffect, useState } from 'react';
 import defimg from '../../assets/noImage.jpg';
 
-import { BASE_URL } from "./BaseUrl";
+import { BASE_URL } from '../../api/BaseUrl';
 
 export const DetailSelect = () => {
 

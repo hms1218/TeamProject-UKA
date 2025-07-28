@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { useAlert } from '../Customers/Context/AlertContext';
 import { animal } from "../DetailPage/DetailBodyData.js";
 import Swal from 'sweetalert2';
-import { BASE_URL } from "./BaseUrl";
+import { BASE_URL } from '../../api/BaseUrl.js';
 
 export const RequestComponent = ({
   img = `${defimg}`, kind='', sex = '성별', age = '나이',

@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
-import { BASE_URL } from '../../../Request/BaseUrl'; // BASE_URL을 가져옵니다.
+import { BASE_URL } from '../../../../../api/BaseUrl';
 
 const CATEGORY_LABELS = {
     CHAT: '속닥속닥',

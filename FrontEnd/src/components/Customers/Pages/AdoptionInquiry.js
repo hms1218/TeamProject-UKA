@@ -6,7 +6,7 @@ import { saveThumbnails, savePopups } from './AdoptionImageActive';
 import AdoptionApplicationForm from './AdoptionForm';
 import { useLocation } from 'react-router-dom';
 
-import { BASE_URL } from "./BaseUrl";
+import { BASE_URL } from '../../../api/BaseUrl';
 
 const AdoptionInquiry = () => {
     const [open, setOpen] = useState(false);

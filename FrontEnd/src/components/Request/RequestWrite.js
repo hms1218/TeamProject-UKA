@@ -9,7 +9,7 @@ import  {animal as animalData}  from "../DetailPage/DetailBodyData.js";
 import SearchIcon from '@mui/icons-material/Search';
 import RefreshIcon from '@mui/icons-material/Refresh';
 
-import { BASE_URL } from "./BaseUrl";
+import { BASE_URL } from '../../api/BaseUrl.js';
 
 export const RequestWrite = () => {
 

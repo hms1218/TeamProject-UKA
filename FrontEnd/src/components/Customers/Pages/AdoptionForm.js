@@ -5,9 +5,9 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { useAlert } from '../Context/AlertContext';
 
+import { BASE_URL } from '../../../api/BaseUrl';
 const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-import { BASE_URL } from "./BaseUrl";
 const initialForm = {
     applicantName: '',
     address: '',

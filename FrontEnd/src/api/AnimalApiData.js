@@ -1,4 +1,4 @@
-import { BASE_URL } from "../components/Request/BaseUrl";
+import { BASE_URL } from "./BaseUrl";
 const API_URL = process.env.REACT_APP_ALL_ANIMAL_API_URL;
 const API_KEY = process.env.REACT_APP_ALL_ANIMAL_API_KEY;
 

@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from 'react'
 import Swal from 'sweetalert2'
 import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
 
-import { BASE_URL } from "./BaseUrl";
+import { BASE_URL } from '../../api/BaseUrl'
 
 export const RequestMain = () => {
     const navigate = useNavigate();

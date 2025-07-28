@@ -3,9 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 import MainLogo from '../../assets/MainLogo.png';
-
-// const API_BASE_URL = "http://localhost:8888";
-const API_BASE_URL = "http://192.168.3.24:8888";
+import { BASE_URL } from '../../api/BaseUrl';
 
 export default function FindIdPage() {
     const [email, setEmail] = useState('');
@@ -18,7 +16,7 @@ export default function FindIdPage() {
         setError('');
         setResult(null);
         try {
-            const res = await axios.post(`${API_BASE_URL}/api/auth/find-userId`, {
+            const res = await axios.post(`${BASE_URL}/api/auth/find-userId`, {
                 email
             }, {
                 headers: {

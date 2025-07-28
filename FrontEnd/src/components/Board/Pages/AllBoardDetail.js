@@ -13,6 +13,8 @@ const AllBoardDetail = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
+    const fromPage = location.state?.fromPage || 1;
+
     const loginData = JSON.parse(localStorage.getItem("user"));
     const isAdmin = loginData?.userId?.includes("admin") ? true : false;
     // const currentUser = isAdmin ? "admin" : loginData?.nickname;
@@ -462,7 +464,7 @@ const AllBoardDetail = () => {
                     </>
                 )}
                 <button className="board-detail-button"
-                    onClick={() => navigate('/board/all')}
+                    onClick={() => navigate(`/board/all?page=${fromPage}`)}
                 > ← 목록으로
                 </button>
             </div>

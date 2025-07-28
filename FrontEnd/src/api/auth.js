@@ -1,4 +1,4 @@
-import { BASE_URL } from "./BaseUrl";
+import { BASE_URL } from "../components/Request/BaseUrl"; // BASE_URL을 가져옵니다.
 
 export async function signup({ userId, nickname, password, email }) {
     const res = await fetch(`${BASE_URL}/api/auth/signup`, {

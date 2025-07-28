@@ -3,10 +3,10 @@ import './DetailSelect.css'
 import { useEffect, useState } from 'react';
 import defimg from '../../assets/noImage.jpg';
 
-// const API_BASE_URL = "http://localhost:8888";
-const API_BASE_URL = "http://192.168.3.24:8888";
+import { BASE_URL } from "./BaseUrl";
 
 export const DetailSelect = () => {
+
   const { search } = useLocation();
   const params = new URLSearchParams(search);
   const desertionNo = params.get("desertionNo") || "";
@@ -17,9 +17,8 @@ export const DetailSelect = () => {
 
   // 백엔드에서 id(혹은 더 자세한 정보)로 조회해서 단건 정보 받아옴.
   useEffect(()=>{
-      window.scrollTo(0, 0);
       const apiFetch = async () => {
-        const response = await fetch(`${API_BASE_URL}/api/animals?desertionNo=${desertionNo}`)
+        const response = await fetch(`${BASE_URL}/api/animals?desertionNo=${desertionNo}`)
         const result = await response.json();
         setData(result)
         console.log(result)

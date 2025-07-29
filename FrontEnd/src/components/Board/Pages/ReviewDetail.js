@@ -140,8 +140,8 @@ const ReviewDetail = () => {
         }
 
         const sortedList = [...filteredList].sort((a,b) => {
-            const dateA = a.updatedAt ? new Date(a.updatedAt) : new Date(a.createdAt);
-            const dateB = b.updatedAt ? new Date(b.updatedAt) : new Date(b.createdAt);
+            const dateA = new Date(a.createdAt);
+            const dateB = new Date(b.createdAt);
             return dateB - dateA;
         });
         const idx = sortedList.findIndex(p => p.id === post.id);
@@ -392,8 +392,8 @@ const ReviewDetail = () => {
                         작성자: {post.author} |
                         조회수: {post.view} | 
                         추천수: {post.likes} | 
-                        신고수: {post.report} |
-                        등록일: {post.updatedAt && post.updatedAt !== post.createdAt ? `${new Date(post.updatedAt).toLocaleString()} (수정됨)` : new Date(post.createdAt).toLocaleString()}
+                        신고수: {post.report} |{' '}
+                        작성일: {new Date(post.createdAt).toLocaleString()}
                     </span><br/>
                 </div>         
             </div>
@@ -487,7 +487,7 @@ const ReviewDetail = () => {
                     setEditReplyText={setEditReplyText}
                 />
             </div>
-            <hr/>
+            
             {/* 최상위 댓글 입력폼 추가 */}
             <div style={{ marginTop: 12 }}>
                 <form onSubmit={handleCommentSubmit} style={{ display: 'flex', gap: 8, marginBottom: 20 }}>

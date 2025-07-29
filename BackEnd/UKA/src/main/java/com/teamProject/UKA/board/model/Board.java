@@ -8,7 +8,6 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -56,21 +55,16 @@ public class Board {
     @Column(name = "brd_report")
     private int report = 0;
 	
+	@Builder.Default
+	@Column(name = "brd_is_edited")
+	private Boolean edited = false;
+	
 	@Column(name = "brd_created_at", updatable = false)
 	private LocalDateTime createdAt;
-	
-	@Column(name = "brd_updated_at")
-	private LocalDateTime updatedAt;
 	
 	@PrePersist
 	protected void onCreate() {
 	    this.createdAt = LocalDateTime.now();
-	    this.updatedAt = LocalDateTime.now();
-	}
-	
-	@PreUpdate
-	protected void onUpdate() {
-	    this.updatedAt = LocalDateTime.now();
 	}
 	
 }

@@ -82,7 +82,8 @@ public class BoardService {
 		board.setTitle(requestDTO.getTitle());
 		board.setAuthor(requestDTO.getAuthor());
 		board.setContent(requestDTO.getContent());
-		board.setUpdatedAt(LocalDateTime.now());
+		
+		board.setEdited(true);
 		
 		return new BoardResponseDTO(board, false, false);
 	}

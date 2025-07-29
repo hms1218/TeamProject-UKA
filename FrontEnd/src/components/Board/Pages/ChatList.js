@@ -60,8 +60,8 @@ const ChatList = () => {
             if (sortOption === 'likes') return order * (b.likes - a.likes);
             if (sortOption === 'comment') return order * (b.comment - a.comment);
             if (sortOption === 'latest') {
-                const dateA = a.updatedAt ? new Date(a.updatedAt) : new Date(a.createdAt);
-                const dateB = b.updatedAt ? new Date(b.updatedAt) : new Date(b.createdAt);
+                const dateA = new Date(a.createdAt);
+                const dateB = new Date(b.createdAt);
                 return order * (dateB - dateA);
             }
             return 0;
@@ -148,6 +148,7 @@ const ChatList = () => {
                 fromPage: currentPage,
             }
         });
+        window.scroll(0, 0);
     };
 
     //글쓰기 버튼
@@ -280,7 +281,7 @@ const ChatList = () => {
                                 </td>
                                 <td>
                                     <div className='board-cell-text' style={{ marginLeft: 15 }}>
-                                        {post.updatedAt ? formatDate(post.updatedAt) : formatDate(post.createdAt)}
+                                        {formatDate(post.createdAt)}
                                     </div>
                                 </td>
                             </tr>

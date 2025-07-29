@@ -60,8 +60,8 @@ const AllBoard = () => {
             if (sortOption === 'likes') return order * (b.likes - a.likes);
             if (sortOption === 'comment') return order * (b.comment - a.comment);
             if (sortOption === 'latest') {
-                const dateA = a.updatedAt ? new Date(a.updatedAt) : new Date(a.createdAt);
-                const dateB = b.updatedAt ? new Date(b.updatedAt) : new Date(b.createdAt);
+                const dateA = new Date(a.createdAt);
+                const dateB = new Date(b.createdAt);
                 return order * (dateB - dateA);
             }
             return 0;
@@ -70,8 +70,8 @@ const AllBoard = () => {
 
     const noticedPosts = [...posts.filter(p => p.category === "NOTICE")]
         .sort((a, b) => {
-            const dateA = a.updatedAt ? new Date(a.updatedAt) : new Date(a.createdAt);
-            const dateB = b.updatedAt ? new Date(b.updatedAt) : new Date(b.createdAt);
+            const dateA = new Date(a.createdAt);
+            const dateB = new Date(b.createdAt);
             return dateB - dateA;
         });
 
@@ -158,6 +158,7 @@ const AllBoard = () => {
                 fromPage: currentPage,
             }
         });
+        window.scroll(0, 0);
     };
 
     //글쓰기 버튼
@@ -247,7 +248,7 @@ const AllBoard = () => {
                                     setSortOption('latest');
                                     setSortAsc(true);
                                 }
-                            }}> 등록일 {sortOption === 'latest' ? (!sortAsc ? '∨' : '∧') : '∨'}
+                            }}> 작성일 {sortOption === 'latest' ? (!sortAsc ? '∨' : '∧') : '∨'}
                             </button>
                         </th>
                     </tr>
@@ -285,7 +286,7 @@ const AllBoard = () => {
                             </td>
                             <td className='notice-cell'>
                                 <div className='board-cell-text' style={{ marginLeft: 15 }}>
-                                    {post.updatedAt ? formatDate(post.updatedAt) : formatDate(post.createdAt)}
+                                    {formatDate(post.createdAt)}
                                 </div>
                             </td>
                         </tr>
@@ -327,7 +328,7 @@ const AllBoard = () => {
                                 </td>
                                 <td>
                                     <div className='board-cell-text' style={{ marginLeft: 15 }}>
-                                        {post.updatedAt ? formatDate(post.updatedAt) : formatDate(post.createdAt)}
+                                        {formatDate(post.createdAt)}
                                     </div>
                                 </td>
                             </tr>

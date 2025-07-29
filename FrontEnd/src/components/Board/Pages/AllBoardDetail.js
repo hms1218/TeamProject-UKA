@@ -24,6 +24,8 @@ const AllBoardDetail = () => {
     const [prev, setPrev] = useState(null);
     const [next, setNext] = useState(null);
 
+    console.log("post: ",post)
+
     const categoryLabels = {
         NOTICE: '공지사항',
         CHAT: '속닥속닥',
@@ -49,8 +51,6 @@ const AllBoardDetail = () => {
     const [isLiked, setIsLiked] = useState(false);
     const [isReported, setIsReported] = useState(false);
     const [blocked, setBlocked] = useState(false);
-
-    const [isEdit, setIsEdit] = useState(false);
 
     //검색 필터링 리스트(useLocation)
     const filteredList = location.state?.filteredList || [];
@@ -147,8 +147,8 @@ const AllBoardDetail = () => {
         }
 
         const sortedList = [...targetList].sort((a, b) => {
-            const dateA = a.updatedAt ? new Date(a.updatedAt) : new Date(a.createdAt);
-            const dateB = b.updatedAt ? new Date(b.updatedAt) : new Date(b.createdAt);
+            const dateA = new Date(a.createdAt);
+            const dateB = new Date(b.createdAt);
             return dateB - dateA;
         });
         const idx = sortedList.findIndex(p => p.id === post.id);
@@ -403,8 +403,8 @@ const AllBoardDetail = () => {
                         작성자: {post.author} |
                         조회수: {post.view} |
                         추천수: {post.likes} |
-                        신고수: {post.report} |
-                        등록일: {post.updatedAt && post.updatedAt !== post.createdAt ? `${new Date(post.updatedAt).toLocaleString()} (수정됨)` : new Date(post.createdAt).toLocaleString()}
+                        신고수: {post.report} |{' '}
+                        작성일: {new Date(post.createdAt).toLocaleString()} 
                     </span><br />
                 </div>
             </div>
@@ -498,7 +498,7 @@ const AllBoardDetail = () => {
                     setEditReplyText={setEditReplyText}
                 />
             </div>
-            
+
             {/* 최상위 댓글 입력폼 추가 */}
             <div style={{ marginTop: 12 }}>
                 <form onSubmit={handleCommentSubmit} style={{ display: 'flex', gap: 8, marginBottom: 20 }}>

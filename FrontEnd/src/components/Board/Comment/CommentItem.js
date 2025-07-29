@@ -39,7 +39,7 @@ const CommentItem = ({
                         {comment.author.includes('admin') && ' (관리자)'}
                     </b>
                     <span style={{ marginLeft: 6, color: '#bbb', fontSize: 13 }}>
-                        {comment.updatedAt && comment.updatedAt !== comment.createdAt ? `수정됨 ${new Date(comment.updatedAt).toLocaleString()}` : new Date(comment.createdAt).toLocaleString()}
+                        {new Date(comment.createdAt).toLocaleString()}
                     </span>
                 </div>
                 {(isAdmin || comment.author === currentUser) && (

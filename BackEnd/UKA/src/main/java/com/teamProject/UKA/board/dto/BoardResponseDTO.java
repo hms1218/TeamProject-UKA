@@ -24,9 +24,9 @@ public class BoardResponseDTO {
 	private int view;
 	private int likes;
 	private int comment;
-	private int report; 
+	private int report;
+	private Boolean isEdited;
 	private LocalDateTime createdAt;
-	private LocalDateTime updatedAt;
 	private boolean isLikedByCurrentUser;
 	private boolean isReportedByCurrentUser;
 	
@@ -41,8 +41,8 @@ public class BoardResponseDTO {
         this.likes = entity.getLikes();
         this.comment = entity.getComment();
         this.report = entity.getReport(); 
+        this.isEdited = entity.getEdited();
         this.createdAt = entity.getCreatedAt();
-        this.updatedAt = entity.getUpdatedAt();
         this.isLikedByCurrentUser = isLikedByCurrentUser;
         this.isReportedByCurrentUser = isReportedByCurrentUser;
     }

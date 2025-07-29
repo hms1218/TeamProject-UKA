@@ -60,8 +60,8 @@ const ReviewList = () => {
             if (sortOption === 'likes') return order * (b.likes - a.likes);
             if (sortOption === 'comment') return order * (b.comment - a.comment);
             if (sortOption === 'latest') {
-                const dateA = a.updatedAt ? new Date(a.updatedAt) : new Date(a.createdAt);
-                const dateB = b.updatedAt ? new Date(b.updatedAt) : new Date(b.createdAt);
+                const dateA = new Date(a.createdAt);
+                const dateB = new Date(b.createdAt);
                 return order * (dateB - dateA);
             }
             return 0;
@@ -126,6 +126,8 @@ const ReviewList = () => {
     const paginatedPosts = isSearching ? sortedFilteredPosts : reviewPosts;
     const displayedPosts = paginatedPosts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
+    console.log("시간: ",displayedPosts)
+
     //searching 여부에 따라 페이징
     const totalPages = Math.max(1, Math.ceil(
         (isSearching ? filteredPosts.length : reviewPosts.length) / itemsPerPage));
@@ -148,6 +150,7 @@ const ReviewList = () => {
                 fromPage: currentPage,
             }
         });
+        window.scroll(0, 0);
     };
 
     //글쓰기 버튼
@@ -280,7 +283,7 @@ const ReviewList = () => {
                                 </td>
                                 <td>
                                     <div className='board-cell-text' style={{ marginLeft: 15 }}>
-                                        {post.updatedAt ? formatDate(post.updatedAt) : formatDate(post.createdAt)}
+                                        {formatDate(post.createdAt)}
                                     </div>
                                 </td>
                             </tr>

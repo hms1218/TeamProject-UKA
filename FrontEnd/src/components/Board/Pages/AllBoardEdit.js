@@ -115,7 +115,7 @@ const AllBoardEdit = () => {
                         confirmButtonColor: '#6c5ce7',
                         confirmButtonText: '확인'
                     }).then(() => {
-                        navigate(`/board/all/detail/${id}`);
+                        navigate(`/board/all/detail/${id}`)
                     });
                 } catch (error) {
                     console.error('게시글 수정 실패:', error);

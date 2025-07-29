@@ -25,7 +25,6 @@
         /* scale의 역수 (1 / 0.75 = 1.33) 만큼 width를 확장해줘야 전체 화면에 맞게 보입니다 */
         padding: 0;
         overflow-x: hidden;
-        overflow-y: hidden;
         /* 스크롤 없애기 */
     }
 

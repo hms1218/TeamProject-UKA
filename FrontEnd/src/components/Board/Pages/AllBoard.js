@@ -26,7 +26,7 @@ const AllBoard = () => {
 
     // 유저 정보
     const loginData = JSON.parse(localStorage.getItem("user"));
-    const isAdmin = loginData?.userId?.includes("admin") ? true : false;
+    // const isAdmin = loginData?.userId?.includes("admin") ? true : false;
     const currentUser = loginData?.nickname;
 
     const itemsPerPage = 10;

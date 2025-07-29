@@ -29,7 +29,7 @@ const AllBoard = () => {
     const isAdmin = loginData?.userId?.includes("admin") ? true : false;
     const currentUser = loginData?.nickname;
 
-    const itemsPerPage = 1;
+    const itemsPerPage = 10;
 
     const categoryLabels = {
         NOTICE: '공지사항',
@@ -129,8 +129,8 @@ const AllBoard = () => {
 
     //검색 결과 정렬
     const sortedFilteredPosts = sortPosts(filteredPosts);
-    //공지사항 3개 제한
-    const limitedNoticedPosts = noticedPosts.slice(0, 3);
+    //공지사항 4개 제한
+    const limitedNoticedPosts = noticedPosts.slice(0, 4);
     // 현재 페이지에 보여줄 게시글
     const paginatedPosts = isSearching ? sortedFilteredPosts : normalPosts;
     const displayedPosts = paginatedPosts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);

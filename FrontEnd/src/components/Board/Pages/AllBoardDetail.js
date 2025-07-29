@@ -498,7 +498,7 @@ const AllBoardDetail = () => {
                     setEditReplyText={setEditReplyText}
                 />
             </div>
-            <hr/>
+            
             {/* 최상위 댓글 입력폼 추가 */}
             <div style={{ marginTop: 12 }}>
                 <form onSubmit={handleCommentSubmit} style={{ display: 'flex', gap: 8, marginBottom: 20 }}>

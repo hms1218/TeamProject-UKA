@@ -24,8 +24,6 @@ const AllBoardDetail = () => {
     const [prev, setPrev] = useState(null);
     const [next, setNext] = useState(null);
 
-    console.log("post: ",post)
-
     const categoryLabels = {
         NOTICE: '공지사항',
         CHAT: '속닥속닥',
@@ -404,7 +402,7 @@ const AllBoardDetail = () => {
                         조회수: {post.view} |
                         추천수: {post.likes} |
                         신고수: {post.report} |{' '}
-                        작성일: {new Date(post.createdAt).toLocaleString()} 
+                        작성일: {new Date(post.createdAt).toLocaleString()} {post.isEdited && '(수정됨)'}
                     </span><br />
                 </div>
             </div>

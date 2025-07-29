@@ -393,7 +393,7 @@ const NoticeDetail = () => {
                         조회수: {post.view} |
                         추천수: {post.likes} |
                         신고수: {post.report} |{' '}
-                        작성일: {new Date(post.createdAt).toLocaleString()}
+                        작성일: {new Date(post.createdAt).toLocaleString()} {post.isEdited && '(수정됨)'}
                     </span><br />
                 </div>
             </div>

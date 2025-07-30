@@ -36,7 +36,7 @@ public class Board {
 	@Column(name = "brd_author", nullable = false)
 	private String author;
 	
-	@Column(name = "brd_content", nullable = false, columnDefinition = "TEXT")
+	@Column(name = "brd_content", nullable = false, columnDefinition = "LONGTEXT")
 	private String content;
 	
 	@Builder.Default

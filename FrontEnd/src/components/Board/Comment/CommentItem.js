@@ -1,3 +1,5 @@
+import { formatDateTime } from "../utils/FormatDate";
+
 const CommentItem = ({
     comment,
     level,
@@ -28,6 +30,7 @@ const CommentItem = ({
     // console.log("author: ",comment.author)
     // console.log("currentUser: ",currentUser)
     // console.log("post.author:", post.author)
+    console.log("comment: ",comment)
     return (
         <div style={{ marginLeft: level > 0 ? 20 : 0, marginBottom: 12 }}>
             <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
@@ -39,7 +42,7 @@ const CommentItem = ({
                         {comment.author.includes('admin') && ' (관리자)'}
                     </b>
                     <span style={{ marginLeft: 6, color: '#bbb', fontSize: 13 }}>
-                        {new Date(comment.createdAt).toLocaleString()}
+                        {formatDateTime(comment.createdAt)}
                     </span>
                 </div>
                 {(isAdmin || comment.author === currentUser) && (

@@ -8,6 +8,7 @@ import { createComment, createReply, fetchCommentsByBoard, fetchRepliesByComment
 import CommentList from '../Comment/CommentList';
 import { ViewCount } from '../utils/ViewCount';
 import TitleLength from '../utils/TitleLength';
+import { formatDateTime } from '../utils/FormatDate';
 
 const NoticeDetail = () => {
     const { id } = useParams();
@@ -344,18 +345,6 @@ const NoticeDetail = () => {
         }
     };
 
-    //신고 버튼
-    const handleReportButton = async () => {
-        if (currentUser === undefined) return Swal.fire("로그인 필요", "로그인 후 이용해주세요.", "error");
-        try {
-            const updatedPost = await toggleReport(post.id, currentUser);
-            setPost(updatedPost);
-            setIsReported(updatedPost.reportedByCurrentUser);
-        } catch (error) {
-            console.error('신고 처리 실패:', error);
-        }
-    };
-
     //복원 버튼
     const handleRestore = async () => {
         const confirm = await Swal.fire({
@@ -393,7 +382,7 @@ const NoticeDetail = () => {
                         조회수: {post.view} |
                         추천수: {post.likes} |
                         신고수: {post.report} |{' '}
-                        작성일: {new Date(post.createdAt).toLocaleString()} {post.isEdited && '(수정됨)'}
+                        작성일: {formatDateTime(post.createdAt)} {post.isEdited && '(수정됨)'}
                     </span><br />
                 </div>
             </div>

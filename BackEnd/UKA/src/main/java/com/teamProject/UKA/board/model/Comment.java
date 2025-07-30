@@ -40,6 +40,10 @@ public class Comment {
 	@Column(name = "content", nullable = false, columnDefinition = "TEXT")
 	private String content;
 	
+	@Builder.Default
+	@Column(name = "is_edited")
+	private Boolean isEdited = false;
+	
 	@Column(name = "created_at", updatable = false)
 	private LocalDateTime createdAt;
 

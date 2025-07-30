@@ -4,6 +4,7 @@ import './BoardList.css';
 import Swal from 'sweetalert2';
 import { fetchAllPosts } from '../../../api/BoardApi';
 import TitleLength from '../utils/TitleLength';
+import { formatDate } from '../utils/FormatDate';
 
 const NoticeList = () => {
     const [posts, setPosts] = useState([]);
@@ -165,16 +166,6 @@ const NoticeList = () => {
             regex.test(part) ? <b key={index}>{part}</b> : <span key={index}>{part}</span>
         );
     }
-
-    // 날짜 포맷 함수
-    const formatDate = (date) => {
-        const d = new Date(date);
-        const year = String(d.getFullYear()).slice(2);
-        const month = String(d.getMonth() + 1).padStart(2, '0');
-        const day = String(d.getDate()).padStart(2, '0');
-
-        return `${year}.${month}.${day}`;
-    };
 
     return (
         <div className="board-container">

@@ -43,7 +43,7 @@ const MainHeaders = () => {
                     {user && (
                         isAdminUser(user)
                             ? <p><strong style={{ color: "red" }}>관리자</strong> 계정으로 접속하였습니다.</p>
-                            : <p>{user.userId} 회원님 반갑습니다.</p>
+                            : <p>{user.nickname} 회원님 반갑습니다.</p>
                     )}
                 {/* 여기 위 까지 관리자 테스트 */}
                     {user ? (

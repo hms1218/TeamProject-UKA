@@ -15,44 +15,83 @@
     box-sizing: border-box;
 }
 
-@media (max-width: 768px) {
-
-    .app-bg {
-        transform: scale(0.325);
-        /* 화면이 축소됩니다. 수치를 조정하여 원하는 사이즈로 조절 */
-        transform-origin: top left;
-        width: 300%;
-        /* scale의 역수 (1 / 0.75 = 1.33) 만큼 width를 확장해줘야 전체 화면에 맞게 보입니다 */
-        padding: 0;
-        overflow-x: hidden;
-        /* 스크롤 없애기 */
-    }
-
-    body,
-    html {
-        overflow-x: hidden;
-        overflow-y: hidden;
-        width: 100%;
-    }
-
-    .container,
-    .map-container {
-        width: 100% !important;
-        /* 지도와 컨테이너 전체 너비로 */
-        max-width: none !important;
-        padding: 0 !important;
-        margin: 0 auto;
-    }
-
-    img,
-    svg {
-        max-width: 100%;
-        /* 이미지, 지도(svg)도 화면 꽉차게 */
-        height: auto;
-    }
-}
-
 .main-footer {
     width: 100%;
     box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+
+    .container,
+    .bottom-panel,
+    .main-slider-container,
+    .footer-content,
+    .main-footer {
+        width: 100% !important;
+        max-width: 100vw !important;
+        min-width: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    .board-list,
+    .card-list,
+    .list,
+    .list-root {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 10px !important;
+        padding: 8px !important;
+    }
+
+    .board-item,
+    .card,
+    .list-item,
+    .panel-item,
+    .item {
+        width: 100% !important;
+        min-width: 0 !important;
+        margin-bottom: 10px !important;
+    }
+
+    input,
+    textarea,
+    select,
+    button,
+    .MuiButton-root {
+        width: 100% !important;
+        font-size: 16px !important;
+        padding: 12px 8px !important;
+        margin-bottom: 10px !important;
+    }
+
+    .footer-content {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        max-width: 340px !important;
+        width: 100% !important;
+        margin: 0 auto !important;
+        padding: 8px 0 !important;
+        background: #f6f7fb !important;
+        border-radius: 8px !important;
+        box-sizing: border-box;
+    }
+
+    .footer-content img,
+    .footer-content .footer-logo,
+    .footer-content .footer-instagram {
+        display: none !important;
+    }
+
+    .footer-content .footer-text,
+    .footer-content .footer-title,
+    .footer-content .footer-sns {
+        font-size: 13px !important;
+        margin: 2px 0 !important;
+        text-align: center !important;
+        line-height: 1.3 !important;
+    }
 }

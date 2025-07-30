@@ -403,7 +403,7 @@ const ChatDetail = () => {
     }
 
     return (
-        <div style={{ minWidth: '1075px' }}>
+        <div style={{ width: '1075px' }}>
             {/* 헤더 */}
             <div className='board-detail-title-container'>
                 <p style={{ marginTop: 20 }}>[ {categoryLabels[post.category]} ]</p>

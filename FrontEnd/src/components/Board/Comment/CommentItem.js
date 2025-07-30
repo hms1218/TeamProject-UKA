@@ -42,7 +42,7 @@ const CommentItem = ({
                         {comment.author.includes('admin') && ' (관리자)'}
                     </b>
                     <span style={{ marginLeft: 6, color: '#bbb', fontSize: 13 }}>
-                        {formatDateTime(comment.createdAt)}
+                        {formatDateTime(comment.createdAt)} {comment.isEdited && '(수정됨)'}
                     </span>
                 </div>
                 {(isAdmin || comment.author === currentUser) && (

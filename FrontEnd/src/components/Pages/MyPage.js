@@ -63,7 +63,6 @@ const MyPage = () => {
                         </div>
                         <div className="profile-info">
                             <h1 className="profile-name">{user.nickname}</h1>
-                            <p className="profile-id">@{user.userId}</p>
                             <div className="profile-stats">
                                 <div className="stat-item">
                                     <span className="stat-number">128</span>
@@ -169,58 +168,88 @@ const MyPage = () => {
                         <div className="content-section">
                             <div className="section-header">
                                 <h2>활동 내역</h2>
-                                <p>최근 활동과 통계를 확인하세요</p>
+                                <p>작성한 글, 댓글, 좋아요 내역을 확인하세요</p>
                             </div>
 
-                            <div className="activity-grid">
-                                <div className="activity-card">
-                                    <div className="activity-icon">🎯</div>
-                                    <h3>오늘의 목표</h3>
-                                    <div className="progress-bar">
-                                        <div className="progress-fill" style={{ width: '75%' }}></div>
-                                    </div>
-                                    <p>75% 달성</p>
-                                </div>
-
-                                <div className="activity-card">
-                                    <div className="activity-icon">🔥</div>
-                                    <h3>연속 접속</h3>
-                                    <div className="streak-number">15</div>
-                                    <p>일 연속</p>
-                                </div>
-
-                                <div className="activity-card">
-                                    <div className="activity-icon">📈</div>
-                                    <h3>이번 주</h3>
-                                    <div className="week-chart">
-                                        {[40, 80, 60, 90, 70, 85, 95].map((height, index) => (
-                                            <div
-                                                key={index}
-                                                className="chart-bar"
-                                                style={{ height: `${height}%` }}
-                                            ></div>
+                            <div className="activity-lists">
+                                <div className="activity-list-section">
+                                    <h3>📝 내가 작성한 글 (24개)</h3>
+                                    <div className="post-list">
+                                        {[
+                                            { title: 'React Hook 사용법에 대한 정리', date: '2024-07-30', views: 156, likes: 12 },
+                                            { title: '자바스크립트 ES6 새로운 기능들', date: '2024-07-28', views: 203, likes: 18 },
+                                            { title: 'CSS Grid vs Flexbox 비교 분석', date: '2024-07-25', views: 89, likes: 7 },
+                                            { title: 'Node.js Express 서버 구축하기', date: '2024-07-22', views: 134, likes: 15 },
+                                            { title: 'TypeScript 기초부터 활용까지', date: '2024-07-20', views: 67, likes: 9 }
+                                        ].map((post, index) => (
+                                            <div key={index} className="list-item post-item">
+                                                <div className="item-content">
+                                                    <h4 className="item-title">{post.title}</h4>
+                                                    <div className="item-meta">
+                                                        <span className="item-date">{post.date}</span>
+                                                        <span className="item-stats">조회 {post.views} · 좋아요 {post.likes}</span>
+                                                    </div>
+                                                </div>
+                                                <div className="item-action">
+                                                    <button className="view-btn">보기</button>
+                                                </div>
+                                            </div>
                                         ))}
                                     </div>
                                 </div>
-                            </div>
 
-                            <div className="recent-activities">
-                                <h3>최근 활동</h3>
-                                <div className="activity-list">
-                                    {[
-                                        { time: '2시간 전', action: '새 글 작성', icon: '📝' },
-                                        { time: '5시간 전', action: '댓글 등록', icon: '💬' },
-                                        { time: '1일 전', action: '프로필 수정', icon: '✏️' },
-                                        { time: '3일 전', action: '설정 변경', icon: '⚙️' }
-                                    ].map((activity, index) => (
-                                        <div key={index} className="activity-item">
-                                            <div className="activity-time">{activity.time}</div>
-                                            <div className="activity-detail">
-                                                <span className="activity-action-icon">{activity.icon}</span>
-                                                <span className="activity-action">{activity.action}</span>
+                                <div className="activity-list-section">
+                                    <h3>💬 내가 작성한 댓글 (87개)</h3>
+                                    <div className="comment-list">
+                                        {[
+                                            { content: '정말 유용한 정보네요! 감사합니다.', post: 'Python 기초 문법 정리', date: '2024-07-30' },
+                                            { content: '저도 비슷한 경험이 있어서 공감됩니다. 좋은 글 잘 읽었습니다.', post: '프론트엔드 개발자 취업 후기', date: '2024-07-29' },
+                                            { content: '코드 예시가 정말 이해하기 쉽게 되어있네요!', post: 'JavaScript 비동기 처리', date: '2024-07-28' },
+                                            { content: '질문이 있는데, 이 방법 외에 다른 해결책도 있을까요?', post: 'React 상태 관리 패턴', date: '2024-07-27' },
+                                            { content: '따라해보니 정말 잘 되네요. 감사합니다!', post: 'Git 브랜치 전략', date: '2024-07-26' }
+                                        ].map((comment, index) => (
+                                            <div key={index} className="list-item comment-item">
+                                                <div className="item-content">
+                                                    <p className="comment-text">"{comment.content}"</p>
+                                                    <div className="item-meta">
+                                                        <span className="comment-post">게시글: {comment.post}</span>
+                                                        <span className="item-date">{comment.date}</span>
+                                                    </div>
+                                                </div>
+                                                <div className="item-action">
+                                                    <button className="view-btn">보기</button>
+                                                </div>
                                             </div>
-                                        </div>
-                                    ))}
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <div className="activity-list-section">
+                                    <h3>❤️ 좋아요 누른 게시물 (152개)</h3>
+                                    <div className="liked-list">
+                                        {[
+                                            { title: 'Vue.js 3.0의 새로운 기능들', author: '개발자김씨', date: '2024-07-30', likes: 45 },
+                                            { title: '효율적인 코드 리뷰 방법', author: '시니어개발자', date: '2024-07-29', likes: 62 },
+                                            { title: 'Docker 컨테이너 최적화 팁', author: '데브옵스전문가', date: '2024-07-28', likes: 38 },
+                                            { title: '알고리즘 문제 해결 전략', author: '코딩마스터', date: '2024-07-27', likes: 71 },
+                                            { title: 'REST API 설계 가이드라인', author: '백엔드개발자', date: '2024-07-26', likes: 29 }
+                                        ].map((liked, index) => (
+                                            <div key={index} className="list-item liked-item">
+                                                <div className="item-content">
+                                                    <h4 className="item-title">{liked.title}</h4>
+                                                    <div className="item-meta">
+                                                        <span className="item-author">작성자: {liked.author}</span>
+                                                        <span className="item-date">{liked.date}</span>
+                                                        <span className="item-likes">좋아요 {liked.likes}</span>
+                                                    </div>
+                                                </div>
+                                                <div className="item-action">
+                                                    <button className="unlike-btn">❤️</button>
+                                                    <button className="view-btn">보기</button>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
                         </div>

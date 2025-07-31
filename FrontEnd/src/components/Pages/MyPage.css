@@ -622,6 +622,140 @@
     transform: translateX(28px);
 }
 
+/* 활동 내역 리스트 */
+.activity-lists {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.activity-list-section h3 {
+    margin: 0 0 24px 0;
+    font-size: 1.4rem;
+    color: #374151;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.post-list, .comment-list, .liked-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.list-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    background: #f8faff;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    transition: all 0.2s ease;
+}
+
+.list-item:hover {
+    background: #e0f7ff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.item-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.item-title {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1f2937;
+    line-height: 1.4;
+}
+
+.comment-text {
+    margin: 0;
+    font-size: 1rem;
+    color: #374151;
+    line-height: 1.5;
+    font-style: italic;
+}
+
+.item-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.item-date {
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+
+.item-stats, .item-likes {
+    color: #4895ff;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.item-author {
+    color: #059669;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.comment-post {
+    color: #7c3aed;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.item-action {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.view-btn {
+    padding: 8px 16px;
+    background: #4895ff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.view-btn:hover {
+    background: #00aaff;
+    transform: translateY(-1px);
+}
+
+.unlike-btn {
+    padding: 8px 12px;
+    background: #fff1f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.unlike-btn:hover {
+    background: #fee2e2;
+    transform: translateY(-1px);
+}
+
 /* 반응형 디자인 */
 @media (max-width: 768px) {
     .mypage-container {

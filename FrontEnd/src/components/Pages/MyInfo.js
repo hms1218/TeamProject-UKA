@@ -4,7 +4,7 @@ import PasswordChangeModal from './PasswordChangeModal';
 import WithdrawModal from './WithdrawModal'; // 추가!
 import './MyInfo.css';
 
-const MyInfo = ({ user, daysActive }) => {
+const MyInfo = ({ user, setUser, daysActive }) => {
     const [editOpen, setEditOpen] = useState(false);
     const [passwordOpen, setPasswordOpen] = useState(false);
     const [withdrawOpen, setWithdrawOpen] = useState(false); // 탈퇴 모달 상태
@@ -12,7 +12,11 @@ const MyInfo = ({ user, daysActive }) => {
 
     // 닉네임 저장
     const handleNicknameSave = (newNickname) => {
-        setNickname(newNickname);
+        setUser((prev) => {
+            const updated = { ...prev, nickname: newNickname };
+            localStorage.setItem('user', JSON.stringify(updated));
+            return updated;
+        });
     };
 
     // 비밀번호 변경(예시)

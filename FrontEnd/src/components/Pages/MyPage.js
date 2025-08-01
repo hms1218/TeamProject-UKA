@@ -13,8 +13,12 @@ const calcDaysSince = (dateString) => {
 };
 
 const MyPage = () => {
-    const user = JSON.parse(localStorage.getItem('user'));
+    const [user, setUser] = useState(() => {
+        const data = localStorage.getItem('user');
+        return data ? JSON.parse(data) : null;
+    });
     const [activeTab, setActiveTab] = useState('info');
+
 
     if (!user) {
         return (
@@ -86,7 +90,7 @@ const MyPage = () => {
                     </nav>
                 </div>
                 <div className="main-content">
-                    {activeTab === 'info' && <MyInfo user={user} daysActive={daysActive} />}
+                    {activeTab === 'info' && <MyInfo user={user} setUser={setUser} daysActive={daysActive} />}
                     {activeTab === 'activity' && <MyActivity />}
                     {activeTab === 'settings' && <MySettings />}
                 </div>

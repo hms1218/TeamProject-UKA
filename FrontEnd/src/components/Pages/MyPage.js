@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import MyInfo from './MyInfo';
 import MyActivity from './MyActivity';
-import MySettings from './MySettings';
 
 import './MyPage.css';
+import '../../App.css';
 
 const calcDaysSince = (dateString) => {
     const created = new Date(dateString);
@@ -19,6 +19,18 @@ const MyPage = () => {
     });
     const [activeTab, setActiveTab] = useState('info');
 
+    // 다크모드 초기화 - MyPage 마운트 시 localStorage에서 다크모드 설정 불러오기
+    useEffect(() => {
+        const savedDarkMode = localStorage.getItem('darkMode');
+        if (savedDarkMode) {
+            const isDarkMode = JSON.parse(savedDarkMode);
+            if (isDarkMode) {
+                document.body.classList.add('dark-mode');
+            } else {
+                document.body.classList.remove('dark-mode');
+            }
+        }
+    }, []);
 
     if (!user) {
         return (
@@ -35,8 +47,7 @@ const MyPage = () => {
 
     const menuItems = [
         { id: 'info', label: '내 정보', icon: '👤' },
-        { id: 'activity', label: '활동 내역', icon: '📊' },
-        { id: 'settings', label: '설정', icon: '⚙️' }
+        { id: 'activity', label: '활동 내역', icon: '📊' }
     ];
 
     const daysActive = calcDaysSince(user.createdAt);
@@ -92,7 +103,6 @@ const MyPage = () => {
                 <div className="main-content">
                     {activeTab === 'info' && <MyInfo user={user} setUser={setUser} daysActive={daysActive} />}
                     {activeTab === 'activity' && <MyActivity />}
-                    {activeTab === 'settings' && <MySettings />}
                 </div>
             </div>
         </div>

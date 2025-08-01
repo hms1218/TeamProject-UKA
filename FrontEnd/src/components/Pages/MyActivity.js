@@ -1,4 +1,6 @@
 import MyPosts from './MyPosts';
+import MyComments from './MyComments';
+import MyLikes from './MyLikes';
 
 const MyActivity = () => (
     <div className="content-section">
@@ -8,7 +10,8 @@ const MyActivity = () => (
         </div>
         <div className="activity-lists">
             <MyPosts />
-            {/* 앞으로 MyComments, MyLikes 등 분리 가능 */}
+            <MyComments />
+            <MyLikes />
         </div>
     </div>
 );

@@ -2,10 +2,11 @@ import { useState } from 'react';
 import axios from 'axios';
 import Modal from '../Common/Modal';
 
+import { BASE_URL } from '../../api/BaseUrl';
+
 const changePassword = async ({ currentPassword, newPassword }) => {
     const token = localStorage.getItem('token');
-    const res = await axios.put(
-        '/api/users/password',
+    const res = await axios.put(`${BASE_URL}/api/users/password`,
         { currentPassword, newPassword },
         { headers: token ? { Authorization: `Bearer ${token}` } : undefined }
     );

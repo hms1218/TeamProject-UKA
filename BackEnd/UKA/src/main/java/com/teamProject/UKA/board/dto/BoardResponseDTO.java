@@ -52,4 +52,11 @@ public class BoardResponseDTO {
         this.isLikedByCurrentUser = isLikedByCurrentUser;
         this.isReportedByCurrentUser = isReportedByCurrentUser;
     }
+    
+    public static BoardResponseDTO fromRow(Object[] row) {
+        return BoardResponseDTO.builder()
+            .id(row[0] != null ? row[0].toString() : null)
+            .title(row[1] != null ? row[1].toString() : null)
+            .build();
+    }
 }

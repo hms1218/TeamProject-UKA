@@ -14,11 +14,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.teamProject.UKA.auth.dto.MyCommentResponseDTO;
+import com.teamProject.UKA.auth.dto.MyLikeResponseDTO;
 import com.teamProject.UKA.auth.dto.PasswordChangeRequest;
-import com.teamProject.UKA.auth.dto.PostSummaryResponse;
 import com.teamProject.UKA.auth.dto.UserNicknameUpdateRequest;
 import com.teamProject.UKA.auth.dto.UserNicknameUpdateResponse;
 import com.teamProject.UKA.auth.service.UserService;
+import com.teamProject.UKA.board.dto.BoardResponseDTO;
 
 import lombok.RequiredArgsConstructor;
 
@@ -70,10 +72,24 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
     
-    // 마이페이지 - 작성글
-//    @GetMapping("/me/posts")
-//    public List<PostSummaryResponse> getMyPosts() {
-//        String userId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//        return postService.getPostsByUser(userId);
-//    }
+    // 마이페이지 - 내 작성글
+    @GetMapping("/myPost")
+    public List<BoardResponseDTO> getMyPosts(@RequestParam("userId") String userId) {
+    	System.out.println("myPost userId ::" + userId);
+        return userService.getMyPosts(userId);
+    }
+    
+    // 마이페이지 - 내 댓글
+    @GetMapping("/myComment")
+    public List<MyCommentResponseDTO> getMyComments(@RequestParam("userId") String userId) {
+    	System.out.println("myComment` userId ::" + userId);
+        return userService.getMyComments(userId);
+    }
+    
+    // 마이페이지 - 내 좋아요
+    @GetMapping("/myLikes")
+    public List<MyLikeResponseDTO> getMyLikes(@RequestParam("userId") String userId) {
+    	System.out.println("myLikes userId ::" + userId);
+        return userService.getMyLikes(userId);
+    }
 }

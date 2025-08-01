@@ -2,11 +2,16 @@ package com.teamProject.UKA.board.model;
 
 import java.time.LocalDateTime;
 
+import com.teamProject.UKA.auth.model.User;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -39,6 +44,10 @@ public class Board {
 	@Column(name = "brd_content", nullable = false, columnDefinition = "LONGTEXT")
 	private String content;
 	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id")
+	private User user;
+	
 	@Builder.Default
 	@Column(name = "brd_view")
 	private int view = 0;
@@ -66,5 +75,4 @@ public class Board {
 	protected void onCreate() {
 	    this.createdAt = LocalDateTime.now();
 	}
-	
 }

@@ -43,6 +43,7 @@ const AllBoard = () => {
         const getAllPosts = async () => {
             try {
                 const data = await fetchAllPosts();
+                console.log("불러온 posts 데이터:", data);  // <- 추가!
                 setPosts(data);
             } catch (err) {
                 console.error('게시글 불러오기 실패', err);
@@ -116,7 +117,7 @@ const AllBoard = () => {
                 return post.title.toLowerCase().includes(keyword.toLowerCase())
             }
             else if (searchOption === 'author') {
-                return post.author.toLowerCase().includes(keyword.toLowerCase())
+                return post.nickname.toLowerCase().includes(keyword.toLowerCase())
             }
             return false;
         });
@@ -261,8 +262,8 @@ const AllBoard = () => {
                             <td className='notice-cell'>
                                 <div className='board-cell-text'>
                                     {searchOption === 'author'
-                                        ? highlightKeyword(post.author, isSearching ? confirmKeyword : '')
-                                        : post.author
+                                        ? highlightKeyword(post.nickname, isSearching ? confirmKeyword : '')
+                                        : post.nickname
                                     }
                                 </div>
                             </td>
@@ -303,8 +304,8 @@ const AllBoard = () => {
                                 <td>
                                     <div className='board-cell-text'>
                                         {searchOption === 'author'
-                                            ? highlightKeyword(post.author, isSearching ? confirmKeyword : '')
-                                            : post.author
+                                            ? highlightKeyword(post.nickname, isSearching ? confirmKeyword : '')
+                                            : post.nickname
                                         }
                                     </div>
                                 </td>

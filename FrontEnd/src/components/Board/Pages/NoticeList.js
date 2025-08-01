@@ -109,7 +109,7 @@ const NoticeList = () => {
                 return post.title.toLowerCase().includes(keyword.toLowerCase())
             }
             else if (searchOption === 'author') {
-                return post.author.toLowerCase().includes(keyword.toLowerCase())
+                return post.nickname.toLowerCase().includes(keyword.toLowerCase())
             }
             return false;
         });
@@ -257,8 +257,8 @@ const NoticeList = () => {
                                 <td className='notice-cell-only'>
                                     <div className='board-cell-text'>
                                         {searchOption === 'author'
-                                            ? highlightKeyword(post.author, isSearching ? confirmKeyword : '')
-                                            : post.author
+                                            ? highlightKeyword(post.nickname, isSearching ? confirmKeyword : '')
+                                            : post.nickname
                                         }
                                     </div>
                                 </td>

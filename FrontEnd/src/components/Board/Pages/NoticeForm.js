@@ -21,6 +21,7 @@ const NoticeForm = () => {
     const loginData = JSON.parse(localStorage.getItem("user"));
     const isAdmin = loginData?.userId?.includes("admin") ? true : false;
     const currentUser = loginData?.nickname;
+    const userId = loginData?.userId;
 
     //등록 버튼
     const handleSubmit = (e) => {
@@ -61,7 +62,8 @@ const NoticeForm = () => {
             category: category,  // 반드시 Category enum 이름과 일치해야 함
             title: title,
             author: currentUser,
-            content: content
+            content: content,
+            userId: userId
         }
 
         Swal.fire({

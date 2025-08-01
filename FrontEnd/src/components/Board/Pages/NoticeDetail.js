@@ -19,7 +19,7 @@ const NoticeDetail = () => {
 
     const loginData = JSON.parse(localStorage.getItem("user"));
     const isAdmin = loginData?.userId?.includes("admin") ? true : false;
-    const currentUser = loginData?.nickname;
+    const currentUser = loginData?.userId;
 
     const [post, setPost] = useState(null);
     const [prev, setPrev] = useState(null);
@@ -378,7 +378,7 @@ const NoticeDetail = () => {
                 <p style={{ marginTop: 20 }}>[ {categoryLabels[post.category]} ]</p>
                 <div className="board-detail-info">
                     <span style={{ color: '#ccc' }}>
-                        작성자: {post.author} |
+                        작성자: {post.nickname} |
                         조회수: {post.view} |
                         추천수: {post.likes} |
                         신고수: {post.report} |{' '}

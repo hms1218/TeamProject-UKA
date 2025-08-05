@@ -109,7 +109,7 @@ const MainBodys = () => {
         // 필터링한 결과를 상태에 저장
         setMainSlides(filtered);
     }, [rawData]);
-    if (loading) return <Loading />;
+    if (loading) return <div style={{marginTop:'20px'}}><Loading /></div>;
     
     if (error) return <Error type={error.type} detail={error.detail} />;
 

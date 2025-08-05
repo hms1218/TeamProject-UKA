@@ -1,9 +1,13 @@
 import { fetchAndSendAnimals } from '../../../../../api/AnimalApiData';
 import { useAlert } from '../../../Context/AlertContext'; // AlertContext 위치에 맞게 import
+import Loading from "../../../../Common/Loading.js";
 import './AdminDetail.css';
+import { useState } from 'react';
 
 const DataReset = () => {
     const { showAlert } = useAlert();
+    const [loading,setLoading]  = useState(false);
+    
 
     const handleReset = async () => {
         const result = await showAlert({
@@ -21,6 +25,7 @@ const DataReset = () => {
         if (!result || !result.isConfirmed) return;
 
         try {
+            setLoading(true)
             // DB에 저장 함수
             await fetchAndSendAnimals();
             await showAlert({
@@ -41,8 +46,12 @@ const DataReset = () => {
                 imageAlt: '조졌쓰',
                 icon: 'error'
             });
+        } finally{
+            setLoading(false)
         }
     };
+
+    if(loading) return <Loading />
 
     return (
         <div>

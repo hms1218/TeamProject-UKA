@@ -31,7 +31,7 @@ export const RequestComponent = ({
   const currentUser = loginData?.nickname;
 
   // 사진 예시로 보여주기.
-  const [preview, setPreview] = useState(img);
+  const [preview, setPreview] = useState(BASE_URL+img);
   const [newImg, setNewImg] = useState('');
   const theme = {
     '& .MuiFilledInput-root': {
@@ -152,21 +152,47 @@ export const RequestComponent = ({
     } catch (error) { }
   };
 
-  return (
-    <Card className="RequestCard" raised={true}>
-      {/* 1. 사진 */}
-      <div className="RequestCard-media">
+return (
+    <Card 
+      style={{
+        margin: '1%',
+        display: 'flex',
+        verticalAlign: 'top',
+        boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+        borderRadius: '8px',
+        flexDirection: 'row'
+      }}
+      raised={true}
+    >
+      <div style={{
+        width: '100%',
+        height: '400px',
+        objectFit:'contain',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
+      }}>
         <CardMedia
           component="img"
           image={preview}
           onClick={isEditing ? handleOnClick : undefined}
-          className="RequestCard-img"
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            cursor: isEditing ? 'pointer' : 'default'
+          }}
         />
-        <input className='RWimageinput' type='file' onChange={handleImgChange} style={{ display: 'none' }} />
+        <input 
+          style={{ 
+            display: 'none' 
+          }} 
+          type='file' 
+          onChange={handleImgChange} 
+        />
       </div>
 
-      {/* 2. 설명 */}
-      <div className="RequestCard-content">
+      <div style={{ padding: '16px', width:'100%' }}>
         {/* 상단 바 */}
         {isEditing ? (
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', color: 'white', padding: '6px 0' }}>
@@ -208,7 +234,16 @@ export const RequestComponent = ({
                         setOpen(false);
                       }}>
                       <ListItem disablePadding sx={{ border: '1px solid #cceeff' }}>
-                        {<img className="DBdialogimg" src={`/img/${editedValues.kind}_picture/${Object.values(animal)[0]}.jpg`} alt="품종" />}
+                        {<img 
+                          style={{
+                            width: '50px',
+                            height: '50px',
+                            objectFit: 'cover',
+                            marginRight: '10px'
+                          }} 
+                          src={`/img/${editedValues.kind}_picture/${Object.values(animal)[0]}.jpg`} 
+                          alt="품종" 
+                        />}
                         {Object.keys(animal)[0]}
                       </ListItem>
                     </ListItemButton>
@@ -263,15 +298,18 @@ export const RequestComponent = ({
 
         {/* 본문/설명 */}
         <CardContent
-          className="RequestCard-CardContent"
+          style={{
+            padding: '16px 0'
+          }}
         >
           {isEditing ? (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
                 <TextField fullWidth variant='filled' label="실종 장소" name="local" value={editedValues.local} onChange={handleChange} />
-                <TextField fullWidth variant='filled' label="실종 날짜" name="time" value={editedValues.time} onChange={handleChange} />
+                <TextField  variant='filled' label="실종 날짜" name="time" value={editedValues.time} onChange={handleChange} />
+                <TextField style={{display:'flex', flex:1}} variant='filled' label="연락수단" value={editedValues.phone} onChange={e => setEditedValues(prev => ({ ...prev, phone: e.target.value }))} />
               </div>
-              <TextField variant='filled' label="연락수단" value={editedValues.phone} onChange={e => setEditedValues(prev => ({ ...prev, phone: e.target.value }))} />
+              
               <TextField
                 variant='filled'
                 label="특징"
@@ -304,7 +342,12 @@ export const RequestComponent = ({
           )}
 
           {/* 버튼 쪽 */}
-          <div className="RequestCard-actions">
+          <div style={{
+            display: 'flex',
+            gap: '8px',
+            justifyContent: 'flex-end',
+            marginTop: '16px'
+          }}>
             {isEditing ? (
               <>
                 <Button variant="outlined" color="success" onClick={handleSave}>저장</Button>

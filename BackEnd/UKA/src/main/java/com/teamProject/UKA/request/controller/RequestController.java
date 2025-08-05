@@ -63,7 +63,8 @@ public class RequestController {
 		try {
 			file.transferTo(new File(filePath));
 			//요청하면 보여줄 url
-			imageUrl = "http://"+ip+"/request/img/"+userId+'_'+uniqueFileName;
+//			imageUrl = "http://"+ip+"/request/img/"+userId+'_'+uniqueFileName;
+			imageUrl = "/request/img/"+userId+'_'+uniqueFileName;
 		} catch (Exception e) {
 		    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "파일 업로드 실패"));

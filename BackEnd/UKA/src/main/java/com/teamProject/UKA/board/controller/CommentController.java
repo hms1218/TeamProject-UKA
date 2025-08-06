@@ -113,10 +113,18 @@ public class CommentController {
     }
     
     //특정 댓글의 대댓글 조회
+//    @GetMapping("/reply/{parentCommentId}")
+//    public ResponseEntity<List<Comment>> getRepliesByParentComment(@PathVariable("parentCommentId") String parentCommentId) {
+//        List<Comment> replies = commentRepository.findByParentCommentId(parentCommentId);
+//        return ResponseEntity.ok(replies);
+//    }
     @GetMapping("/reply/{parentCommentId}")
-    public ResponseEntity<List<Comment>> getRepliesByParentComment(@PathVariable("parentCommentId") String parentCommentId) {
+    public ResponseEntity<List<CommentResponseDTO>> getRepliesByParentComment(@PathVariable("parentCommentId") String parentCommentId) {
         List<Comment> replies = commentRepository.findByParentCommentId(parentCommentId);
-        return ResponseEntity.ok(replies);
+        List<CommentResponseDTO> dtoList = replies.stream()
+            .map(CommentResponseDTO::new)
+            .collect(Collectors.toList());
+        return ResponseEntity.ok(dtoList);
     }
     
     // 댓글/대댓글 수정

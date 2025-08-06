@@ -41,68 +41,71 @@ const CommentItem = ({
                         {formatDateTime(comment.createdAt)} {comment.isEdited && '(수정됨)'}
                     </span>
                 </div>
-                {(isAdmin || comment.author === currentUser) && (
-                    <div style={{ display: 'flex', gap: 6 }}>
-                        <button
-                            onClick={() => {
-                                setReplyTargetId(null);
-                                if (comment.parentCommentId) EditReply(comment);
-                                else EditComment(comment);
-                            }}
-                            style={{
-                                fontSize: 13,
-                                background: 'none',
-                                border: 'none',
-                                color: '#0984e3',
-                                cursor: 'pointer',
-                            }}
-                        >
-                            ✏️ 수정
-                        </button>
-                        <button
-                            onClick={() =>
-                                comment.parentCommentId
-                                    ? handleDeleteReply(comment.id)
-                                    : handleDeleteComment(comment.id)
-                            }
-                            style={{
-                                fontSize: 13,
-                                background: 'none',
-                                border: 'none',
-                                color: '#e17055',
-                                cursor: 'pointer',
-                            }}
-                        >
-                            🗑 삭제
-                        </button>
-                        {/* 답글 버튼 */}
-                        <button
-                            onClick={() => setReplyTargetId(prev => {
-                                const next = prev === comment.id ? null : comment.id;
-
-                                if (next === comment.id) {
-                                    setReplyInput(prevInput => ({ ...prevInput, [comment.id]: '' }));
-                                    setEditCommentId(null);
-                                    setEditReplyId(null);
+                <div style={{ display: 'flex', gap: 6 }}>
+                    {(isAdmin || comment.author === currentUser) && (
+                        <>
+                            <button
+                                onClick={() => {
+                                    setReplyTargetId(null);
+                                    if (comment.parentCommentId) EditReply(comment);
+                                    else EditComment(comment);
+                                }}
+                                style={{
+                                    fontSize: 13,
+                                    background: 'none',
+                                    border: 'none',
+                                    color: '#0984e3',
+                                    cursor: 'pointer',
+                                }}
+                            >
+                                ✏️ 수정
+                            </button>
+                            <button
+                                onClick={() =>
+                                    comment.parentCommentId
+                                        ? handleDeleteReply(comment.id)
+                                        : handleDeleteComment(comment.id)
                                 }
-                                return next;
-                            })}
-                            style={{
-                                fontSize: 13,
-                                background: 'none',
-                                border: 'none',
-                                color: '#6c5ce7',
-                                cursor: 'pointer',
-                            }}
-                        >
-                            💬 댓글
-                        </button>
-                    </div>
-                )}
+                                style={{
+                                    fontSize: 13,
+                                    background: 'none',
+                                    border: 'none',
+                                    color: '#e17055',
+                                    cursor: 'pointer',
+                                }}
+                            >
+                                🗑 삭제
+                            </button>
+                        </>
+                    )}
+
+                    {/* 답글 버튼 (모든 사용자에게 표시) */}
+                    <button
+                        onClick={() => setReplyTargetId(prev => {
+                            const next = prev === comment.id ? null : comment.id;
+
+                            if (next === comment.id) {
+                                setReplyInput(prevInput => ({ ...prevInput, [comment.id]: '' }));
+                                setEditCommentId(null);
+                                setEditReplyId(null);
+                            }
+                            return next;
+                        })}
+                        style={{
+                            fontSize: 13,
+                            background: 'none',
+                            border: 'none',
+                            color: '#6c5ce7',
+                            cursor: 'pointer',
+                        }}
+                    >
+                        💬 댓글
+                    </button>
+                </div>
             </div>
 
             {/* 수정 */}
-            <div style={{marginBottom: '10px'}}>
+            <div style={{ marginBottom: '10px' }}>
                 {editCommentId === comment.id || editReplyId === comment.id ? (
                     <>
                         <input

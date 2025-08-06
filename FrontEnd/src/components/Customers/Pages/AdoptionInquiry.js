@@ -74,13 +74,21 @@ const AdoptionInquiry = () => {
 
     // 팝업 사진 관리 모달 열기
     const openPhotoManage = () => {
-        setPhotoDraft([...slideImages]);
+        if (!Array.isArray(slideImages)) {
+            setPhotoDraft([]);
+        } else {
+            setPhotoDraft([...slideImages]);
+        }
         setPhotoManageOpen(true);
     };
 
     // 썸네일 관리 모달 열기
     const openThumbnailManage = () => {
-        setThumbnailDraft([...thumbnails]);
+        if (!Array.isArray(thumbnails)) {
+            setThumbnailDraft([]);
+        } else {
+            setThumbnailDraft([...thumbnails]);
+        }
         setThumbnailManageOpen(true);
     };
 
@@ -171,7 +179,7 @@ const AdoptionInquiry = () => {
         closeModal();
     };
     console.log("imgs:", slideImages);
-    
+
 
     return (
         <div className="customer-adoption-inquiry">
@@ -220,7 +228,7 @@ const AdoptionInquiry = () => {
                                         src={img.src.startsWith("blob:")
                                             ? img.src
                                             : `${BASE_URL}${img.src}`}
-                                            
+
                                         alt={`썸네일${idx + 1}`}
                                         style={{
                                             width: 100,

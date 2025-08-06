@@ -37,7 +37,7 @@ public class AdoptionImageController {
     }
 
     // 타입별 목록 조회 (선택)
-    @GetMapping("/{type}")
+    @GetMapping("/type/{type}")
     public List<AdoptionImage> getByType(@PathVariable("type") ImageType type) {
         return service.getImagesByType(type);  // .name()은 필요에 따라
     }

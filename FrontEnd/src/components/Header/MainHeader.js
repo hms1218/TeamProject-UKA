@@ -82,7 +82,7 @@ const MainHeaders = () => {
                         items={[
                             { label: 'FAQ', to: '/customer/faq' },
                             { label: 'Q&A', to: '/customer/qna' },
-                            // { label: '입양문의', to: '/customer/adoption' },
+                            { label: '입양문의', to: '/customer/adoption' },
                             ...(user && isAdminUser(user) ? [{ label: '관리자 페이지', to: '/admin/reported' }] : []),
                         ]}
                     />

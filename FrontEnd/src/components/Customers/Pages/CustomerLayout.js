@@ -59,12 +59,12 @@ const CustomerLayout = ({ children }) => {
                 >
                     QnA
                 </NavLink>
-                <NavLink
+                {/* <NavLink
                     to="/customer/adoption"
                     className={({ isActive }) => isActive ? 'active' : ''}
                 >
                     입양문의
-                </NavLink>
+                </NavLink> */}
             </nav>
 
             {/* 라우트 출력 영역 */}

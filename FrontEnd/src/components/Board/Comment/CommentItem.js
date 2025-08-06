@@ -80,7 +80,7 @@ const CommentItem = ({
                     )}
 
                     {/* 답글 버튼 (모든 사용자에게 표시) */}
-                    <button
+                    {/* <button
                         onClick={() => setReplyTargetId(prev => {
                             const next = prev === comment.id ? null : comment.id;
 
@@ -100,7 +100,7 @@ const CommentItem = ({
                         }}
                     >
                         💬 댓글
-                    </button>
+                    </button> */}
                 </div>
             </div>
 

@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class FileStorageService {
-	private final Path uploadDir = Paths.get("C:/my-app/customer");
+	private final Path uploadDir = Paths.get("/home/ubuntu/my-app/customer/");
 
     public FileStorageService() throws IOException {
         Files.createDirectories(uploadDir);
@@ -23,7 +23,7 @@ public class FileStorageService {
             String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
             Path filePath = uploadDir.resolve(fileName);
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-            return "/uploads/" + fileName;
+            return "customer/adoption/" + fileName;
         } catch (IOException e) {
             throw new RuntimeException("파일 저장 실패", e);
         }

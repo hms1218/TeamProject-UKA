@@ -29,10 +29,10 @@ public interface BoardRepository extends JpaRepository<Board, String>{
 	void updateReport(@Param("id") String id, @Param("report") int report);
 	
 	@Query(
-	    value = "SELECT brd_id as id, brd_title as title " +
+	    value = "SELECT brd_id as id, brd_title as title, 'board' as category " +
 	            "FROM board_main WHERE user_id = :userId " +
 	            "UNION ALL " +
-	            "SELECT CAST(qna_no AS CHAR) as id, qna_title as title " +
+	            "SELECT CAST(qna_no AS CHAR) as id, qna_title as title, 'qna' as category " +
 	            "FROM qna WHERE user_id = :userId",
 	    nativeQuery = true
 	)

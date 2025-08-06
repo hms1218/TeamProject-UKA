@@ -13,10 +13,10 @@ public class WebMVCConfig  implements WebMvcConfigurer{
 		registry
 		.addResourceHandler("/request/img/**")
 		.addResourceLocations("file:/home/ubuntu/my-app/upload/");
-
-
-	    registry.addResourceHandler("/uploads/**")
-	            .addResourceLocations("file:/home/ubuntu/my-app/customer/");
+		
+		registry
+		.addResourceHandler("/customer/adoption/**")
+		.addResourceLocations("file:/home/ubuntu/my-app/customer/");
 	    
 //	    registry
 //        .addResourceHandler("/images/**")

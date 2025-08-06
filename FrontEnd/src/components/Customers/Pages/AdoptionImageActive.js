@@ -34,7 +34,9 @@ const getRealImageUrl = async (src, index, fileMap, draft = [], showAlert) => {
     const formData = new FormData();
     formData.append("file", file);
 
+    
     const url = await uploadImageFile(formData);
+    console.log("image:", url);
     return url;
 };
 

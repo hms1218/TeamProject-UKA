@@ -104,5 +104,6 @@
 ul {
     list-style: none;
     padding-left: 0;
+    width: 90%;
     /* 왼쪽 들여쓰기 제거 */
 }

@@ -170,6 +170,8 @@ const AdoptionInquiry = () => {
         setConfirmed(true);
         closeModal();
     };
+    console.log("imgs:", slideImages);
+    
 
     return (
         <div className="customer-adoption-inquiry">
@@ -218,6 +220,7 @@ const AdoptionInquiry = () => {
                                         src={img.src.startsWith("blob:")
                                             ? img.src
                                             : `${BASE_URL}${img.src}`}
+                                            
                                         alt={`썸네일${idx + 1}`}
                                         style={{
                                             width: 100,

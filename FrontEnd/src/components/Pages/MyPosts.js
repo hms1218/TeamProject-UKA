@@ -15,32 +15,15 @@ const MyPosts = () => {
         }
 
         setLoading(true);
-
-        // 1) Board, QnA를 병렬로 조회 → 프론트에서 합침
-        Promise.all([
-            axios.get(`${BASE_URL}/board`, { params: { userId: user.seq } }),
-            axios.get(`${BASE_URL}/customer/qna`, { params: { userId: user.seq } })
-        ])
-        .then(([boardRes, qnaRes]) => {
-            // Board에 type 붙이기
-            const boards = (boardRes.data || []).map(post => ({
-                ...post,
-                type: 'board',
-            }));
-            // QnA에 type 붙이기
-            const qnas = (qnaRes.data || []).map(post => ({
-                ...post,
-                type: 'qna',
-            }));
-            // 병합 후 최신순 정렬
-            const merged = [...boards, ...qnas].sort(
-                (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-            );
-            setPosts(merged);
+        axios.get(`${BASE_URL}/api/users/myPost`, {
+            params: { userId: user.seq }
         })
+        .then(res => setPosts(res.data))
         .catch(() => setPosts([]))
         .finally(() => setLoading(false));
     }, []);
+
+    console.log('내가 작성한 글:', posts);
 
     return (
         <div className="activity-list-section">
@@ -64,14 +47,14 @@ const MyPosts = () => {
                             </div>
                             {/* [선택] 글 종류 표시 */}
                             <span className="item-type">
-                                {post.type === 'board' ? '게시판' : 'QnA'}
+                                {post.category === 'BOARD' ? '게시판' : 'QnA'}
                             </span>
                         </div>
                         <div className="item-action">
                             <button
                                 className="view-btn"
                                 onClick={() => {
-                                    if (post.type === 'qna') {
+                                    if (post.category === 'QNA') {
                                         // QnA 상세페이지로 이동
                                         window.location.href = `customer/qna/${post.id || post.qnaNo}`;
                                     } else {

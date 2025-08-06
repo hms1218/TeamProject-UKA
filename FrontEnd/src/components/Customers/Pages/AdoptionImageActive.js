@@ -34,7 +34,7 @@ const getRealImageUrl = async (src, index, fileMap, draft = [], showAlert) => {
     const formData = new FormData();
     formData.append("file", file);
 
-    
+
     const url = await uploadImageFile(formData);
     console.log("image:", url);
     return url;
@@ -44,6 +44,8 @@ const getRealImageUrl = async (src, index, fileMap, draft = [], showAlert) => {
 export const saveThumbnails = async (
     draft, before, showAlert, setThumbnails, closeModal, fileMap
 ) => {
+    draft = draft || [];
+    before = before || [];
     try {
         for (let i = 0; i < draft.length; i++) {
             const item = draft[i];
@@ -109,6 +111,8 @@ export const saveThumbnails = async (
 export const savePopups = async (
     draft, before, showAlert, setPopups, closeModal, fileMap
 ) => {
+    draft = draft || [];
+    before = before || [];
     try {
         for (let i = 0; i < draft.length; i++) {
             const item = draft[i];
@@ -133,8 +137,8 @@ export const savePopups = async (
             }
         }
 
-        for (const old of before) {
-            if (!draft.some((d) => d.id === old.id)) {
+        for (const old of before || []) {
+            if (!(draft || []).some((d) => d.id === old.id)) {
                 await deleteAdoptionImage(old.id);
             }
         }

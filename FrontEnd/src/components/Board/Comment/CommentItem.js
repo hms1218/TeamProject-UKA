@@ -27,15 +27,17 @@ const CommentItem = ({
     handleReplySubmit,
     renderCommentTree,
 }) => {
+    console.log("작성자: ",comment)
+    console.log("게시글: ",post)
     return (
         <div style={{ marginLeft: level > 0 ? 20 : 0, marginBottom: 12 }}>
             <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
                 <div style={{ fontSize: 15 }}>
                     <b>
                         {level > 0 && '↪ '}
-                        {comment.nickname}
-                        {comment.nickname === post.nickname && ' (작성자)'}
-                        {comment.userId?.includes('admin') && ' (관리자)'}
+                        {comment.nickname || comment.author}
+                        {(comment.nickname === post.nickname || comment.author === post.author) && ' (작성자)'}
+                        {(comment.userId?.includes('admin') || comment.author?.includes('관리자')) && ' (관리자)'}
                     </b>
                     <span style={{ marginLeft: 6, color: '#bbb', fontSize: 13 }}>
                         {formatDateTime(comment.createdAt)} {comment.isEdited && '(수정됨)'}
@@ -80,7 +82,7 @@ const CommentItem = ({
                     )}
 
                     {/* 답글 버튼 (모든 사용자에게 표시) */}
-                    {/* <button
+                    <button
                         onClick={() => setReplyTargetId(prev => {
                             const next = prev === comment.id ? null : comment.id;
 
@@ -100,7 +102,7 @@ const CommentItem = ({
                         }}
                     >
                         💬 댓글
-                    </button> */}
+                    </button>
                 </div>
             </div>
 

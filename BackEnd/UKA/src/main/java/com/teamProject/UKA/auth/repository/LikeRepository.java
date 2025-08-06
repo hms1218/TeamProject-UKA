@@ -10,13 +10,13 @@ import com.teamProject.UKA.board.model.BoardLikes;
 
 public interface LikeRepository extends JpaRepository<BoardLikes, Long> {
 	@Query(
-	    value = "SELECT b.brd_id as id, b.brd_title as title, u.nickname as author, b.brd_created_at as date, b.brd_likes as likes " +
+	    value = "SELECT b.brd_id as id, b.brd_title as title, u.nickname as author, b.brd_created_at as date, b.brd_likes as likes, 'BOARD' as category " +
 	            "FROM board_likes bl " +
 	            "JOIN board_main b ON bl.post_id = b.brd_id " +
 	            "JOIN users u ON b.user_id = u.seq " +
 	            "WHERE bl.user_id = :userId " +
 	            "UNION ALL " +
-	            "SELECT q.qna_id as id, q.qna_title as title, u.nickname as author, q.qna_created_at as date, q.qna_like_count as likes " +
+	            "SELECT q.qna_id as id, q.qna_title as title, u.nickname as author, q.qna_created_at as date, q.qna_like_count as likes, 'QNA' as category " +
 	            "FROM qna_like_log ql " +
 	            "JOIN qna q ON ql.qna_no = q.qna_no " +
 	            "JOIN users u ON q.user_id = u.seq " +

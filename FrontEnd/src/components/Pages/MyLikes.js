@@ -8,34 +8,16 @@ const MyLikes = () => {
 
     useEffect(() => {
         const user = JSON.parse(localStorage.getItem('user'));
-        if (!user?.userId && !user?.seq) {
+        if (!user?.seq) {
             setLikes([]);
             setLoading(false);
             return;
         }
         setLoading(true);
-
-        // 게시판/질문 모두 좋아요 한 글 병렬 조회 (API가 각각이면 병렬로)
-        Promise.all([
-            axios.get(`${BASE_URL}/board/likes`, { params: { userId: user.seq } }),
-            axios.get(`${BASE_URL}/customer/qna/likes`, { params: { userId: user.seq } }),
-        ])
-        .then(([boardRes, qnaRes]) => {
-            // board와 qna 각각 type 붙여서 합침
-            const boards = (boardRes.data || []).map(item => ({
-                ...item,
-                type: 'board',
-            }));
-            const qnas = (qnaRes.data || []).map(item => ({
-                ...item,
-                type: 'qna',
-            }));
-            // 최신순 정렬
-            const merged = [...boards, ...qnas].sort(
-                (a, b) => new Date(b.createdAt || b.date) - new Date(a.createdAt || a.date)
-            );
-            setLikes(merged);
+        axios.get(`${BASE_URL}/api/users/myLikes`, {
+            params: { userId: user.userId }
         })
+        .then(res => setLikes(res.data))
         .catch(() => setLikes([]))
         .finally(() => setLoading(false));
     }, []);
@@ -43,6 +25,8 @@ const MyLikes = () => {
     if (loading) {
         return <div>좋아요 목록 불러오는 중...</div>;
     }
+
+    console.log('내가 좋아요 누른 게시물:', likes);
 
     return (
         <div className="activity-list-section">
@@ -57,7 +41,7 @@ const MyLikes = () => {
                                 <h4 className="item-title">{liked.title}</h4>
                                 <div className="item-meta">
                                     <span className="item-type">
-                                        {liked.type === 'board' ? '게시판' : 'QnA'}
+                                        {liked.category === 'BOARD' ? '게시판' : 'QnA'}
                                     </span>
                                     <span className="item-author">
                                         작성자: {liked.author || liked.nickname || liked.userName || '-'}
@@ -80,8 +64,8 @@ const MyLikes = () => {
                                 <button
                                     className="view-btn"
                                     onClick={() => {
-                                        if (liked.type === 'qna') {
-                                            window.location.href = `customer/qna/${liked.id || liked.qnaNo}`;
+                                        if (liked.category === 'QNA') {
+                                            window.location.href = `customer/qna/${liked.id.substring(8)}`;
                                         } else {
                                             window.location.href = `/board/all/detail/${liked.id}`;
                                         }

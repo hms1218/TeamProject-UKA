@@ -15,6 +15,7 @@ public class MyLikeResponseDTO {
     private String author;
     private String date;
     private int likes;
+    private String category;
     
     public static MyLikeResponseDTO fromRow(Object[] row) {
         return MyLikeResponseDTO.builder()
@@ -23,6 +24,7 @@ public class MyLikeResponseDTO {
             .author((String) row[2])
             .date(row[3] != null ? row[3].toString().substring(0, 10) : null)
             .likes(row[4] != null ? Integer.parseInt(row[4].toString()) : 0)
+            .category((String) row[5])
             .build();
     }
 }

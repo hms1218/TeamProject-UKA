@@ -90,6 +90,7 @@ public class UserService {
     public List<MyCommentResponseDTO> getMyComments(String userId) {
         // 1. 게시판 댓글 조회
         List<Comment> boardComments = boardCommentRepository.findAllByUserId(userId);
+        System.out.println("boardComments ::" + boardComments);
         List<MyCommentResponseDTO> boardDtos = boardComments.stream()
             .map(comment -> {
                 String postTitle = comment.getBoard() != null ? comment.getBoard().getTitle() : null;

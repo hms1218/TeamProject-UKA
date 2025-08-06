@@ -57,6 +57,7 @@ public class BoardResponseDTO {
         return BoardResponseDTO.builder()
             .id(row[0] != null ? row[0].toString() : null)
             .title(row[1] != null ? row[1].toString() : null)
+            .category(row[2] != null ? Category.valueOf(row[2].toString().toUpperCase()) : null)
             .build();
     }
 }
